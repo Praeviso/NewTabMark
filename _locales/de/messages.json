@@ -1,6 +1,6 @@
 {
     "extName": {
-        "message": "TabMark",
+        "message": "NewTabMark",
         "description": "Der Name der Erweiterung"
     },
     "extDescription": {
@@ -330,7 +330,7 @@
         "description": "Über-Tab"
     },
     "aboutTitle": {
-        "message": "Über TabMark",
+        "message": "Über NewTabMark",
         "description": "Titel der Über-Seite"
     },
     "contactUs": {

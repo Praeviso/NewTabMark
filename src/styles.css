@@ -4,7 +4,11 @@
 
 /* 在文件顶部添加 */
 html.loading-wallpaper {
-  background: none !important;
+  background-color: #ffffff !important;
+}
+
+html[data-theme="dark"].loading-wallpaper {
+  background-color: #1c1c1c !important;
 }
 
 html.loading-wallpaper body,
@@ -125,7 +129,7 @@ main.flex-1 {
 }
 
 /* 暗黑模式下的背景渐变类 */
-[data-theme="dark"] html[class*="gradient-background"] {
+html[data-theme="dark"][class*="gradient-background"] {
   background: transparent !important;
 }
 
@@ -616,7 +620,7 @@ main {
 }
 
 /* 暗黑模式下的背景渐变类 */
-[data-theme="dark"] html[class*="gradient-background"] {
+html[data-theme="dark"][class*="gradient-background"] {
   background: transparent !important;  /* 移除 html 的背景，让 body 的背景显示 */
 }
 

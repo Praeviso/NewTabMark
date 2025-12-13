@@ -1,10 +1,10 @@
 {
     "extName": {
-        "message": "TabMark",
+        "message": "NewTabMark",
         "description": "The name of the extension"
     },
     "extDescription": {
-        "message": "TabMark is a bookmark-based new tab page application that helps you efficiently organize and access your bookmarks.",
+        "message": "NewTabMark is a bookmarks-first new tab page that helps you organize and quickly access your bookmarks.",
         "description": "The description of the extension"
     },
     "welcomeMessage": {
@@ -330,12 +330,12 @@
         "description": "About tab"
     },
     "aboutTitle": {
-        "message": "About TabMark",
-        "description": "Title for About TabMark"
+        "message": "About NewTabMark",
+        "description": "Title for About NewTabMark"
     },
     "aboutDescription": {
-        "message": "TabMark is a clean and efficient bookmark management extension that helps you better organize and access your web collections.",
-        "description": "Description for About TabMark"
+        "message": "NewTabMark is a clean and efficient bookmarks extension that helps you organize and access your web collections.",
+        "description": "Description for About NewTabMark"
     },
     "sourceCode": {
         "message": "Source Code",

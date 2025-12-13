@@ -1,10 +1,10 @@
 {
     "extName": {
-        "message": "TabMark",
+        "message": "NewTabMark",
         "description": "확장 프로그램 이름"
     },
     "extDescription": {
-        "message": "TabMark는 북마크 기반의 새 탭 페이지 애플리케이션으로, 북마크를 효율적으로 정리하고 액세스하는 데 도움이 됩니다.",
+        "message": "NewTabMark는 북마크 기반의 새 탭 페이지 애플리케이션으로, 북마크를 효율적으로 정리하고 액세스하는 데 도움이 됩니다.",
         "description": "확장 프로그램 설명"
     },
     "welcomeMessage": {
@@ -382,7 +382,7 @@
         "description": "정보 탭"
     },
     "aboutTitle": {
-        "message": "TabMark 정보",
+        "message": "NewTabMark 정보",
         "description": "정보 페이지 제목"
     },
     "contactUs": {

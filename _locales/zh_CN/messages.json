@@ -1,10 +1,10 @@
 {
     "extName": {
-        "message": "TabMark",
+        "message": "NewTabMark",
         "description": "扩展的名称"
     },
     "extDescription": {
-        "message": "TabMark 是一个基于书签的新标签页应用程序，帮助您高效地组织和访问您的书签。",
+        "message": "NewTabMark 是一个基于书签的新标签页扩展，帮助您高效地组织并快速访问书签。",
         "description": "扩展的描述"
     },
     "welcomeMessage": {
@@ -401,12 +401,12 @@
         "description": "关于选项卡"
     },
     "aboutTitle": {
-        "message": "关于 TabMark",
-        "description": "关于 TabMark 的标题"
+        "message": "关于 NewTabMark",
+        "description": "关于 NewTabMark 的标题"
     },
     "aboutDescription": {
-        "message": "TabMark 是一个简洁、高效的书签管理扩展，帮助您更好地组织和访问您的网络收藏。",
-        "description": "关于 TabMark 的描述"
+        "message": "NewTabMark 是一个简洁、高效的书签扩展，帮助您更好地组织和访问您的网络收藏。",
+        "description": "关于 NewTabMark 的描述"
     },
     "sourceCode": {
         "message": "源代码",

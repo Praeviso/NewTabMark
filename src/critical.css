@@ -1,0 +1,13 @@
+html.loading-wallpaper {
+  background-color: #ffffff !important;
+}
+
+html[data-theme='dark'].loading-wallpaper {
+  background-color: #1c1c1c !important;
+}
+
+html.loading-wallpaper body,
+html.loading-wallpaper main {
+  opacity: 0;
+}
+

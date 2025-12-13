@@ -1,6 +1,6 @@
 {
     "extName": {
-        "message": "TabMark",
+        "message": "NewTabMark",
         "description": "El nombre de la extensión"
     },
     "extDescription": {
@@ -302,7 +302,7 @@
         "description": "Pestaña Acerca de"
     },
     "aboutTitle": {
-        "message": "Acerca de TabMark",
+        "message": "Acerca de NewTabMark",
         "description": "Título de la página Acerca de"
     },
     "contactUs": {

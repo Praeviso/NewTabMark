@@ -1,10 +1,10 @@
 {
     "extName": {
-        "message": "TabMark",
+        "message": "NewTabMark",
         "description": "擴展的名稱"
     },
     "extDescription": {
-        "message": "TabMark 是一個基於書籤的新標籤頁應用程式，幫助您高效地組織和訪問您的書籤。",
+        "message": "NewTabMark 是一個基於書籤的新標籤頁應用程式，幫助您高效地組織和訪問您的書籤。",
         "description": "擴展的描述"
     },
     "welcomeMessage": {
@@ -378,7 +378,7 @@
         "description": "關於分頁"
     },
     "aboutTitle": {
-        "message": "關於 TabMark",
+        "message": "關於 NewTabMark",
         "description": "關於頁面標題"
     },
     "contactUs": {
