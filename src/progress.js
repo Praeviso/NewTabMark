@@ -1,5 +1,14 @@
-document.addEventListener('DOMContentLoaded', function () {
+let initialized = false;
+
+export function initProgress() {
+    if (initialized) return;
+    initialized = true;
+
     const yearProgressContainer = document.getElementById('year-progress');
+    if (!yearProgressContainer) return;
+    if (yearProgressContainer.dataset.progressInitialized === 'true') return;
+    yearProgressContainer.dataset.progressInitialized = 'true';
+
     const currentYear = new Date().getFullYear();
     const startOfYear = new Date(currentYear, 0, 1);
     const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59);
@@ -129,4 +138,4 @@ document.addEventListener('DOMContentLoaded', function () {
         attributes: true,
         attributeFilter: ['style']
     });
-});
+}

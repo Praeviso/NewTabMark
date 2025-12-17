@@ -118,7 +118,7 @@
           </form>
         </div>
       </div>
-      <footer class="bg-gray-50 text-center p-4 border-t border-gray-200 mt-4">
+      <footer class="bg-gray-50 text-center p-4 border-t border-gray-200 mt-auto">
       <!-- 新增的进度条容器 -->
       <div id="year-progress" class="year-progress-container"></div>
       </footer>
@@ -287,6 +287,64 @@
         <button id="cancel-delete-button" class="cancel-button" data-i18n="cancelButton">取消</button>
         <button id="confirm-delete-button" class="delete-button" data-i18n="confirmDeleteButton">删除</button>
       </div>
+    </div>
+  </div>
+  <div id="share-folder-dialog" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span id="share-folder-close" class="close-button">&times;</span>
+      <h2 data-i18n="shareFolderDialogTitle">Share folder</h2>
+      <p><strong id="share-folder-title"></strong></p>
+      <label for="share-folder-link" data-i18n="shareLinkLabel">Share link</label>
+      <textarea id="share-folder-link" class="custom-input" rows="3" readonly></textarea>
+      <div class="buttons">
+        <button id="copy-share-folder-link" class="primary-button" data-i18n="copyShareLink">Copy</button>
+        <button id="open-share-folder-link" class="cancel-button" data-i18n="openShareLink">Open</button>
+      </div>
+      <div id="share-folder-qrcode" style="display: flex; justify-content: center; margin-top: 16px;"></div>
+    </div>
+  </div>
+  <div id="import-shared-folder-dialog" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span id="import-shared-folder-close" class="close-button">&times;</span>
+      <h2 data-i18n="importSharedFolderDialogTitle">Import shared folder</h2>
+      <p id="import-shared-folder-title" style="font-weight: 600;"></p>
+      <p id="import-shared-folder-summary"></p>
+      <div class="buttons">
+        <button id="import-shared-folder-cancel" class="cancel-button" data-i18n="cancelButton">Cancel</button>
+        <button id="import-shared-folder-confirm" class="primary-button" data-i18n="importSharedFolderButton">Import</button>
+      </div>
+    </div>
+  </div>
+  <div id="gist-token-dialog" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span id="gist-token-close" class="close-button">&times;</span>
+      <h2 data-i18n="gistTokenDialogTitle">GitHub Token</h2>
+      <p data-i18n="gistTokenDialogDesc">Enter a GitHub Personal Access Token with “gist” scope. It will be stored locally.</p>
+      <label for="github-gist-token" data-i18n="gistTokenLabel">Token</label>
+      <input id="github-gist-token" class="custom-input" type="password" autocomplete="off" />
+      <div class="buttons">
+        <button id="cancel-gist-token" class="cancel-button" data-i18n="cancelButton">Cancel</button>
+        <button id="save-gist-token" class="primary-button" data-i18n="gistTokenSave">Save</button>
+      </div>
+    </div>
+  </div>
+  <div id="share-folder-gist-dialog" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span id="share-folder-gist-close" class="close-button">&times;</span>
+      <h2 data-i18n="gistShareDialogTitle">Share via GitHub Gist</h2>
+      <p><strong id="share-folder-gist-title"></strong></p>
+      <label for="share-folder-gist-link" data-i18n="gistLinkLabel">Gist link</label>
+      <textarea id="share-folder-gist-link" class="custom-input" rows="2" readonly></textarea>
+      <div class="buttons">
+        <button id="copy-share-folder-gist-link" class="primary-button" data-i18n="copyGistLink">Copy</button>
+      </div>
+      <label for="share-folder-gist-raw-link" data-i18n="gistRawLinkLabel">Raw HTML link</label>
+      <textarea id="share-folder-gist-raw-link" class="custom-input" rows="2" readonly></textarea>
+      <div class="buttons">
+        <button id="copy-share-folder-gist-raw-link" class="primary-button" data-i18n="copyRawLink">Copy</button>
+        <button id="download-share-folder-html" class="cancel-button" data-i18n="downloadBookmarkHtml">Download HTML</button>
+      </div>
+      <p data-i18n="gistImportHint">Tip: Download the HTML and import it from Chrome Bookmark Manager.</p>
     </div>
   </div>
   <div id="toast" class="toast" style="display: none;"></div>

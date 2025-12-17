@@ -13,6 +13,10 @@ let touchStartY = 0;
 let isPointerDown = false;
 let hasNavigated = false; // 添加标志，防止一次滑动触发多次导航
 
+let gestureNavigationInitialized = false;
+let updateDisplayRef = null;
+let wheelHandlerRef = null;
+
 // 导航函数
 function navigateToParent(currentFolderId, updateDisplay) {
   const now = Date.now();
@@ -61,6 +65,18 @@ function navigateToParent(currentFolderId, updateDisplay) {
   });
 }
 
+function getCurrentFolderId() {
+  const bookmarksList = document.getElementById('bookmarks-list');
+  return bookmarksList?.dataset?.parentId || null;
+}
+
+function navigateToParentFromCurrentFolder() {
+  if (!updateDisplayRef) return;
+  const currentFolderId = getCurrentFolderId();
+  if (!currentFolderId || currentFolderId === '1') return;
+  navigateToParent(currentFolderId, updateDisplayRef);
+}
+
 // 添加重置导航标志的函数
 function resetNavigationFlags() {
   isNavigating = false;
@@ -68,7 +84,7 @@ function resetNavigationFlags() {
 }
 
 // Mac 触摸板双指滑动处理
-function initTouchGestures(navigateToParent) {
+function initTouchGestures() {
   const minSwipeDistance = 250; // 显著增加最小滑动距离
   let swipeStartTime = 0;
 
@@ -116,9 +132,9 @@ function initTouchGestures(navigateToParent) {
         Math.abs(deltaY) < minSwipeDistance / 4 && // 进一步降低垂直容差
         swipeTime > 150 && swipeTime < 1000) { // 扩大时间窗口
       
-      const currentFolderId = document.getElementById('bookmarks-list').dataset.parentId;
-      if (currentFolderId && currentFolderId !== '1' && !hasNavigated) {
-        navigateToParent(currentFolderId);
+      const currentFolderId = getCurrentFolderId();
+      if (currentFolderId && currentFolderId !== '1' && !hasNavigated && updateDisplayRef) {
+        navigateToParent(currentFolderId, updateDisplayRef);
         hasNavigated = true;
       }
     }
@@ -128,11 +144,19 @@ function initTouchGestures(navigateToParent) {
 }
 
 // 优化滚轮处理函数
-function createWheelHandler(navigateToParent) {
+function createWheelHandler() {
   let accumulatedDeltaX = 0;
   let lastWheelTime = 0;
 
   return _.throttle(function(e) {
+    let deltaX = e.deltaX;
+    let deltaY = e.deltaY;
+    // Windows 常见鼠标：Shift+滚轮用于“水平滚动”，但事件可能只填充 deltaY
+    if (e.shiftKey && Math.abs(deltaX) < 1 && Math.abs(deltaY) >= 1) {
+      deltaX = -deltaY;
+      deltaY = 0;
+    }
+
     const currentTime = Date.now();
     
     if (currentTime - lastNavigationTime < NAVIGATION_COOLDOWN) {
@@ -143,26 +167,24 @@ function createWheelHandler(navigateToParent) {
     const MIN_DELTA_Y = isWindows ? 20 : 45;
     const HORIZONTAL_RATIO = isWindows ? 1.8 : 2.0; // 显著增加水平比率要求
     
-    accumulatedDeltaX += e.deltaX;
+    accumulatedDeltaX += deltaX;
     
     if (currentTime - lastWheelTime > 400) { // 增加重置时间窗口
-      accumulatedDeltaX = e.deltaX;
+      accumulatedDeltaX = deltaX;
     }
     lastWheelTime = currentTime;
 
+    const isBackGesture = e.shiftKey ? true : deltaX < 0;
     if (Math.abs(accumulatedDeltaX) > SCROLL_THRESHOLD && 
-        Math.abs(e.deltaX) > Math.abs(e.deltaY) * HORIZONTAL_RATIO && 
-        Math.abs(e.deltaY) < MIN_DELTA_Y && 
-        e.deltaX < 0 && 
+        (e.shiftKey || Math.abs(deltaX) > Math.abs(deltaY) * HORIZONTAL_RATIO) && 
+        Math.abs(deltaY) < MIN_DELTA_Y && 
+        isBackGesture && 
         e.deltaMode === 0) { 
       
       if (isWindows && e.deltaMode !== 0) return;
       
-      const currentFolderId = document.getElementById('bookmarks-list').dataset.parentId;
-      if (currentFolderId && currentFolderId !== '1') {
-        navigateToParent(currentFolderId);
-        accumulatedDeltaX = 0;
-      }
+      navigateToParentFromCurrentFolder();
+      accumulatedDeltaX = 0;
     }
   }, 200, { // 进一步增加节流时间
     trailing: false,
@@ -171,7 +193,7 @@ function createWheelHandler(navigateToParent) {
 }
 
 // Windows 触摸板支持
-function initWindowsTouchpad(navigateToParent) {
+function initWindowsTouchpad() {
   document.addEventListener('pointerdown', function(e) {
     if (e.pointerType === 'touch') {
       isPointerDown = true;
@@ -190,10 +212,7 @@ function initWindowsTouchpad(navigateToParent) {
     if (Math.abs(deltaX) > MIN_SWIPE_DISTANCE && 
         Math.abs(deltaX) > Math.abs(deltaY) * 2.0 && // 显著增加比率要求
         deltaX < 0) {
-      const currentFolderId = document.getElementById('bookmarks-list').dataset.parentId;
-      if (currentFolderId && currentFolderId !== '1') {
-        navigateToParent(currentFolderId);
-      }
+      navigateToParentFromCurrentFolder();
       isPointerDown = false;
     }
   });
@@ -204,19 +223,20 @@ function initWindowsTouchpad(navigateToParent) {
 
 // 修改初始化函数，接收 updateDisplay 参数
 function initGestureNavigation(updateDisplay) {
-  // 创建一个绑定了 updateDisplay 的导航函数
-  const boundNavigateToParent = (folderId) => navigateToParent(folderId, updateDisplay);
+  updateDisplayRef = updateDisplay;
+  if (gestureNavigationInitialized) return;
+  gestureNavigationInitialized = true;
 
   // 初始化触摸板手势，传入导航函数
-  initTouchGestures(boundNavigateToParent);
+  initTouchGestures();
   
   // 初始化滚轮事件，使用新的处理函数
-  const boundWheelHandler = createWheelHandler(boundNavigateToParent);
-  document.addEventListener('wheel', boundWheelHandler, { passive: true });
+  wheelHandlerRef = createWheelHandler();
+  document.addEventListener('wheel', wheelHandlerRef, { passive: true });
   
   // 如果是 Windows，初始化 Windows 触摸板支持
   if (isWindows) {
-    initWindowsTouchpad(boundNavigateToParent);
+    initWindowsTouchpad();
   }
 }
 

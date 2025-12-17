@@ -428,5 +428,141 @@
     "sidebarFeaturesFeature": {
         "message": "Deux nouvelles fonctionnalités ajoutées :\n1. Barre latérale rapide :\nAppuyez sur Alt/Command + B sur n'importe quelle page web pour ouvrir la barre latérale et accéder rapidement aux favoris et aux fonctions de recherche.\n\n2. Paramètres d'ouverture des liens :\nPersonnalisez la façon dont les favoris et les liens rapides s'ouvrent dans les paramètres, avec l'option de les ouvrir dans de nouveaux onglets.",
         "description": "Conseil unifié pour la recherche dans la barre latérale et les fonctions d'ouverture des liens"
+    },
+    "shareFolder": {
+        "message": "Partager",
+        "description": "Élément du menu contextuel pour partager un dossier de favoris"
+    },
+    "shareFolderDialogTitle": {
+        "message": "Partager le dossier",
+        "description": "Titre de la boîte de dialogue de partage"
+    },
+    "shareLinkLabel": {
+        "message": "Lien de partage",
+        "description": "Libellé du lien de partage"
+    },
+    "copyShareLink": {
+        "message": "Copier le lien",
+        "description": "Bouton pour copier le lien de partage"
+    },
+    "openShareLink": {
+        "message": "Ouvrir le lien",
+        "description": "Bouton pour ouvrir le lien de partage"
+    },
+    "shareLinkCopied": {
+        "message": "Lien de partage copié",
+        "description": "Toast après copie du lien de partage"
+    },
+    "shareLinkCopyFailed": {
+        "message": "Impossible de copier le lien de partage",
+        "description": "Toast en cas d'échec de copie"
+    },
+    "shareLinkGenerateFailed": {
+        "message": "Impossible de générer le lien de partage",
+        "description": "Toast en cas d'échec de génération"
+    },
+    "shareLinkInvalid": {
+        "message": "Lien de partage invalide",
+        "description": "Toast lorsque le lien ne peut pas être décodé"
+    },
+    "importSharedFolderDialogTitle": {
+        "message": "Importer un dossier partagé",
+        "description": "Titre de la boîte de dialogue d'importation"
+    },
+    "importSharedFolderButton": {
+        "message": "Importer",
+        "description": "Bouton pour importer un dossier partagé"
+    },
+    "sharedFolderImported": {
+        "message": "Dossier partagé importé",
+        "description": "Toast après importation"
+    },
+    "sharedFolderImportFailed": {
+        "message": "Impossible d'importer le dossier partagé",
+        "description": "Toast en cas d'échec d'importation"
+    },
+    "sharedFolderDefaultName": {
+        "message": "Dossier partagé",
+        "description": "Nom par défaut si le titre manque"
+    },
+    "sharedFolderSummary": {
+        "message": "Contient $1 sous-dossiers et $2 favoris.",
+        "description": "Résumé pour la boîte de dialogue d'importation"
+    },
+    "shareFolderLink": {
+        "message": "Partager (lien)",
+        "description": "Partager un dossier via le lien de l’extension"
+    },
+    "gistTokenDialogTitle": {
+        "message": "Jeton GitHub",
+        "description": "Titre du dialogue de jeton GitHub"
+    },
+    "gistTokenDialogDesc": {
+        "message": "Saisissez un Personal Access Token GitHub avec l’autorisation « gist ». Il sera stocké localement.",
+        "description": "Description du dialogue de jeton GitHub"
+    },
+    "gistTokenLabel": {
+        "message": "Jeton",
+        "description": "Libellé du jeton GitHub"
+    },
+    "gistTokenSave": {
+        "message": "Enregistrer",
+        "description": "Bouton pour enregistrer le jeton"
+    },
+    "gistTokenRequired": {
+        "message": "Jeton requis",
+        "description": "Toast quand le jeton est vide"
+    },
+    "gistTokenSaved": {
+        "message": "Jeton enregistré",
+        "description": "Toast quand le jeton est enregistré"
+    },
+    "gistUploading": {
+        "message": "Envoi vers GitHub Gist…",
+        "description": "Toast pendant l’envoi vers Gist"
+    },
+    "gistShareSuccess": {
+        "message": "Partagé via GitHub Gist",
+        "description": "Toast quand le partage réussit"
+    },
+    "gistShareCopied": {
+        "message": "Lien Gist copié",
+        "description": "Toast quand le lien est copié"
+    },
+    "gistShareFailed": {
+        "message": "Échec du partage via GitHub Gist",
+        "description": "Toast quand le partage échoue"
+    },
+    "gistShareDialogTitle": {
+        "message": "Partager via GitHub Gist",
+        "description": "Titre du dialogue de résultat"
+    },
+    "gistLinkLabel": {
+        "message": "Lien Gist",
+        "description": "Libellé du lien Gist"
+    },
+    "gistRawLinkLabel": {
+        "message": "Lien HTML brut",
+        "description": "Libellé du lien brut"
+    },
+    "copyGistLink": {
+        "message": "Copier",
+        "description": "Bouton pour copier le lien Gist"
+    },
+    "copyRawLink": {
+        "message": "Copier",
+        "description": "Bouton pour copier le lien brut"
+    },
+    "downloadBookmarkHtml": {
+        "message": "Télécharger HTML",
+        "description": "Bouton pour télécharger le HTML"
+    },
+    "bookmarkHtmlDownloaded": {
+        "message": "HTML téléchargé",
+        "description": "Toast au démarrage du téléchargement"
+    },
+    "gistImportHint": {
+        "message": "Astuce : Téléchargez le HTML puis importez-le depuis le gestionnaire de favoris Chrome.",
+        "description": "Conseil pour importer le HTML"
     }
 }

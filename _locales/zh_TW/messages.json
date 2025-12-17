@@ -502,5 +502,141 @@
     "sidebarFeaturesFeature": {
         "message": "新增兩項功能：\n1. 快捷側邊欄：\n在任意網頁按下 Alt/Command + B，即可打開側邊欄，快速訪問書籤和搜尋功能。\n\n2. 連結開啟設定：\n在設定中可自訂書籤和快速連結的開啟方式，選擇是否在新分頁中開啟。",
         "description": "側邊欄搜尋和連結開啟功能的統一提示"
+    },
+    "shareFolder": {
+        "message": "分享",
+        "description": "資料夾右鍵選單：分享"
+    },
+    "shareFolderDialogTitle": {
+        "message": "分享資料夾",
+        "description": "分享資料夾對話框標題"
+    },
+    "shareLinkLabel": {
+        "message": "分享連結",
+        "description": "分享連結標籤"
+    },
+    "copyShareLink": {
+        "message": "複製連結",
+        "description": "複製分享連結按鈕"
+    },
+    "openShareLink": {
+        "message": "開啟連結",
+        "description": "開啟分享連結按鈕"
+    },
+    "shareLinkCopied": {
+        "message": "已複製分享連結",
+        "description": "複製分享連結成功提示"
+    },
+    "shareLinkCopyFailed": {
+        "message": "複製分享連結失敗",
+        "description": "複製分享連結失敗提示"
+    },
+    "shareLinkGenerateFailed": {
+        "message": "產生分享連結失敗",
+        "description": "產生分享連結失敗提示"
+    },
+    "shareLinkInvalid": {
+        "message": "分享連結無效",
+        "description": "分享連結解析失敗提示"
+    },
+    "importSharedFolderDialogTitle": {
+        "message": "匯入分享資料夾",
+        "description": "匯入分享資料夾對話框標題"
+    },
+    "importSharedFolderButton": {
+        "message": "匯入",
+        "description": "匯入分享資料夾按鈕"
+    },
+    "sharedFolderImported": {
+        "message": "已匯入分享資料夾",
+        "description": "匯入分享資料夾成功提示"
+    },
+    "sharedFolderImportFailed": {
+        "message": "匯入分享資料夾失敗",
+        "description": "匯入分享資料夾失敗提示"
+    },
+    "sharedFolderDefaultName": {
+        "message": "分享資料夾",
+        "description": "分享資料夾預設名稱"
+    },
+    "sharedFolderSummary": {
+        "message": "包含 $1 個子資料夾，$2 個書籤。",
+        "description": "匯入分享資料夾概要"
+    },
+    "shareFolderLink": {
+        "message": "分享（連結）",
+        "description": "資料夾右鍵選單：透過擴充功能連結分享"
+    },
+    "gistTokenDialogTitle": {
+        "message": "GitHub Token",
+        "description": "GitHub Token 對話框標題"
+    },
+    "gistTokenDialogDesc": {
+        "message": "請輸入具有「gist」權限的 GitHub 個人存取權杖（PAT），將僅儲存在本機。",
+        "description": "GitHub Token 對話框說明"
+    },
+    "gistTokenLabel": {
+        "message": "Token",
+        "description": "GitHub Token 輸入框標籤"
+    },
+    "gistTokenSave": {
+        "message": "儲存",
+        "description": "儲存 GitHub Token 按鈕"
+    },
+    "gistTokenRequired": {
+        "message": "Token 不能為空",
+        "description": "Token 為空提示"
+    },
+    "gistTokenSaved": {
+        "message": "Token 已儲存",
+        "description": "Token 儲存成功提示"
+    },
+    "gistUploading": {
+        "message": "正在上傳到 GitHub Gist…",
+        "description": "上傳中提示"
+    },
+    "gistShareSuccess": {
+        "message": "已透過 GitHub Gist 分享",
+        "description": "分享成功提示"
+    },
+    "gistShareCopied": {
+        "message": "已複製 Gist 連結",
+        "description": "複製連結成功提示"
+    },
+    "gistShareFailed": {
+        "message": "透過 GitHub Gist 分享失敗",
+        "description": "分享失敗提示"
+    },
+    "gistShareDialogTitle": {
+        "message": "透過 GitHub Gist 分享",
+        "description": "Gist 分享結果對話框標題"
+    },
+    "gistLinkLabel": {
+        "message": "Gist 頁面連結",
+        "description": "Gist 頁面連結標籤"
+    },
+    "gistRawLinkLabel": {
+        "message": "原始 HTML 連結",
+        "description": "Raw HTML 連結標籤"
+    },
+    "copyGistLink": {
+        "message": "複製",
+        "description": "複製 Gist 連結按鈕"
+    },
+    "copyRawLink": {
+        "message": "複製",
+        "description": "複製 Raw 連結按鈕"
+    },
+    "downloadBookmarkHtml": {
+        "message": "下載 HTML",
+        "description": "下載書籤 HTML 按鈕"
+    },
+    "bookmarkHtmlDownloaded": {
+        "message": "已開始下載 HTML",
+        "description": "下載觸發提示"
+    },
+    "gistImportHint": {
+        "message": "提示：下載 HTML 後可在 Chrome 書籤管理員中匯入。",
+        "description": "匯入提示"
     }
 }

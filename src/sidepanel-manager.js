@@ -3,12 +3,13 @@ class SidePanelManager {
     this.history = [];
     this.currentIndex = -1;
     this.isNavigating = false;
-    
-    this.init();
+    this.didInit = false;
   }
 
   init() {
-    if (!isSidePanel()) return;
+    if (!isSidePanelContext()) return;
+    if (this.didInit) return;
+    this.didInit = true;
     
     // 添加导航栏
     this.addNavigationBar();
@@ -17,6 +18,8 @@ class SidePanelManager {
   }
 
   addNavigationBar() {
+    if (document.querySelector('.side-panel-nav')) return;
+
     const navBar = document.createElement('div');
     navBar.className = 'side-panel-nav';
     navBar.innerHTML = `
@@ -43,14 +46,21 @@ class SidePanelManager {
   }
 
   initEventListeners() {
+    const backBtn = document.getElementById('back-btn');
+    const forwardBtn = document.getElementById('forward-btn');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const openInTabBtn = document.getElementById('open-in-tab-btn');
+    if (!backBtn || !forwardBtn || !refreshBtn || !openInTabBtn) return;
+
     // 导航按钮事件
-    document.getElementById('back-btn').addEventListener('click', () => this.goBack());
-    document.getElementById('forward-btn').addEventListener('click', () => this.goForward());
-    document.getElementById('refresh-btn').addEventListener('click', () => this.refresh());
-    document.getElementById('open-in-tab-btn').addEventListener('click', () => this.openInNewTab());
+    backBtn.addEventListener('click', () => this.goBack());
+    forwardBtn.addEventListener('click', () => this.goForward());
+    refreshBtn.addEventListener('click', () => this.refresh());
+    openInTabBtn.addEventListener('click', () => this.openInNewTab());
     
     // URL 输入框事件
     const urlInput = document.getElementById('url-input');
+    if (!urlInput) return;
     urlInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         this.loadUrl(urlInput.value);
@@ -58,12 +68,7 @@ class SidePanelManager {
     });
 
     // 监听消息
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.action === "updateUrl") {
-        this.updateUrlBar(message.url);
-        this.addToHistory(message.url);
-      }
-    });
+    installSidePanelMessageListener(this);
   }
 
   loadUrl(url) {
@@ -136,4 +141,33 @@ class SidePanelManager {
   updateUrlBar(url) {
     document.getElementById('url-input').value = url;
   }
-} 
+}
+
+function isSidePanelContext() {
+  return window.location.pathname.endsWith('sidepanel.html') ||
+    window.location.search.includes('context=side_panel');
+}
+
+let didBindSidePanelMessageListener = false;
+let sidePanelManagerRef = null;
+function installSidePanelMessageListener(manager) {
+  sidePanelManagerRef = manager;
+  if (didBindSidePanelMessageListener) return;
+  didBindSidePanelMessageListener = true;
+
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message.action !== 'updateUrl') return;
+    if (!sidePanelManagerRef) return;
+    sidePanelManagerRef.updateUrlBar(message.url);
+    sidePanelManagerRef.addToHistory(message.url);
+  });
+}
+
+let instance = null;
+
+export function initSidePanelManager() {
+  if (instance) return instance;
+  instance = new SidePanelManager();
+  instance.init();
+  return instance;
+}

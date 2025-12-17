@@ -244,12 +244,21 @@ const WelcomeManager = {
     }
 };
 
-// 导出给其他模块使用的方法
-window.WelcomeManager = WelcomeManager;
+let initialized = false;
+let intervalId = null;
 
-// DOM加载完成后初始化
-document.addEventListener('DOMContentLoaded', () => {
+export function getWelcomeManager() {
+    return WelcomeManager;
+}
+
+export function initWelcome() {
+    if (initialized) return;
+    initialized = true;
+
+    if (!window.WelcomeManager) window.WelcomeManager = WelcomeManager;
     WelcomeManager.initialize();
-    // 每分钟更新一次欢迎消息
-    setInterval(() => WelcomeManager.updateWelcomeMessage(), 60000);
-});
+    if (intervalId) {
+        clearInterval(intervalId);
+    }
+    intervalId = setInterval(() => WelcomeManager.updateWelcomeMessage(), 60000);
+}

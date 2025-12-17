@@ -1,6 +1,35 @@
 // 导入所需的依赖
 import { ICONS, getIconHtml } from './icons.js';
 
+let initialized = false;
+let globalCloseHandlerBound = false;
+
+function bindGlobalDropdownCloseHandler() {
+  if (globalCloseHandlerBound) return;
+  globalCloseHandlerBound = true;
+
+  document.addEventListener('click', () => {
+    const dropdownContainer = document.querySelector('.search-engine-dropdown');
+    if (dropdownContainer) {
+      dropdownContainer.style.display = 'none';
+    }
+  });
+}
+
+function bindIconToggleHandler(iconContainer) {
+  if (!iconContainer) return;
+  if (iconContainer.dataset.searchDropdownBound === 'true') return;
+  iconContainer.dataset.searchDropdownBound = 'true';
+
+  iconContainer.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const dropdownContainer = document.querySelector('.search-engine-dropdown');
+    if (!dropdownContainer) return;
+    const isVisible = dropdownContainer.style.display === 'block';
+    dropdownContainer.style.display = isVisible ? 'none' : 'block';
+  });
+}
+
 // 预定义的所有可用搜索引擎列表
 const ALL_ENGINES = [
   { name: 'google', icon: '../images/google-logo.svg', label: 'googleLabel', url: 'https://www.google.com/search?q=', aliases: ['谷歌'] },
@@ -202,14 +231,7 @@ function updateTabsState(engineName) {
 function initializeSearchEngine() {
   console.log('[Search] Initializing search engine');
   
-  // 确保 DOM 已经加载完成
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeSearchEngineUI();
-    });
-  } else {
-    initializeSearchEngineUI();
-  }
+  initializeSearchEngineUI();
 }
 
 // 新增 UI 初始化函数
@@ -347,17 +369,9 @@ function createTemporarySearchTabs() {
 function createSearchEngineDropdown() {
   console.log('[Search] Creating dropdown menu');
   
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeSearchEngine();
-      createDropdownUI();
-      createTemporarySearchTabs();
-    });
-  } else {
-    initializeSearchEngine();
-    createDropdownUI();
-    createTemporarySearchTabs();
-  }
+  initializeSearchEngine();
+  createDropdownUI();
+  createTemporarySearchTabs();
 }
 
 // 新增下拉菜单 UI 创建函数
@@ -370,6 +384,7 @@ function createDropdownUI() {
   
   const searchForm = document.querySelector('.search-form');
   const iconContainer = document.querySelector('.search-icon-container');
+  if (!searchForm || !iconContainer) return;
   const dropdownContainer = document.createElement('div');
   dropdownContainer.className = 'search-engine-dropdown';
   dropdownContainer.style.display = 'none';
@@ -391,17 +406,8 @@ function createDropdownUI() {
   const addOption = createSearchEngineOption(null, true);
   optionsContainer.appendChild(addOption);
 
-  // 添加事件监听器
-  iconContainer.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isVisible = dropdownContainer.style.display === 'block';
-    dropdownContainer.style.display = isVisible ? 'none' : 'block';
-  });
-
-  // 点击其他区域时关闭下拉菜单
-  document.addEventListener('click', () => {
-    dropdownContainer.style.display = 'none';
-  });
+  bindIconToggleHandler(iconContainer);
+  bindGlobalDropdownCloseHandler();
 
   dropdownContainer.appendChild(optionsContainer);
   searchForm.appendChild(dropdownContainer);
@@ -891,6 +897,14 @@ function initializeSearchEngineDialog() {
   refreshCustomEngines();
 }
 
+function initSearchEngineDropdown() {
+  if (initialized) return;
+  initialized = true;
+
+  createSearchEngineDropdown();
+  initializeSearchEngineDialog();
+}
+
 // 修改 updateSearchEngineIcon 函数
 function updateSearchEngineIcon(engine) {
   console.log('[Icon] Updating icon for engine:', engine);
@@ -929,5 +943,6 @@ export {
   updateSearchEngineIcon, 
   createSearchEngineDropdown, 
   initializeSearchEngineDialog,
+  initSearchEngineDropdown,
   getSearchUrl
 };

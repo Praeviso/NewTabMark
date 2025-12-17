@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* React mounting root should not change legacy layout */
+#root {
+  display: contents;
+}
+
 /* 在文件顶部添加 */
 html.loading-wallpaper {
   background-color: #ffffff !important;
@@ -160,8 +165,22 @@ html[data-theme="dark"][class*="gradient-background"] {
 [data-theme="dark"] body {
   background-color: #1c1c1c;
 }
-[data-theme="dark"] .bg-gray-50 text-center p-4 border-t border-gray-200 mt-4 {
-  background-color: transparent;
+footer.bg-gray-50 {
+  background-color: transparent !important;
+  border-top-color: transparent !important;
+}
+
+html[data-theme="dark"] .year-progress span,
+html[data-theme="dark"] .progress-percentage {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+html[data-theme="dark"] .progress-bar div {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+html[data-theme="dark"] .progress-bar div.active {
+  background-color: rgba(255, 255, 255, 0.28);
 }
 
 
@@ -302,8 +321,8 @@ html[data-theme="dark"][class*="gradient-background"] {
   color: #242424;
 }
 [data-theme="dark"] #confirm-dialog p,
-#edit-dialog p,
-#edit-category-dialog p{
+[data-theme="dark"] #edit-dialog p,
+[data-theme="dark"] #edit-category-dialog p{
   color: #ffffff;
 }
 [data-theme="dark"] #confirm-dialog .modal-content,
@@ -321,7 +340,7 @@ html[data-theme="dark"][class*="gradient-background"] {
   border-color: #404040;
 }
 [data-theme="dark"] .close-button,
-.close-category-button:hover {
+[data-theme="dark"] .close-category-button:hover {
   color: #ffffff;
 }
 [data-theme="dark"] .settings-modal-content {
@@ -340,6 +359,165 @@ html[data-theme="dark"][class*="gradient-background"] {
 }
 [data-theme="dark"] .settings-modal-subtitle {
   color: #ffffff;
+}
+
+/* Unified modal layout (centered) */
+#confirm-dialog.modal,
+#edit-dialog.modal,
+#edit-category-dialog.modal,
+#share-folder-dialog.modal,
+#import-shared-folder-dialog.modal,
+#gist-token-dialog.modal,
+#share-folder-gist-dialog.modal,
+#search-engines-dialog.modal {
+  padding: 0 !important;
+  overflow: hidden !important;
+  --modal-max-width: 520px;
+}
+
+#confirm-dialog.modal {
+  --modal-max-width: 360px;
+}
+
+#edit-dialog.modal,
+#edit-category-dialog.modal,
+#gist-token-dialog.modal {
+  --modal-max-width: 420px;
+}
+
+#search-engines-dialog.modal {
+  --modal-max-width: 800px;
+}
+
+#confirm-dialog.modal .modal-content,
+#edit-dialog.modal .modal-content,
+#edit-category-dialog.modal .modal-content,
+#share-folder-dialog.modal .modal-content,
+#import-shared-folder-dialog.modal .modal-content,
+#gist-token-dialog.modal .modal-content,
+#share-folder-gist-dialog.modal .modal-content,
+#search-engines-dialog.modal .modal-content {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: 92% !important;
+  max-width: var(--modal-max-width) !important;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Share / Gist dialogs */
+#share-folder-dialog .modal-content,
+#import-shared-folder-dialog .modal-content,
+#gist-token-dialog .modal-content,
+#share-folder-gist-dialog .modal-content {
+  max-width: 520px;
+  width: 92%;
+  padding: 1.5rem;
+}
+
+#share-folder-dialog h2,
+#import-shared-folder-dialog h2,
+#gist-token-dialog h2,
+#share-folder-gist-dialog h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#share-folder-dialog p,
+#import-shared-folder-dialog p,
+#gist-token-dialog p,
+#share-folder-gist-dialog p {
+  margin-bottom: 12px;
+}
+
+#share-folder-dialog label,
+#import-shared-folder-dialog label,
+#gist-token-dialog label,
+#share-folder-gist-dialog label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+#share-folder-dialog .custom-input,
+#import-shared-folder-dialog .custom-input,
+#gist-token-dialog .custom-input,
+#share-folder-gist-dialog .custom-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#share-folder-dialog textarea.custom-input,
+#share-folder-gist-dialog textarea.custom-input {
+  resize: vertical;
+}
+
+#share-folder-dialog .buttons,
+#import-shared-folder-dialog .buttons,
+#gist-token-dialog .buttons,
+#share-folder-gist-dialog .buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+#share-folder-dialog .buttons button,
+#import-shared-folder-dialog .buttons button,
+#gist-token-dialog .buttons button,
+#share-folder-gist-dialog .buttons button {
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Override sticky close button behavior for share dialogs */
+#edit-dialog .close-button,
+#edit-category-dialog .close-button,
+#share-folder-dialog .close-button,
+#import-shared-folder-dialog .close-button,
+#gist-token-dialog .close-button,
+#share-folder-gist-dialog .close-button {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  float: none;
+  margin: 0;
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Keep search engine dialog close button sticky */
+#search-engines-dialog .close-button {
+  position: sticky;
+  top: 0;
+  right: 0;
+  float: right;
+  margin: -1rem -1rem 1rem 1rem;
+  background-color: white;
+  padding: 8px;
+  z-index: 1;
+}
+
+[data-theme="dark"] #share-folder-dialog p,
+[data-theme="dark"] #import-shared-folder-dialog p,
+[data-theme="dark"] #gist-token-dialog p,
+[data-theme="dark"] #share-folder-gist-dialog p {
+  color: #e5e7eb;
+}
+
+[data-theme="dark"] #share-folder-dialog label,
+[data-theme="dark"] #import-shared-folder-dialog label,
+[data-theme="dark"] #gist-token-dialog label,
+[data-theme="dark"] #share-folder-gist-dialog label {
+  color: #e5e7eb;
 }
 
 

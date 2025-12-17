@@ -1,10 +1,36 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // 检查 WelcomeManager 是否已经加载
-    if (!window.WelcomeManager) {
-        console.error('WelcomeManager not found. Make sure welcome.js is loaded before wallpaper.js');
-    }
-    const wallpaperManager = new WallpaperManager();
-});
+import { getWelcomeManager } from './welcome.js';
+
+let initialized = false;
+let wallpaperManagerInstance = null;
+
+export function initWallpaper() {
+  if (initialized) return;
+  initialized = true;
+
+  const wallpaperContainer = document.querySelector('.wallpaper-options');
+  const uploadInput = document.getElementById('upload-wallpaper');
+  if (!wallpaperContainer && !uploadInput) return;
+
+  wallpaperManagerInstance = new WallpaperManager();
+}
+
+export function getWallpaperManager() {
+  return wallpaperManagerInstance;
+}
+
+export function clearWallpaperState() {
+  const manager = wallpaperManagerInstance;
+
+  if (manager?.clearWallpaperCache) manager.clearWallpaperCache();
+  if (manager?.clearWallpaper) manager.clearWallpaper();
+
+  document.body.classList.remove('has-wallpaper');
+  document.body.style.removeProperty('--wallpaper-image');
+  document.body.style.backgroundImage = 'none';
+
+  const mainElement = document.querySelector('main');
+  if (mainElement) mainElement.style.backgroundImage = 'none';
+}
 
 // WallpaperManager 类用于处理所有壁纸相关的操作
 class WallpaperManager {
@@ -122,7 +148,9 @@ class WallpaperManager {
 
     initializeEventListeners() {
         // 初始化上传事件监听
-        this.uploadInput.addEventListener('change', (event) => this.handleFileUpload(event));
+        if (this.uploadInput) {
+            this.uploadInput.addEventListener('change', (event) => this.handleFileUpload(event));
+        }
 
         // 初始化重置按钮事件监听
         const resetButton = document.getElementById('reset-wallpaper');
@@ -139,19 +167,17 @@ class WallpaperManager {
             checkCacheButton.addEventListener('click', () => this.checkWallpaperCache());
         }
 
-        // 纯色背景选项的点击事件
-        document.querySelectorAll('.settings-bg-option').forEach(option => {
-            option.addEventListener('click', () => {
-                this.handleBackgroundOptionClick(option);
-            });
-        });
-
-        // 壁纸选项的点击事件
-        document.querySelectorAll('.wallpaper-option').forEach(option => {
-            option.addEventListener('click', () => {
+        const wallpaperOptionsContainer = document.querySelector('.wallpaper-options');
+        if (wallpaperOptionsContainer && wallpaperOptionsContainer.dataset.ntmWallpaperBound !== 'true') {
+            wallpaperOptionsContainer.dataset.ntmWallpaperBound = 'true';
+            wallpaperOptionsContainer.addEventListener('click', (event) => {
+                const option = event.target instanceof Element
+                    ? event.target.closest('.wallpaper-option')
+                    : null;
+                if (!option) return;
                 this.handleWallpaperOptionClick(option);
             });
-        });
+        }
     }
 
     handleBackgroundOptionClick(option) {
@@ -180,8 +206,9 @@ class WallpaperManager {
         
         // 更新欢迎消息颜色
         const welcomeElement = document.getElementById('welcome-message');
-        if (welcomeElement && window.WelcomeManager) {
-            window.WelcomeManager.adjustTextColor(welcomeElement);
+        const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
+        if (welcomeElement && welcomeManager) {
+            welcomeManager.adjustTextColor(welcomeElement);
         }
     }
 
@@ -304,7 +331,7 @@ class WallpaperManager {
         document.body.classList.remove('has-wallpaper');
         document.body.style.removeProperty('--wallpaper-image');
         document.body.style.backgroundImage = 'none';
-        this.mainElement.style.backgroundImage = 'none';
+        if (this.mainElement) this.mainElement.style.backgroundImage = 'none';
     }
 
     // 修改应用壁纸方法
@@ -326,8 +353,9 @@ class WallpaperManager {
             
             // 更新欢迎消息颜色
             const welcomeElement = document.getElementById('welcome-message');
-            if (welcomeElement && window.WelcomeManager) {
-                window.WelcomeManager.adjustTextColor(welcomeElement);
+            const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
+            if (welcomeElement && welcomeManager) {
+                welcomeManager.adjustTextColor(welcomeElement);
             }
         });
     }
@@ -617,18 +645,6 @@ class WallpaperManager {
             badge.textContent = chrome.i18n.getMessage('uploadedWallpaperBadge');
             option.appendChild(badge);
         }
-
-        option.addEventListener('click', () => {
-            document.querySelectorAll('.settings-bg-option').forEach(opt => {
-                opt.classList.remove('active');
-            });
-            document.querySelectorAll('.wallpaper-option').forEach(opt => {
-                opt.classList.remove('active');
-            });
-            option.classList.add('active');
-            document.documentElement.className = '';
-            this.setWallpaper(url);
-        });
 
         return option;
     }

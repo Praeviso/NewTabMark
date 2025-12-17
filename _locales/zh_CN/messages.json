@@ -643,5 +643,141 @@
     "githubLabel": {
         "message": "GitHub",
         "description": "GitHub 搜索引擎标签"
+    },
+    "shareFolder": {
+        "message": "分享",
+        "description": "文件夹右键菜单：分享"
+    },
+    "shareFolderDialogTitle": {
+        "message": "分享文件夹",
+        "description": "分享文件夹对话框标题"
+    },
+    "shareLinkLabel": {
+        "message": "分享链接",
+        "description": "分享链接输入框标签"
+    },
+    "copyShareLink": {
+        "message": "复制链接",
+        "description": "复制分享链接按钮"
+    },
+    "openShareLink": {
+        "message": "打开链接",
+        "description": "打开分享链接按钮"
+    },
+    "shareLinkCopied": {
+        "message": "已复制分享链接",
+        "description": "复制分享链接成功提示"
+    },
+    "shareLinkCopyFailed": {
+        "message": "复制分享链接失败",
+        "description": "复制分享链接失败提示"
+    },
+    "shareLinkGenerateFailed": {
+        "message": "生成分享链接失败",
+        "description": "生成分享链接失败提示"
+    },
+    "shareLinkInvalid": {
+        "message": "分享链接无效",
+        "description": "分享链接解析失败提示"
+    },
+    "importSharedFolderDialogTitle": {
+        "message": "导入分享文件夹",
+        "description": "导入分享文件夹对话框标题"
+    },
+    "importSharedFolderButton": {
+        "message": "导入",
+        "description": "导入分享文件夹按钮"
+    },
+    "sharedFolderImported": {
+        "message": "已导入分享文件夹",
+        "description": "导入分享文件夹成功提示"
+    },
+    "sharedFolderImportFailed": {
+        "message": "导入分享文件夹失败",
+        "description": "导入分享文件夹失败提示"
+    },
+    "sharedFolderDefaultName": {
+        "message": "分享文件夹",
+        "description": "分享文件夹缺省名称"
+    },
+    "sharedFolderSummary": {
+        "message": "包含 $1 个子文件夹，$2 个书签。",
+        "description": "导入分享文件夹概要"
+    },
+    "shareFolderLink": {
+        "message": "分享（链接）",
+        "description": "文件夹右键菜单：通过扩展链接分享"
+    },
+    "gistTokenDialogTitle": {
+        "message": "GitHub Token",
+        "description": "GitHub Token 对话框标题"
+    },
+    "gistTokenDialogDesc": {
+        "message": "请输入带有“gist”权限的 GitHub 个人访问令牌（PAT），将仅存储在本地。",
+        "description": "GitHub Token 对话框说明"
+    },
+    "gistTokenLabel": {
+        "message": "Token",
+        "description": "GitHub Token 输入框标签"
+    },
+    "gistTokenSave": {
+        "message": "保存",
+        "description": "保存 GitHub Token 按钮"
+    },
+    "gistTokenRequired": {
+        "message": "Token 不能为空",
+        "description": "Token 为空提示"
+    },
+    "gistTokenSaved": {
+        "message": "Token 已保存",
+        "description": "Token 保存成功提示"
+    },
+    "gistUploading": {
+        "message": "正在上传到 GitHub Gist…",
+        "description": "上传中提示"
+    },
+    "gistShareSuccess": {
+        "message": "已通过 GitHub Gist 分享",
+        "description": "分享成功提示"
+    },
+    "gistShareCopied": {
+        "message": "已复制 Gist 链接",
+        "description": "复制链接成功提示"
+    },
+    "gistShareFailed": {
+        "message": "通过 GitHub Gist 分享失败",
+        "description": "分享失败提示"
+    },
+    "gistShareDialogTitle": {
+        "message": "通过 GitHub Gist 分享",
+        "description": "Gist 分享结果对话框标题"
+    },
+    "gistLinkLabel": {
+        "message": "Gist 页面链接",
+        "description": "Gist 页面链接标签"
+    },
+    "gistRawLinkLabel": {
+        "message": "原始 HTML 链接",
+        "description": "Raw HTML 链接标签"
+    },
+    "copyGistLink": {
+        "message": "复制",
+        "description": "复制 Gist 链接按钮"
+    },
+    "copyRawLink": {
+        "message": "复制",
+        "description": "复制 Raw 链接按钮"
+    },
+    "downloadBookmarkHtml": {
+        "message": "下载 HTML",
+        "description": "下载书签 HTML 按钮"
+    },
+    "bookmarkHtmlDownloaded": {
+        "message": "已开始下载 HTML",
+        "description": "下载触发提示"
+    },
+    "gistImportHint": {
+        "message": "提示：下载 HTML 后可在 Chrome 书签管理器中导入。",
+        "description": "导入提示"
     }
 }

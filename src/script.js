@@ -1,12 +1,18 @@
-import { featureTips } from './feature-tips.js';
+import { initFeatureTips } from './feature-tips.js';
 import { initGestureNavigation } from './gesture-navigation.js';
 import { 
   SearchEngineManager, 
   updateSearchEngineIcon, 
   createSearchEngineDropdown, 
   initializeSearchEngineDialog,
+  initSearchEngineDropdown,
   getSearchUrl 
 } from './search-engine-dropdown.js';
+import { encodeSharePayload, decodeSharePayload } from './bookmark-share.js';
+import { generateNetscapeBookmarkHtml } from './bookmark-html-export.js';
+import { getStoredGistToken, setStoredGistToken, createGist } from './gist-share.js';
+import { getWelcomeManager } from './welcome.js';
+import { initThemeController } from './ui/theme-controller.js';
 
 let bookmarkTreeNodes = [];
 let defaultSearchEngine = 'google';
@@ -21,30 +27,31 @@ let bookmarkFolderContextMenu = null;
 let currentBookmarkFolder = null;
 // 在文件顶部添加导入语句
 import { ICONS } from './icons.js';
-
-function updateThemeIcon(isDark) {
-  const themeToggleBtn = document.getElementById('theme-toggle-btn');
-  if (!themeToggleBtn) return;
-
-  themeToggleBtn.innerHTML = isDark ? ICONS.dark_mode : ICONS.light_mode;
-}
 import { replaceIconsWithSvg, getIconHtml } from './icons.js';
 
-document.addEventListener('DOMContentLoaded', function () {
-  // 初始化手势导航，传入 updateBookmarksDisplay 函数
-  initGestureNavigation(updateBookmarksDisplay);
-  
-  // 替换所有图标
-  replaceIconsWithSvg();
+function initScriptIconsAndGestures() {
+  const updateBookmarks =
+    window.updateBookmarksDisplay ||
+    (typeof updateBookmarksDisplay === 'function' ? updateBookmarksDisplay : null);
+  if (updateBookmarks) initGestureNavigation(updateBookmarks);
 
-  // 或者在动态创建元素时使用
-  const button = document.createElement('button');
-  button.innerHTML = getIconHtml('settings') + ' Settings';
-});
+  replaceIconsWithSvg();
+}
 
 function getLocalizedMessage(messageName) {
+  if (typeof window.getLocalizedMessage === 'function') {
+    return window.getLocalizedMessage(messageName);
+  }
   const message = chrome.i18n.getMessage(messageName);
   return message || messageName;
+}
+
+function hideAllCustomContextMenus(exceptMenu = null) {
+  document.querySelectorAll('.custom-context-menu').forEach((menu) => {
+    if (menu !== exceptMenu) {
+      menu.style.display = 'none';
+    }
+  });
 }
 
 // Define the context menu creation function
@@ -162,14 +169,12 @@ function applyBackgroundColor() {
         
         // 使用 WelcomeManager 更新欢迎消息颜色
         const welcomeElement = document.getElementById('welcome-message');
-        if (welcomeElement && window.WelcomeManager) {
-            window.WelcomeManager.adjustTextColor(welcomeElement);
+        const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
+        if (welcomeElement && welcomeManager) {
+            welcomeManager.adjustTextColor(welcomeElement);
         }
     }
 }
-
-// 立即调用这个函数
-applyBackgroundColor();
 
 // 添加颜色缓存管理器
 const ColorCache = {
@@ -389,22 +394,19 @@ function initVirtualScroll() {
   initializeListeners();
 }
 
-// 3. 合并 DOMContentLoaded 事件监听器
-document.addEventListener('DOMContentLoaded', function() {
+function initScriptCore() {
   // 初始化虚拟滚动
   initVirtualScroll();
   
   // 其他初始化代码...
   startPeriodicSync();
-  setupSpecialLinks();
   console.log('[Init] Starting initialization...');
 
   // 只调用一次搜索引擎初始化
-  createSearchEngineDropdown();
-  initializeSearchEngineDialog();
+  initSearchEngineDropdown();
 
   // 初始化功能提示
-  featureTips.initAllTips();
+  initFeatureTips().initAllTips();
 
   // 加载保存的背景颜色
   const savedBg = localStorage.getItem('selectedBackground');
@@ -498,8 +500,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // 使用 WelcomeManager 更新欢迎消息颜色
       const welcomeElement = document.getElementById('welcome-message');
-      if (welcomeElement && window.WelcomeManager) {
-        window.WelcomeManager.adjustTextColor(welcomeElement);
+      const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
+      if (welcomeElement && welcomeManager) {
+        welcomeManager.adjustTextColor(welcomeElement);
       }
     });
   });
@@ -511,8 +514,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // 当背景类发生变化时，调整文字颜色
         requestAnimationFrame(() => {
           const welcomeElement = document.getElementById('welcome-message');
-          if (welcomeElement && window.WelcomeManager) {
-            window.WelcomeManager.adjustTextColor(welcomeElement);
+          const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
+          if (welcomeElement && welcomeManager) {
+            welcomeManager.adjustTextColor(welcomeElement);
           }
         });
       }
@@ -579,7 +583,7 @@ document.addEventListener('DOMContentLoaded', function() {
       searchInput.addEventListener('input', adjustTextareaHeight);
     }
   }
-});
+}
 
 const bookmarksCache = {
   data: new Map(),
@@ -665,7 +669,7 @@ function updateBookmarkCards() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+function initScriptBookmarksAndTheme() {
   // Create context menu immediately when the document loads
   contextMenu = createContextMenu();
   
@@ -703,46 +707,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ... 其他代码 ...
 
-  // 主题切换功能
-  const themeToggleBtn = document.getElementById('theme-toggle-btn');
-  const themeIcon = themeToggleBtn.querySelector('.material-icons');
-
-  // 从 localStorage 获取主题设置
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme) {
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme === 'dark');
-  }
-
-  themeToggleBtn.addEventListener('click', () => {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const newTheme = isDark ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    // 更新背景样式
-    const activeBackground = document.documentElement.className;
-    if (activeBackground && activeBackground.includes('gradient-background')) {
-      // 如果有活动的背景，重新应用以触发暗黑模式样式
-      requestAnimationFrame(() => {
-        document.documentElement.className = '';
-        requestAnimationFrame(() => {
-          document.documentElement.className = activeBackground;
-        });
-      });
-    }
-    
-    updateThemeIcon(!isDark);
-  });
-
-  function updateThemeIcon(isDark) {
-    const themeToggleBtn = document.getElementById('theme-toggle-btn');
-    if (!themeToggleBtn) return;
-    
-    // 使用 innerHTML 来设置 SVG 图标
-    themeToggleBtn.innerHTML = isDark ? ICONS.dark_mode : ICONS.light_mode;
-  }
+  initThemeController();
 
 
 
@@ -831,11 +796,14 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   document.addEventListener('contextmenu', function (event) {
+    if (event.__ntmContextMenuHandled) return;
     const targetFolder = event.target.closest('.bookmark-folder');
     const targetCard = event.target.closest('.bookmark-card');
     
     if (targetFolder) {
       event.preventDefault();
+      event.__ntmContextMenuHandled = true;
+      hideAllCustomContextMenus();
       
       // 确保文件夹上下文菜单存在
       if (!bookmarkFolderContextMenu) {
@@ -853,6 +821,7 @@ document.addEventListener('DOMContentLoaded', function () {
       bookmarkFolderContextMenu.style.display = 'block';
       bookmarkFolderContextMenu.style.top = `${event.clientY}px`;
       bookmarkFolderContextMenu.style.left = `${event.clientX}px`;
+      hideAllCustomContextMenus(bookmarkFolderContextMenu);
 
       // 确保菜单不会超出视窗
       const viewportWidth = window.innerWidth;
@@ -873,6 +842,14 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     } else if (targetCard) {
       event.preventDefault();
+      event.__ntmContextMenuHandled = true;
+      hideAllCustomContextMenus();
+
+      if (!contextMenu) {
+        contextMenu = createContextMenu();
+      }
+      if (!contextMenu) return;
+
       // 确保在显示菜单前重置当前书签信息
       currentBookmark = {
         id: targetCard.dataset.id,
@@ -889,16 +866,12 @@ document.addEventListener('DOMContentLoaded', function () {
       contextMenu.style.top = `${event.clientY}px`;
       contextMenu.style.left = `${event.clientX}px`;
       contextMenu.style.display = 'block';
+      hideAllCustomContextMenus(contextMenu);
     } else {
-      // 点击在其他地方，隐藏所有上下文菜单
-      if (contextMenu) {
-        contextMenu.style.display = 'none';
-        currentBookmark = null;
-      }
-      if (bookmarkFolderContextMenu) {
-        bookmarkFolderContextMenu.style.display = 'none';
-        currentBookmarkFolder = null;
-      }
+      // 在其他地方右键：隐藏所有上下文菜单（包含其他模块创建的菜单）
+      hideAllCustomContextMenus();
+      currentBookmark = null;
+      currentBookmarkFolder = null;
     }
   });
 
@@ -909,7 +882,7 @@ document.addEventListener('DOMContentLoaded', function () {
       currentBookmark = null;  // 重置 currentBookmark
     }
   });
-});
+}
 
 function showMovingFeedback(element) {
   element.style.opacity = '0.5';
@@ -1332,6 +1305,8 @@ function createBookmarkCard(bookmark, index) {
 
   card.addEventListener('contextmenu', function(event) {
     event.preventDefault();
+    event.stopPropagation();
+    event.__ntmContextMenuHandled = true;
     console.log('Bookmark context menu triggered:', bookmark);
     showContextMenu(event, bookmark, 'bookmark'); // 明确指定类型为 'bookmark'
   });
@@ -1532,6 +1507,13 @@ function showContextMenu(event, item, type = 'bookmark') {
   console.log('Previous itemToDelete:', itemToDelete);
   console.log('Previous currentBookmark:', currentBookmark);
 
+  event.preventDefault();
+  event.stopPropagation();
+  event.__ntmContextMenuHandled = true;
+
+  // 避免多个模块/多处逻辑同时显示多个菜单
+  hideAllCustomContextMenus();
+
   // 先创建上下文菜单
   if (!contextMenu) {
     console.log('Creating new context menu');
@@ -1561,6 +1543,9 @@ function showContextMenu(event, item, type = 'bookmark') {
   contextMenu.style.display = 'block';
   contextMenu.style.left = `${event.clientX}px`;
   contextMenu.style.top = `${event.clientY}px`;
+
+  // 再次隐藏其它菜单，仅保留当前菜单
+  hideAllCustomContextMenus(contextMenu);
 
   // 确保菜单不会超出视窗
   const viewportWidth = window.innerWidth;
@@ -2179,6 +2164,9 @@ function createFolderCard(folder, index) {
   card.addEventListener('contextmenu', function (event) {
     event.preventDefault();
     event.stopPropagation();
+    event.__ntmContextMenuHandled = true;
+
+    hideAllCustomContextMenus();
     
     // 确保文件夹上下文菜单存在
     if (!bookmarkFolderContextMenu) {
@@ -2196,6 +2184,7 @@ function createFolderCard(folder, index) {
     bookmarkFolderContextMenu.style.display = 'block';
     bookmarkFolderContextMenu.style.top = `${event.clientY}px`;
     bookmarkFolderContextMenu.style.left = `${event.clientX}px`;
+    hideAllCustomContextMenus(bookmarkFolderContextMenu);
 
     // 确保菜单不会超出视窗
     const viewportWidth = window.innerWidth;
@@ -2531,6 +2520,32 @@ function createMenuItems(menu) {
         }
       }
     },
+    {
+      text: getLocalizedMessage('shareFolder'),
+      icon: 'share',
+      action: () => {
+        if (!currentBookmarkFolder) return;
+        const folderId = currentBookmarkFolder.dataset.id;
+        const folderTitle = currentBookmarkFolder.querySelector('.card-title')?.textContent || '';
+        shareBookmarkFolderAsGist(folderId, folderTitle).catch((error) => {
+          console.error('Failed to share bookmark folder:', error);
+          Utilities?.showToast?.(getLocalizedMessage('gistShareFailed'));
+        });
+      }
+    },
+    {
+      text: getLocalizedMessage('shareFolderLink'),
+      icon: 'share',
+      action: () => {
+        if (!currentBookmarkFolder) return;
+        const folderId = currentBookmarkFolder.dataset.id;
+        const folderTitle = currentBookmarkFolder.querySelector('.card-title')?.textContent || '';
+        shareBookmarkFolder(folderId, folderTitle).catch((error) => {
+          console.error('Failed to share bookmark folder (link):', error);
+          Utilities?.showToast?.(getLocalizedMessage('shareLinkGenerateFailed'));
+        });
+      }
+    },
     // 原有的菜单项
     { text: getLocalizedMessage('rename'), icon: 'edit', action: () => currentBookmarkFolder && openEditBookmarkFolderDialog(currentBookmarkFolder) },
     { text: getLocalizedMessage('delete'), icon: 'delete', action: () => {
@@ -2576,10 +2591,468 @@ function createMenuItems(menu) {
   });
 }
 
+let pendingSharedFolderPayload = null;
+let lastSharedFolderHtml = '';
+let lastSharedFolderFilename = '';
+
+function toShareTreeNode(bookmarkNode) {
+  if (!bookmarkNode) return null;
+  if (bookmarkNode.url) return { t: bookmarkNode.title || '', u: bookmarkNode.url };
+  return {
+    t: bookmarkNode.title || '',
+    c: (bookmarkNode.children || []).map(toShareTreeNode).filter(Boolean)
+  };
+}
+
+function countSharedItems(node) {
+  if (!node) return { folders: 0, bookmarks: 0 };
+  if (node.u) return { folders: 0, bookmarks: 1 };
+  const initial = { folders: 1, bookmarks: 0 };
+  return (node.c || []).reduce((acc, child) => {
+    const childCounts = countSharedItems(child);
+    acc.folders += childCounts.folders;
+    acc.bookmarks += childCounts.bookmarks;
+    return acc;
+  }, initial);
+}
+
+function getBookmarkSubTree(folderId) {
+  return new Promise((resolve, reject) => {
+    chrome.bookmarks.getSubTree(folderId, (results) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+        return;
+      }
+      resolve(results);
+    });
+  });
+}
+
+function chromeBookmarksCreate(details) {
+  return new Promise((resolve, reject) => {
+    chrome.bookmarks.create(details, (created) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+        return;
+      }
+      resolve(created);
+    });
+  });
+}
+
+async function importSharedTreeNode(parentId, node) {
+  if (!node) return null;
+
+  if (node.u) {
+    return chromeBookmarksCreate({ parentId, title: node.t || node.u, url: node.u });
+  }
+
+  const folder = await chromeBookmarksCreate({ parentId, title: node.t || getLocalizedMessage('sharedFolderDefaultName') });
+  for (const child of node.c || []) {
+    await importSharedTreeNode(folder.id, child);
+  }
+  return folder;
+}
+
+function buildShareUrl(encodedPayload) {
+  const url = new URL(chrome.runtime.getURL('src/index.html'));
+  url.searchParams.set('share', encodedPayload);
+  return url.toString();
+}
+
+function showModal(modal) {
+  if (!modal) return;
+  modal.style.display = 'block';
+}
+
+function hideModal(modal) {
+  if (!modal) return;
+  modal.style.display = 'none';
+}
+
+function renderShareQrCode(container, text) {
+  if (!container) return;
+  container.innerHTML = '';
+  if (typeof QRCode === 'undefined') return;
+  new QRCode(container, { text, width: 200, height: 200 });
+}
+
+function sanitizeFilename(name) {
+  return String(name || '')
+    .replace(/[\\/:*?"<>|]+/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 80) || 'Bookmarks';
+}
+
+function downloadTextFile(filename, content, mimeType = 'text/html') {
+  const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+let gistTokenPromptState = null;
+
+async function getGistTokenOrPrompt() {
+  const existing = await getStoredGistToken();
+  if (existing) return existing;
+  return requestGistTokenFromDialog();
+}
+
+function requestGistTokenFromDialog() {
+  if (gistTokenPromptState?.promise) return gistTokenPromptState.promise;
+
+  const dialog = document.getElementById('gist-token-dialog');
+  const input = document.getElementById('github-gist-token');
+  const saveBtn = document.getElementById('save-gist-token');
+  const cancelBtn = document.getElementById('cancel-gist-token');
+  const closeBtn = document.getElementById('gist-token-close');
+
+  if (!dialog || !input || !saveBtn || !cancelBtn) {
+    return Promise.reject(new Error('Gist token dialog not found'));
+  }
+
+  input.value = '';
+
+  const cleanup = () => {
+    saveBtn.onclick = null;
+    cancelBtn.onclick = null;
+    if (closeBtn) closeBtn.onclick = null;
+    dialog.onclick = null;
+    gistTokenPromptState = null;
+  };
+
+  const promise = new Promise((resolve, reject) => {
+    saveBtn.onclick = async () => {
+      const token = String(input.value || '').trim();
+      if (!token) {
+        Utilities.showToast(getLocalizedMessage('gistTokenRequired'));
+        return;
+      }
+      await setStoredGistToken(token);
+      Utilities.showToast(getLocalizedMessage('gistTokenSaved'));
+      hideModal(dialog);
+      cleanup();
+      resolve(token);
+    };
+
+    cancelBtn.onclick = () => {
+      hideModal(dialog);
+      cleanup();
+      reject(new Error('User canceled token entry'));
+    };
+
+    if (closeBtn) {
+      closeBtn.onclick = cancelBtn.onclick;
+    }
+
+    dialog.onclick = (event) => {
+      if (event.target === dialog) cancelBtn.onclick();
+    };
+  });
+
+  gistTokenPromptState = { promise };
+  showModal(dialog);
+  return promise;
+}
+
+function openShareFolderGistDialog({ folderTitle, gistUrl, rawUrl }) {
+  const dialog = document.getElementById('share-folder-gist-dialog');
+  const titleEl = document.getElementById('share-folder-gist-title');
+  const gistEl = document.getElementById('share-folder-gist-link');
+  const rawEl = document.getElementById('share-folder-gist-raw-link');
+
+  if (titleEl) titleEl.textContent = folderTitle || '';
+  if (gistEl) gistEl.value = gistUrl || '';
+  if (rawEl) rawEl.value = rawUrl || '';
+  showModal(dialog);
+}
+
+async function shareBookmarkFolderAsGist(folderId, folderTitle) {
+  const subtree = await getBookmarkSubTree(folderId);
+  const root = subtree?.[0];
+  if (!root || root.url) throw new Error('Invalid folder subtree');
+
+  const exportTitle = folderTitle || root.title || getLocalizedMessage('sharedFolderDefaultName');
+  const html = generateNetscapeBookmarkHtml(root, { title: exportTitle });
+  const filename = `NewTabMark-${sanitizeFilename(exportTitle)}.html`;
+
+  lastSharedFolderHtml = html;
+  lastSharedFolderFilename = filename;
+
+  Utilities.showToast(getLocalizedMessage('gistUploading'));
+  let token = await getGistTokenOrPrompt();
+
+  try {
+    const gist = await createGist({
+      token,
+      filename,
+      content: html,
+      description: `NewTabMark bookmark export: ${exportTitle}`,
+      isPublic: false
+    });
+
+    const gistUrl = gist?.html_url || '';
+    const rawUrl = gist?.files?.[filename]?.raw_url || Object.values(gist?.files || {})?.[0]?.raw_url || '';
+
+    openShareFolderGistDialog({ folderTitle: exportTitle, gistUrl, rawUrl });
+
+    const linkToCopy = rawUrl || gistUrl;
+    if (linkToCopy) {
+      try {
+        await navigator.clipboard.writeText(linkToCopy);
+        Utilities.showToast(getLocalizedMessage('gistShareCopied'));
+      } catch (error) {
+        console.error('Failed to copy Gist link:', error);
+        Utilities.showToast(getLocalizedMessage('shareLinkCopyFailed'));
+      }
+    } else {
+      Utilities.showToast(getLocalizedMessage('gistShareSuccess'));
+    }
+  } catch (error) {
+    const message = String(error?.message || '');
+    if (message.includes('(401)') || message.includes('(403)')) {
+      await setStoredGistToken('');
+    }
+    throw error;
+  }
+}
+
+async function shareBookmarkFolder(folderId, folderTitle) {
+  const subtree = await getBookmarkSubTree(folderId);
+  const root = subtree?.[0];
+  if (!root || root.url) throw new Error('Invalid folder subtree');
+
+  const payload = {
+    v: 1,
+    type: 'bookmark-folder',
+    root: toShareTreeNode(root),
+    createdAt: Date.now(),
+    source: 'NewTabMark'
+  };
+
+  const encoded = await encodeSharePayload(payload);
+  const shareUrl = buildShareUrl(encoded);
+
+  openShareFolderDialog({
+    folderTitle: folderTitle || root.title || getLocalizedMessage('sharedFolderDefaultName'),
+    shareUrl
+  });
+
+  try {
+    await navigator.clipboard.writeText(shareUrl);
+    Utilities.showToast(getLocalizedMessage('shareLinkCopied'));
+  } catch (error) {
+    console.error('Failed to copy share link:', error);
+    Utilities.showToast(getLocalizedMessage('shareLinkCopyFailed'));
+  }
+}
+
+function openShareFolderDialog({ folderTitle, shareUrl }) {
+  const dialog = document.getElementById('share-folder-dialog');
+  const titleEl = document.getElementById('share-folder-title');
+  const linkEl = document.getElementById('share-folder-link');
+  const qrEl = document.getElementById('share-folder-qrcode');
+
+  if (titleEl) titleEl.textContent = folderTitle || '';
+  if (linkEl) linkEl.value = shareUrl || '';
+  renderShareQrCode(qrEl, shareUrl);
+  showModal(dialog);
+}
+
+function openImportSharedFolderDialog(sharedRoot) {
+  const dialog = document.getElementById('import-shared-folder-dialog');
+  const titleEl = document.getElementById('import-shared-folder-title');
+  const summaryEl = document.getElementById('import-shared-folder-summary');
+
+  const counts = countSharedItems(sharedRoot);
+  if (titleEl) titleEl.textContent = sharedRoot?.t || getLocalizedMessage('sharedFolderDefaultName');
+  if (summaryEl) {
+    summaryEl.textContent = chrome.i18n.getMessage('sharedFolderSummary', [
+      String(Math.max(0, counts.folders - 1)),
+      String(counts.bookmarks)
+    ]);
+  }
+
+  showModal(dialog);
+}
+
+async function handleIncomingShareLink() {
+  const params = new URLSearchParams(window.location.search);
+  const encoded = params.get('share');
+  if (!encoded) return;
+
+  try {
+    const payload = await decodeSharePayload(encoded);
+    if (!payload || payload.v !== 1 || payload.type !== 'bookmark-folder' || !payload.root || payload.root.u) {
+      throw new Error('Unsupported share payload');
+    }
+
+    pendingSharedFolderPayload = payload.root;
+    openImportSharedFolderDialog(payload.root);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('share');
+    history.replaceState(null, '', url.pathname + url.search + url.hash);
+  } catch (error) {
+    console.error('Failed to decode share link:', error);
+    Utilities.showToast(getLocalizedMessage('shareLinkInvalid'));
+  }
+}
+
+function initShareDialogs() {
+  const shareDialog = document.getElementById('share-folder-dialog');
+  const shareClose = document.getElementById('share-folder-close');
+  const copyBtn = document.getElementById('copy-share-folder-link');
+  const openBtn = document.getElementById('open-share-folder-link');
+  const linkEl = document.getElementById('share-folder-link');
+
+  if (shareClose && shareDialog) {
+    shareClose.addEventListener('click', () => hideModal(shareDialog));
+  }
+
+  if (copyBtn && linkEl) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(linkEl.value);
+        Utilities.showToast(getLocalizedMessage('shareLinkCopied'));
+      } catch (error) {
+        console.error('Failed to copy share link:', error);
+        Utilities.showToast(getLocalizedMessage('shareLinkCopyFailed'));
+      }
+    });
+  }
+
+  if (openBtn && linkEl) {
+    openBtn.addEventListener('click', () => {
+      if (!linkEl.value) return;
+      window.open(linkEl.value, '_blank');
+    });
+  }
+
+  if (shareDialog) {
+    shareDialog.addEventListener('click', (event) => {
+      if (event.target === shareDialog) hideModal(shareDialog);
+    });
+  }
+
+  const importDialog = document.getElementById('import-shared-folder-dialog');
+  const importClose = document.getElementById('import-shared-folder-close');
+  const importCancel = document.getElementById('import-shared-folder-cancel');
+  const importConfirm = document.getElementById('import-shared-folder-confirm');
+
+  const closeImport = () => hideModal(importDialog);
+
+  if (importClose) importClose.addEventListener('click', closeImport);
+  if (importCancel) importCancel.addEventListener('click', closeImport);
+
+  if (importConfirm) {
+    importConfirm.addEventListener('click', async () => {
+      if (!pendingSharedFolderPayload) return;
+      importConfirm.disabled = true;
+      try {
+        const importedRootFolder = await importSharedTreeNode('1', pendingSharedFolderPayload);
+        Utilities.showToast(getLocalizedMessage('sharedFolderImported'));
+        pendingSharedFolderPayload = null;
+        closeImport();
+
+        if (importedRootFolder?.id && typeof updateBookmarksDisplay === 'function') {
+          updateBookmarksDisplay(importedRootFolder.id);
+        }
+        if (importedRootFolder?.id) {
+          chrome.bookmarks.getTree(function (nodes) {
+            bookmarkTreeNodes = nodes;
+            const categoriesList = document.getElementById('categories-list');
+            if (categoriesList) categoriesList.innerHTML = '';
+            if (typeof displayBookmarkCategories === 'function' && bookmarkTreeNodes?.[0]?.children) {
+              displayBookmarkCategories(bookmarkTreeNodes[0].children, 0, null, '1');
+              if (typeof selectSidebarFolder === 'function') selectSidebarFolder(importedRootFolder.id);
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Failed to import shared folder:', error);
+        Utilities.showToast(getLocalizedMessage('sharedFolderImportFailed'));
+      } finally {
+        importConfirm.disabled = false;
+      }
+    });
+  }
+
+  if (importDialog) {
+    importDialog.addEventListener('click', (event) => {
+      if (event.target === importDialog) closeImport();
+    });
+  }
+}
+
+function initGistShareDialogs() {
+  const dialog = document.getElementById('share-folder-gist-dialog');
+  const closeBtn = document.getElementById('share-folder-gist-close');
+  const copyRawBtn = document.getElementById('copy-share-folder-gist-raw-link');
+  const copyGistBtn = document.getElementById('copy-share-folder-gist-link');
+  const downloadBtn = document.getElementById('download-share-folder-html');
+  const rawEl = document.getElementById('share-folder-gist-raw-link');
+  const gistEl = document.getElementById('share-folder-gist-link');
+
+  if (!dialog) return;
+
+  const close = () => hideModal(dialog);
+  if (closeBtn) closeBtn.addEventListener('click', close);
+
+  if (copyRawBtn && rawEl) {
+    copyRawBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(rawEl.value);
+        Utilities.showToast(getLocalizedMessage('gistShareCopied'));
+      } catch (error) {
+        console.error('Failed to copy raw link:', error);
+        Utilities.showToast(getLocalizedMessage('shareLinkCopyFailed'));
+      }
+    });
+  }
+
+  if (copyGistBtn && gistEl) {
+    copyGistBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(gistEl.value);
+        Utilities.showToast(getLocalizedMessage('gistShareCopied'));
+      } catch (error) {
+        console.error('Failed to copy gist link:', error);
+        Utilities.showToast(getLocalizedMessage('shareLinkCopyFailed'));
+      }
+    });
+  }
+
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      if (!lastSharedFolderHtml) return;
+      downloadTextFile(lastSharedFolderFilename || 'bookmarks.html', lastSharedFolderHtml);
+      Utilities.showToast(getLocalizedMessage('bookmarkHtmlDownloaded'));
+    });
+  }
+
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) close();
+  });
+}
+
+function initScriptShare() {
+  initShareDialogs();
+  initGistShareDialogs();
+  handleIncomingShareLink();
+}
+
 
 // 添加文件夹相关的全局变量
 // Add event listeners or logic that uses these variables
-document.addEventListener('DOMContentLoaded', () => {
+function initScriptBookmarkFolderGlobals() {
   // Example initialization logic
   bookmarkFolderContextMenu = document.querySelector('#bookmark-folder-context-menu');
   currentBookmarkFolder = document.querySelector('.bookmark-folder.active');
@@ -2588,7 +3061,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (bookmarkFolderContextMenu && currentBookmarkFolder) {
     // Add your event listeners or logic here
   }
-});
+}
 
 
 function openEditBookmarkFolderDialog(folderElement) {
@@ -2773,60 +3246,6 @@ function startPeriodicSync() {
 
 let isRequestPending = false;
 
-function setupSpecialLinks() {
-  const specialLinks = document.querySelectorAll('.links-icons a, .settings-icon a');
-  let isProcessingClick = false;
-
-  specialLinks.forEach(link => {
-    link.addEventListener('click', async function (e) {
-      e.preventDefault();
-      if (isProcessingClick) return;
-
-      isProcessingClick = true;
-
-      const href = this.getAttribute('href');
-      let chromeUrl;
-      switch (href) {
-        case '#history':
-          chromeUrl = 'chrome://history';
-          break;
-        case '#downloads':
-          chromeUrl = 'chrome://downloads';
-          break;
-        case '#passwords':
-          chromeUrl = 'chrome://settings/passwords';
-          break;
-        case '#extensions':
-          chromeUrl = 'chrome://extensions';
-          break;
-        case '#settings':
-          openSettingsModal();
-          isProcessingClick = false;
-          return;
-        default:
-          console.error('Unknown special link:', href);
-          isProcessingClick = false;
-          return;
-      }
-
-      try {
-        // 直接使用 chrome.tabs.create 打开新标签页
-        chrome.tabs.create({ url: chromeUrl }, (tab) => {
-          if (chrome.runtime.lastError) {
-            console.error('Failed to open tab:', chrome.runtime.lastError);
-          }
-        });
-      } catch (error) {
-        console.error('Error opening internal page:', error);
-      } finally {
-        setTimeout(() => {
-          isProcessingClick = false;
-        }, 1000);
-      }
-    });
-  });
-}
-
 function updateDefaultBookmarkIndicator() {
   const defaultBookmarkId = localStorage.getItem('defaultBookmarkId');
   const allBookmarks = document.querySelectorAll('.bookmark-card, .bookmark-folder');
@@ -2854,29 +3273,17 @@ function selectSidebarFolder(folderId) {
     }
   });
 }
-function openSettingsModal() {
-  const settingsModal = document.getElementById('settings-modal');
-  if (settingsModal) {
-    settingsModal.style.display = 'block';
-    // 强制浏览器重新计算样式，确保模糊效果立即生效
-    settingsModal.offsetHeight;
-  } else {
-    console.error('Settings modal not found');
-  }
-}
-
-
 // 确在 DOMContentLoaded 事件初始化上文菜单
-document.addEventListener('DOMContentLoaded', function () {
+function initScriptBookmarkFolderContextMenu() {
   // ... 其他初始化代码 ...
   createBookmarkFolderContextMenu();
-});
+}
 
 
 
 
 // 保留原有的DOMContentLoaded事件监听器，但移除其中的背景应用逻辑
-document.addEventListener('DOMContentLoaded', function () {
+function initScriptFolderNameObserver() {
 
   // 在页面加载完成后立即检查 folder-name 元素
   const folderNameElement = document.getElementById('folder-name');
@@ -3202,9 +3609,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const contextMenu = createContextMenu();
 
   document.addEventListener('contextmenu', function (event) {
+    if (event.__ntmContextMenuHandled) return;
     const targetCard = event.target.closest('.bookmark-card');
     if (targetCard) {
       event.preventDefault();
+      event.__ntmContextMenuHandled = true;
+      hideAllCustomContextMenus();
       // 确保在显示菜单前重置当前书签信息
       currentBookmark = {
         id: targetCard.dataset.id,
@@ -3214,6 +3624,7 @@ document.addEventListener('DOMContentLoaded', function () {
       contextMenu.style.top = `${event.clientY}px`;
       contextMenu.style.left = `${event.clientX}px`;
       contextMenu.style.display = 'block';
+      hideAllCustomContextMenus(contextMenu);
     } else {
       contextMenu.style.display = 'none';
     }
@@ -3232,6 +3643,32 @@ document.addEventListener('DOMContentLoaded', function () {
   const editUrlInput = document.getElementById('edit-url');
   const closeButton = document.querySelector('.close-button');
   const cancelButton = document.querySelector('.cancel-button');
+
+  function bindDialogCloseHandlersOnce(dialogEl, closeBtnEl, cancelBtnEl) {
+    if (!dialogEl) return;
+    if (dialogEl.dataset.ntmCloseHandlersBound === 'true') return;
+    dialogEl.dataset.ntmCloseHandlersBound = 'true';
+
+    if (closeBtnEl) {
+      closeBtnEl.addEventListener('click', () => {
+        dialogEl.style.display = 'none';
+      });
+    }
+
+    if (cancelBtnEl) {
+      cancelBtnEl.addEventListener('click', () => {
+        dialogEl.style.display = 'none';
+      });
+    }
+
+    document.addEventListener('click', (event) => {
+      if (event.target === dialogEl) {
+        dialogEl.style.display = 'none';
+      }
+    });
+  }
+
+  bindDialogCloseHandlersOnce(editDialog, closeButton, cancelButton);
 
   function openEditDialog(bookmark) {
     const bookmarkId = bookmark.id;
@@ -3256,16 +3693,6 @@ document.addEventListener('DOMContentLoaded', function () {
         updateSpecificBookmarkCard(bookmarkId, newTitle, newUrl);
       });
     };
-
-    // 添加取消按钮的事件监听
-    document.querySelector('.cancel-button').addEventListener('click', function () {
-      editDialog.style.display = 'none';
-    });
-
-    // 添加关闭按钮的事件监听
-    document.querySelector('.close-button').addEventListener('click', function () {
-      editDialog.style.display = 'none';
-    });
   }
 
   function updateSpecificBookmarkCard(bookmarkId, newTitle, newUrl) {
@@ -3300,19 +3727,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
-  closeButton.onclick = function () {
-    editDialog.style.display = 'none';
-  };
-
-  cancelButton.onclick = function () {
-    editDialog.style.display = 'none';
-  };
-
-  window.onclick = function (event) {
-    if (event.target == editDialog) {
-      editDialog.style.display = 'none';
-    }
-  };
+  // Note: close/cancel/outside-click handlers are bound once via bindDialogCloseHandlersOnce().
 
   function findBookmarkNodeByTitle(nodes, title) {
     for (let node of nodes) {
@@ -3594,9 +4009,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const categoryContextMenu = createCategoryContextMenu();
 
   document.addEventListener('contextmenu', function (event) {
+    if (event.__ntmContextMenuHandled) return;
     const targetCategory = event.target.closest('#categories-list li');
     if (targetCategory) {
       event.preventDefault();
+      event.__ntmContextMenuHandled = true;
+      hideAllCustomContextMenus();
       currentCategory = targetCategory;
 
       if (currentCategory) {
@@ -3608,6 +4026,7 @@ document.addEventListener('DOMContentLoaded', function () {
           categoryContextMenu.menu.style.top = `${event.clientY}px`;
           categoryContextMenu.menu.style.left = `${event.clientX}px`;
           categoryContextMenu.menu.style.display = 'block';
+          hideAllCustomContextMenus(categoryContextMenu.menu);
         });
       }
     } else {
@@ -3624,6 +4043,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const editCategoryNameInput = document.getElementById('edit-category-name');
   const closeCategoryButton = document.querySelector('.close-category-button');
   const cancelCategoryButton = document.querySelector('.cancel-category-button');
+
+  bindDialogCloseHandlersOnce(editCategoryDialog, closeCategoryButton, cancelCategoryButton);
 
   function openEditCategoryDialog(categoryElement) {
     const categoryId = categoryElement.dataset.id;
@@ -3678,20 +4099,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   }
-
-  closeCategoryButton.onclick = function () {
-    editCategoryDialog.style.display = 'none';
-  };
-
-  cancelCategoryButton.onclick = function () {
-    editCategoryDialog.style.display = 'none';
-  };
-
-  window.onclick = function (event) {
-    if (event.target == editCategoryDialog) {
-      editCategoryDialog.style.display = 'none';
-    }
-  };
+  // Note: close/cancel/outside-click handlers are bound once via bindDialogCloseHandlersOnce().
 
   function setDefaultBookmark(bookmarkId) {
     localStorage.setItem('defaultBookmarkId', bookmarkId);
@@ -5334,8 +5742,6 @@ document.addEventListener('DOMContentLoaded', function () {
       .map(engine => getSearchUrl(engine.name, query));
 
     if (urls.length > 0) {
-      window.lastSearchTrigger = 'cmdCtrlEnter';
-
       chrome.runtime.sendMessage({
         action: 'openMultipleTabsAndGroup',
         urls: urls,
@@ -5349,31 +5755,18 @@ document.addEventListener('DOMContentLoaded', function () {
       console.log('没有其他搜索引擎可以打开');
     }
   }
-});
+}
 
 
 
-// 确保在 DOMContentLoaded 时调用创建函数
-document.addEventListener('DOMContentLoaded', function() {
-  createSearchEngineDropdown();
-  // ... 其他初始化代码 ...
-});
+function initScriptVersionNumber() {
+  const versionElement = document.querySelector('.about-version');
+  if (!versionElement) return;
 
-
-
-
-  // 获取版本号并设置
-  function setVersionNumber() {
-      const versionElement = document.querySelector('.about-version');
-      if (versionElement) {
-          const manifest = chrome.runtime.getManifest();
-          const versionText = chrome.i18n.getMessage('version', [manifest.version]);
-          versionElement.textContent = versionText;
-      }
-  }
-
-  // 在适当时机调用此函数
-  document.addEventListener('DOMContentLoaded', setVersionNumber);
+  const manifest = chrome.runtime.getManifest();
+  const versionText = chrome.i18n.getMessage('version', [manifest.version]);
+  versionElement.textContent = versionText;
+}
 
   // 修改文档点击事件监听器，同时处理书签和文件夹的上下文菜单
   document.addEventListener('click', function (event) {
@@ -5427,8 +5820,18 @@ document.addEventListener('DOMContentLoaded', function() {
     createTemporarySearchTabs(); // 添加这行以更新临时搜索标签
   });
 
+let scriptInitialized = false;
 
+export function initScript() {
+  if (scriptInitialized) return;
+  scriptInitialized = true;
 
-
-
-
+  initScriptIconsAndGestures();
+  initScriptCore();
+  initScriptBookmarksAndTheme();
+  initScriptShare();
+  initScriptBookmarkFolderGlobals();
+  initScriptBookmarkFolderContextMenu();
+  initScriptFolderNameObserver();
+  initScriptVersionNumber();
+}

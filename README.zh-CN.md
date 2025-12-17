@@ -19,20 +19,16 @@ NewTabMark 是一个将浏览器“新建标签页”替换为书签面板的扩
 ## 本地加载（开发者模式）
 
 1. 打开 `chrome://extensions`，开启右上角“开发者模式”
-2. 点击“加载已解压的扩展程序（Load unpacked）”，选择仓库根目录（包含 `manifest.json`）
-3. 修改代码后：在扩展卡片点“刷新/Reload”，再打开新标签页验证
-
-可选（仅当你改了 Tailwind 输入/类名且需要重新生成 `src/output.css` 时）：
-
-```bash
-npm ci
-npx tailwindcss -i ./src/styles.css -o ./src/output.css --content "./src/**/*.{html,js}"
-```
+2. 先执行 `npm install`（会自动执行构建并生成 `dist/`，`manifest.json` 会引用其中的页面；如未生成可手动执行 `npm run build`）
+3. 点击“加载已解压的扩展程序（Load unpacked）”，选择仓库根目录（包含 `manifest.json`）
+4. 修改代码后：重新执行 `npm run build`，在扩展卡片点“刷新/Reload”，再打开新标签页验证
 
 ## 目录结构
 
 - `manifest.json`: 扩展入口、权限与快捷键
-- `src/`: 页面与逻辑（`index.html`、`script.js`、`settings.js`、`background.js`、`content.js` 等）
+- `newtab.html` / `sidepanel.html`: Vite 入口 HTML
+- `src/`: 页面与逻辑（遗留模板 `src/index.html` + `src/sidepanel.html`，以及 React/Vite 入口代码）
+- `dist/`: Vite 构建产物（由 `manifest.json` 引用）
 - `_locales/`: 多语言文案
 - `images/`: 图标与静态资源
 

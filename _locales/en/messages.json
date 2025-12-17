@@ -574,5 +574,141 @@
     "githubLabel": {
         "message": "GitHub",
         "description": "Label for GitHub search engine"
+    },
+    "shareFolder": {
+        "message": "Share",
+        "description": "Context menu item to share a bookmark folder"
+    },
+    "shareFolderDialogTitle": {
+        "message": "Share folder",
+        "description": "Title for the share folder dialog"
+    },
+    "shareLinkLabel": {
+        "message": "Share link",
+        "description": "Label for the share link textarea"
+    },
+    "copyShareLink": {
+        "message": "Copy link",
+        "description": "Button text to copy the share link"
+    },
+    "openShareLink": {
+        "message": "Open link",
+        "description": "Button text to open the share link"
+    },
+    "shareLinkCopied": {
+        "message": "Share link copied",
+        "description": "Toast shown after copying share link"
+    },
+    "shareLinkCopyFailed": {
+        "message": "Failed to copy share link",
+        "description": "Toast shown when copy share link fails"
+    },
+    "shareLinkGenerateFailed": {
+        "message": "Failed to generate share link",
+        "description": "Toast shown when generating share link fails"
+    },
+    "shareLinkInvalid": {
+        "message": "Invalid share link",
+        "description": "Toast shown when share link cannot be decoded"
+    },
+    "importSharedFolderDialogTitle": {
+        "message": "Import shared folder",
+        "description": "Title for the import shared folder dialog"
+    },
+    "importSharedFolderButton": {
+        "message": "Import",
+        "description": "Button text to import a shared folder"
+    },
+    "sharedFolderImported": {
+        "message": "Shared folder imported",
+        "description": "Toast shown after importing a shared folder"
+    },
+    "sharedFolderImportFailed": {
+        "message": "Failed to import shared folder",
+        "description": "Toast shown when importing a shared folder fails"
+    },
+    "sharedFolderDefaultName": {
+        "message": "Shared folder",
+        "description": "Fallback name for shared folder when title is missing"
+    },
+    "sharedFolderSummary": {
+        "message": "Includes $1 subfolders and $2 bookmarks.",
+        "description": "Summary text for shared folder import dialog"
+    },
+    "shareFolderLink": {
+        "message": "Share (link)",
+        "description": "Context menu item to share a bookmark folder via extension link"
+    },
+    "gistTokenDialogTitle": {
+        "message": "GitHub Token",
+        "description": "Title for GitHub token dialog"
+    },
+    "gistTokenDialogDesc": {
+        "message": "Enter a GitHub Personal Access Token with “gist” scope. It will be stored locally.",
+        "description": "Description for GitHub token dialog"
+    },
+    "gistTokenLabel": {
+        "message": "Token",
+        "description": "Label for GitHub token input"
+    },
+    "gistTokenSave": {
+        "message": "Save",
+        "description": "Button to save GitHub token"
+    },
+    "gistTokenRequired": {
+        "message": "Token is required",
+        "description": "Toast when token is empty"
+    },
+    "gistTokenSaved": {
+        "message": "Token saved",
+        "description": "Toast when token is saved"
+    },
+    "gistUploading": {
+        "message": "Uploading to GitHub Gist…",
+        "description": "Toast while uploading to Gist"
+    },
+    "gistShareSuccess": {
+        "message": "Shared via GitHub Gist",
+        "description": "Toast when gist share succeeds"
+    },
+    "gistShareCopied": {
+        "message": "Gist link copied",
+        "description": "Toast when gist link is copied"
+    },
+    "gistShareFailed": {
+        "message": "Failed to share via GitHub Gist",
+        "description": "Toast when gist share fails"
+    },
+    "gistShareDialogTitle": {
+        "message": "Share via GitHub Gist",
+        "description": "Title for gist share result dialog"
+    },
+    "gistLinkLabel": {
+        "message": "Gist link",
+        "description": "Label for gist page link"
+    },
+    "gistRawLinkLabel": {
+        "message": "Raw HTML link",
+        "description": "Label for raw html link"
+    },
+    "copyGistLink": {
+        "message": "Copy",
+        "description": "Button to copy gist link"
+    },
+    "copyRawLink": {
+        "message": "Copy",
+        "description": "Button to copy raw link"
+    },
+    "downloadBookmarkHtml": {
+        "message": "Download HTML",
+        "description": "Button to download bookmark html"
+    },
+    "bookmarkHtmlDownloaded": {
+        "message": "HTML downloaded",
+        "description": "Toast when html download is triggered"
+    },
+    "gistImportHint": {
+        "message": "Tip: Download the HTML and import it from Chrome Bookmark Manager.",
+        "description": "Hint text for importing the exported html"
     }
 }

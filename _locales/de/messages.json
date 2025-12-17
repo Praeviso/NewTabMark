@@ -456,5 +456,141 @@
     "sidebarFeaturesFeature": {
         "message": "Zwei neue Funktionen hinzugefügt:\n1. Schnelle Seitenleiste:\nDrücken Sie Alt/Command + B auf einer beliebigen Webseite, um die Seitenleiste für schnellen Zugriff auf Lesezeichen und Suchfunktionen zu öffnen.\n\n2. Link-Öffnungseinstellungen:\nPassen Sie in den Einstellungen an, wie Lesezeichen und Schnelllinks geöffnet werden, mit der Option, sie in neuen Tabs zu öffnen.",
         "description": "Einheitlicher Tipp für Seitenleistensuche und Link-Öffnungsfunktionen"
+    },
+    "shareFolder": {
+        "message": "Teilen",
+        "description": "Context menu item to share a bookmark folder"
+    },
+    "shareFolderDialogTitle": {
+        "message": "Ordner teilen",
+        "description": "Title for the share folder dialog"
+    },
+    "shareLinkLabel": {
+        "message": "Freigabelink",
+        "description": "Label for the share link textarea"
+    },
+    "copyShareLink": {
+        "message": "Link kopieren",
+        "description": "Button text to copy the share link"
+    },
+    "openShareLink": {
+        "message": "Link öffnen",
+        "description": "Button text to open the share link"
+    },
+    "shareLinkCopied": {
+        "message": "Freigabelink kopiert",
+        "description": "Toast shown after copying share link"
+    },
+    "shareLinkCopyFailed": {
+        "message": "Freigabelink konnte nicht kopiert werden",
+        "description": "Toast shown when copy share link fails"
+    },
+    "shareLinkGenerateFailed": {
+        "message": "Freigabelink konnte nicht erstellt werden",
+        "description": "Toast shown when generating share link fails"
+    },
+    "shareLinkInvalid": {
+        "message": "Ungültiger Freigabelink",
+        "description": "Toast shown when share link cannot be decoded"
+    },
+    "importSharedFolderDialogTitle": {
+        "message": "Geteilten Ordner importieren",
+        "description": "Title for the import shared folder dialog"
+    },
+    "importSharedFolderButton": {
+        "message": "Importieren",
+        "description": "Button text to import a shared folder"
+    },
+    "sharedFolderImported": {
+        "message": "Geteilter Ordner importiert",
+        "description": "Toast shown after importing a shared folder"
+    },
+    "sharedFolderImportFailed": {
+        "message": "Geteilter Ordner konnte nicht importiert werden",
+        "description": "Toast shown when importing a shared folder fails"
+    },
+    "sharedFolderDefaultName": {
+        "message": "Geteilter Ordner",
+        "description": "Fallback name for shared folder when title is missing"
+    },
+    "sharedFolderSummary": {
+        "message": "Enthält $1 Unterordner und $2 Lesezeichen.",
+        "description": "Summary text for shared folder import dialog"
+    },
+    "shareFolderLink": {
+        "message": "Teilen (Link)",
+        "description": "Context menu item to share a bookmark folder via extension link"
+    },
+    "gistTokenDialogTitle": {
+        "message": "GitHub-Token",
+        "description": "Title for GitHub token dialog"
+    },
+    "gistTokenDialogDesc": {
+        "message": "Geben Sie ein GitHub Personal Access Token mit „gist“-Berechtigung ein. Es wird lokal gespeichert.",
+        "description": "Description for GitHub token dialog"
+    },
+    "gistTokenLabel": {
+        "message": "Token",
+        "description": "Label for GitHub token input"
+    },
+    "gistTokenSave": {
+        "message": "Speichern",
+        "description": "Button to save GitHub token"
+    },
+    "gistTokenRequired": {
+        "message": "Token ist erforderlich",
+        "description": "Toast when token is empty"
+    },
+    "gistTokenSaved": {
+        "message": "Token gespeichert",
+        "description": "Toast when token is saved"
+    },
+    "gistUploading": {
+        "message": "Wird zu GitHub Gist hochgeladen…",
+        "description": "Toast while uploading to Gist"
+    },
+    "gistShareSuccess": {
+        "message": "Über GitHub Gist geteilt",
+        "description": "Toast when gist share succeeds"
+    },
+    "gistShareCopied": {
+        "message": "Gist-Link kopiert",
+        "description": "Toast when gist link is copied"
+    },
+    "gistShareFailed": {
+        "message": "Teilen über GitHub Gist fehlgeschlagen",
+        "description": "Toast when gist share fails"
+    },
+    "gistShareDialogTitle": {
+        "message": "Über GitHub Gist teilen",
+        "description": "Title for gist share result dialog"
+    },
+    "gistLinkLabel": {
+        "message": "Gist-Link",
+        "description": "Label for gist page link"
+    },
+    "gistRawLinkLabel": {
+        "message": "Raw-HTML-Link",
+        "description": "Label for raw html link"
+    },
+    "copyGistLink": {
+        "message": "Kopieren",
+        "description": "Button to copy gist link"
+    },
+    "copyRawLink": {
+        "message": "Kopieren",
+        "description": "Button to copy raw link"
+    },
+    "downloadBookmarkHtml": {
+        "message": "HTML herunterladen",
+        "description": "Button to download bookmark html"
+    },
+    "bookmarkHtmlDownloaded": {
+        "message": "HTML heruntergeladen",
+        "description": "Toast when html download is triggered"
+    },
+    "gistImportHint": {
+        "message": "Tipp: Laden Sie die HTML-Datei herunter und importieren Sie sie im Chrome-Lesezeichen-Manager.",
+        "description": "Hint text for importing the exported html"
     }
 }

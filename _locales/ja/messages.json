@@ -508,5 +508,141 @@
     "sidebarFeaturesFeature": {
         "message": "2つの新機能が追加されました：\n1. クイックサイドバー：\nどのWebページでもAlt/Command + Bを押すと、ブックマークと検索機能にすばやくアクセスできるサイドバーが開きます。\n\n2. リンクを開く設定：\n設定でブックマークとクイックリンクの開き方をカスタマイズでき、新しいタブで開くオプションもあります。",
         "description": "サイドバー検索とリンクを開く機能の統合ヒント"
+    },
+    "shareFolder": {
+        "message": "共有",
+        "description": "フォルダー共有（コンテキストメニュー）"
+    },
+    "shareFolderDialogTitle": {
+        "message": "フォルダーを共有",
+        "description": "フォルダー共有ダイアログのタイトル"
+    },
+    "shareLinkLabel": {
+        "message": "共有リンク",
+        "description": "共有リンクのラベル"
+    },
+    "copyShareLink": {
+        "message": "リンクをコピー",
+        "description": "共有リンクをコピーするボタン"
+    },
+    "openShareLink": {
+        "message": "リンクを開く",
+        "description": "共有リンクを開くボタン"
+    },
+    "shareLinkCopied": {
+        "message": "共有リンクをコピーしました",
+        "description": "共有リンクをコピーした後のトースト"
+    },
+    "shareLinkCopyFailed": {
+        "message": "共有リンクのコピーに失敗しました",
+        "description": "共有リンクのコピー失敗トースト"
+    },
+    "shareLinkGenerateFailed": {
+        "message": "共有リンクの生成に失敗しました",
+        "description": "共有リンクの生成失敗トースト"
+    },
+    "shareLinkInvalid": {
+        "message": "共有リンクが無効です",
+        "description": "共有リンクが復号できない場合のトースト"
+    },
+    "importSharedFolderDialogTitle": {
+        "message": "共有フォルダーをインポート",
+        "description": "共有フォルダーインポートダイアログのタイトル"
+    },
+    "importSharedFolderButton": {
+        "message": "インポート",
+        "description": "共有フォルダーをインポートするボタン"
+    },
+    "sharedFolderImported": {
+        "message": "共有フォルダーをインポートしました",
+        "description": "共有フォルダーのインポート完了トースト"
+    },
+    "sharedFolderImportFailed": {
+        "message": "共有フォルダーのインポートに失敗しました",
+        "description": "共有フォルダーのインポート失敗トースト"
+    },
+    "sharedFolderDefaultName": {
+        "message": "共有フォルダー",
+        "description": "タイトルがない場合の既定名"
+    },
+    "sharedFolderSummary": {
+        "message": "$1 個のサブフォルダーと $2 件のブックマークを含みます。",
+        "description": "共有フォルダーインポートの概要"
+    },
+    "shareFolderLink": {
+        "message": "共有（リンク）",
+        "description": "拡張機能リンクで共有"
+    },
+    "gistTokenDialogTitle": {
+        "message": "GitHub トークン",
+        "description": "GitHub トークンダイアログのタイトル"
+    },
+    "gistTokenDialogDesc": {
+        "message": "「gist」権限のある GitHub PAT を入力してください。ローカルに保存されます。",
+        "description": "GitHub トークンダイアログの説明"
+    },
+    "gistTokenLabel": {
+        "message": "Token",
+        "description": "GitHub トークン入力のラベル"
+    },
+    "gistTokenSave": {
+        "message": "保存",
+        "description": "GitHub トークン保存ボタン"
+    },
+    "gistTokenRequired": {
+        "message": "Token が必要です",
+        "description": "Token が空のときのトースト"
+    },
+    "gistTokenSaved": {
+        "message": "Token を保存しました",
+        "description": "Token 保存トースト"
+    },
+    "gistUploading": {
+        "message": "GitHub Gist にアップロード中…",
+        "description": "アップロード中トースト"
+    },
+    "gistShareSuccess": {
+        "message": "GitHub Gist で共有しました",
+        "description": "共有成功トースト"
+    },
+    "gistShareCopied": {
+        "message": "Gist リンクをコピーしました",
+        "description": "リンクコピー成功トースト"
+    },
+    "gistShareFailed": {
+        "message": "GitHub Gist での共有に失敗しました",
+        "description": "共有失敗トースト"
+    },
+    "gistShareDialogTitle": {
+        "message": "GitHub Gist で共有",
+        "description": "結果ダイアログのタイトル"
+    },
+    "gistLinkLabel": {
+        "message": "Gist リンク",
+        "description": "Gist リンクのラベル"
+    },
+    "gistRawLinkLabel": {
+        "message": "Raw HTML リンク",
+        "description": "Raw HTML リンクのラベル"
+    },
+    "copyGistLink": {
+        "message": "コピー",
+        "description": "Gist リンクをコピーするボタン"
+    },
+    "copyRawLink": {
+        "message": "コピー",
+        "description": "Raw リンクをコピーするボタン"
+    },
+    "downloadBookmarkHtml": {
+        "message": "HTML をダウンロード",
+        "description": "HTML ダウンロードボタン"
+    },
+    "bookmarkHtmlDownloaded": {
+        "message": "HTML をダウンロードしました",
+        "description": "ダウンロード開始トースト"
+    },
+    "gistImportHint": {
+        "message": "ヒント：HTML をダウンロードして Chrome のブックマークマネージャーからインポートします。",
+        "description": "インポートのヒント"
     }
 }

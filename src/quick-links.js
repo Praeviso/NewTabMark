@@ -1,7 +1,13 @@
 import { ICONS } from './icons.js';
 
-document.addEventListener('DOMContentLoaded', function () {
+let initialized = false;
+
+export function initQuickLinks() {
+  if (initialized) return;
+  initialized = true;
+
   const quickLinksContainer = document.getElementById('quick-links');
+  if (!quickLinksContainer) return;
   const MAX_DISPLAY = 10;
 
   // 添加快捷链接专用的状态变量
@@ -427,6 +433,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
       linkItem.addEventListener('contextmenu', (e) => {
         e.preventDefault();
+        e.stopPropagation();
+        e.__ntmContextMenuHandled = true;
         showContextMenu(e, site);
       });
 
@@ -463,15 +471,22 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Site:', site);
     
     e.preventDefault();
-    // 移除任何已存在的上下文菜单
-    const existingMenu = document.querySelector('.custom-context-menu');
-    if (existingMenu) {
-      console.log('Removing existing context menu');
-      existingMenu.remove();
-    }
+    e.stopPropagation();
+    e.__ntmContextMenuHandled = true;
+
+    // 隐藏所有其他上下文菜单，避免叠加显示（script.js 等也会创建 .custom-context-menu）
+    document.querySelectorAll('.custom-context-menu').forEach((menu) => {
+      menu.style.display = 'none';
+    });
+
+    // 只移除本模块创建的菜单节点，避免破坏其他模块对 DOM 节点的引用
+    document.querySelectorAll('.custom-context-menu[data-owner="quick-links"]').forEach((menu) => {
+      menu.remove();
+    });
 
     const contextMenu = document.createElement('div');
     contextMenu.className = 'custom-context-menu';
+    contextMenu.dataset.owner = 'quick-links';
 
     contextMenu.style.display = 'block';
     contextMenu.style.left = `${e.clientX}px`;
@@ -888,11 +903,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // 初始化
-  generateQuickLinks();
-
   // 加载缓存
   quickLinksCache.load();
+
+  // 初始化
+  generateQuickLinks();
 
   // 定义主页路径模式
   const MAIN_PAGE_PATTERNS = {
@@ -989,4 +1004,4 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     backButton.style.display = 'block';
   }
-});
+}

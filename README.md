@@ -19,20 +19,16 @@ NewTabMark replaces the browser New Tab page with a bookmarks dashboard, and pro
 ## Install (Developer Mode)
 
 1. Open `chrome://extensions` and enable **Developer mode**
-2. Click **Load unpacked** and select the repo root (the folder containing `manifest.json`)
-3. After changes, click **Reload** on the extension card and open a new tab to verify
-
-Optional (only if you changed Tailwind input/classes and need to regenerate `src/output.css`):
-
-```bash
-npm ci
-npx tailwindcss -i ./src/styles.css -o ./src/output.css --content "./src/**/*.{html,js}"
-```
+2. Run `npm install` (it will also build and generate `dist/` which `manifest.json` points to; if not, run `npm run build`)
+3. Click **Load unpacked** and select the repo root (the folder containing `manifest.json`)
+4. After changes, re-run `npm run build`, click **Reload** on the extension card, and open a new tab to verify
 
 ## Project Layout
 
 - `manifest.json`: extension entry points, permissions, commands
-- `src/`: UI and logic (`index.html`, `script.js`, `settings.js`, `background.js`, `content.js`, etc.)
+- `newtab.html` / `sidepanel.html`: Vite entry HTML
+- `src/`: UI and logic (legacy templates `src/index.html` + `src/sidepanel.html`, plus React/Vite entry code)
+- `dist/`: Vite build output (referenced by `manifest.json`)
 - `_locales/`: i18n message bundles
 - `images/`: icons and static assets
 

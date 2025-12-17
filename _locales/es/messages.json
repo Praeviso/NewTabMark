@@ -428,5 +428,141 @@
     "sidebarFeaturesFeature": {
         "message": "Se han añadido dos nuevas funciones:\n1. Barra lateral rápida:\nPresione Alt/Command + B en cualquier página web para abrir la barra lateral y acceder rápidamente a los marcadores y funciones de búsqueda.\n\n2. Configuración de apertura de enlaces:\nPersonalice cómo se abren los marcadores y enlaces rápidos en la configuración, con la opción de abrirlos en nuevas pestañas.",
         "description": "Consejo unificado para la búsqueda en la barra lateral y las funciones de apertura de enlaces"
+    },
+    "shareFolder": {
+        "message": "Compartir",
+        "description": "Elemento del menú contextual para compartir una carpeta de marcadores"
+    },
+    "shareFolderDialogTitle": {
+        "message": "Compartir carpeta",
+        "description": "Título del diálogo para compartir carpeta"
+    },
+    "shareLinkLabel": {
+        "message": "Enlace para compartir",
+        "description": "Etiqueta del enlace para compartir"
+    },
+    "copyShareLink": {
+        "message": "Copiar enlace",
+        "description": "Botón para copiar el enlace para compartir"
+    },
+    "openShareLink": {
+        "message": "Abrir enlace",
+        "description": "Botón para abrir el enlace para compartir"
+    },
+    "shareLinkCopied": {
+        "message": "Enlace para compartir copiado",
+        "description": "Aviso al copiar el enlace para compartir"
+    },
+    "shareLinkCopyFailed": {
+        "message": "No se pudo copiar el enlace para compartir",
+        "description": "Aviso cuando falla copiar el enlace para compartir"
+    },
+    "shareLinkGenerateFailed": {
+        "message": "No se pudo generar el enlace para compartir",
+        "description": "Aviso cuando falla generar el enlace para compartir"
+    },
+    "shareLinkInvalid": {
+        "message": "Enlace para compartir no válido",
+        "description": "Aviso cuando el enlace no se puede decodificar"
+    },
+    "importSharedFolderDialogTitle": {
+        "message": "Importar carpeta compartida",
+        "description": "Título del diálogo para importar carpeta compartida"
+    },
+    "importSharedFolderButton": {
+        "message": "Importar",
+        "description": "Botón para importar una carpeta compartida"
+    },
+    "sharedFolderImported": {
+        "message": "Carpeta compartida importada",
+        "description": "Aviso después de importar una carpeta compartida"
+    },
+    "sharedFolderImportFailed": {
+        "message": "No se pudo importar la carpeta compartida",
+        "description": "Aviso cuando falla importar una carpeta compartida"
+    },
+    "sharedFolderDefaultName": {
+        "message": "Carpeta compartida",
+        "description": "Nombre alternativo cuando falta el título"
+    },
+    "sharedFolderSummary": {
+        "message": "Incluye $1 subcarpetas y $2 marcadores.",
+        "description": "Resumen para el diálogo de importación"
+    },
+    "shareFolderLink": {
+        "message": "Compartir (enlace)",
+        "description": "Compartir una carpeta mediante enlace de la extensión"
+    },
+    "gistTokenDialogTitle": {
+        "message": "Token de GitHub",
+        "description": "Título del diálogo de token de GitHub"
+    },
+    "gistTokenDialogDesc": {
+        "message": "Introduce un Token de Acceso Personal de GitHub con permiso “gist”. Se guardará localmente.",
+        "description": "Descripción del diálogo de token de GitHub"
+    },
+    "gistTokenLabel": {
+        "message": "Token",
+        "description": "Etiqueta para el token de GitHub"
+    },
+    "gistTokenSave": {
+        "message": "Guardar",
+        "description": "Botón para guardar el token"
+    },
+    "gistTokenRequired": {
+        "message": "Se requiere un token",
+        "description": "Aviso cuando el token está vacío"
+    },
+    "gistTokenSaved": {
+        "message": "Token guardado",
+        "description": "Aviso cuando el token se guarda"
+    },
+    "gistUploading": {
+        "message": "Subiendo a GitHub Gist…",
+        "description": "Aviso mientras se sube a Gist"
+    },
+    "gistShareSuccess": {
+        "message": "Compartido vía GitHub Gist",
+        "description": "Aviso cuando la compartición se completa"
+    },
+    "gistShareCopied": {
+        "message": "Enlace de Gist copiado",
+        "description": "Aviso cuando se copia el enlace"
+    },
+    "gistShareFailed": {
+        "message": "No se pudo compartir vía GitHub Gist",
+        "description": "Aviso cuando falla compartir"
+    },
+    "gistShareDialogTitle": {
+        "message": "Compartir vía GitHub Gist",
+        "description": "Título del diálogo de resultado"
+    },
+    "gistLinkLabel": {
+        "message": "Enlace de Gist",
+        "description": "Etiqueta del enlace de Gist"
+    },
+    "gistRawLinkLabel": {
+        "message": "Enlace HTML raw",
+        "description": "Etiqueta del enlace raw"
+    },
+    "copyGistLink": {
+        "message": "Copiar",
+        "description": "Botón para copiar el enlace de Gist"
+    },
+    "copyRawLink": {
+        "message": "Copiar",
+        "description": "Botón para copiar el enlace raw"
+    },
+    "downloadBookmarkHtml": {
+        "message": "Descargar HTML",
+        "description": "Botón para descargar HTML"
+    },
+    "bookmarkHtmlDownloaded": {
+        "message": "HTML descargado",
+        "description": "Aviso al iniciar la descarga"
+    },
+    "gistImportHint": {
+        "message": "Consejo: Descarga el HTML e impórtalo desde el Administrador de marcadores de Chrome.",
+        "description": "Pista para importar el HTML"
     }
 }

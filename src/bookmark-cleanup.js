@@ -1,4 +1,4 @@
-import { featureTips } from './feature-tips.js';
+import { initFeatureTips } from './feature-tips.js';
 
 // 书签清理插件相关常量
 const CLEANUP_EXTENSION = {
@@ -37,9 +37,11 @@ function initBookmarkCleanupSettings() {
   }
 }
 
-// 初始化
-document.addEventListener('DOMContentLoaded', () => {
-  initBookmarkCleanupSettings();
-});
+let initialized = false;
 
-export {}; 
+export function initBookmarkCleanup() {
+  if (initialized) return;
+  initialized = true;
+  initFeatureTips();
+  initBookmarkCleanupSettings();
+}

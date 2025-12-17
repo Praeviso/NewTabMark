@@ -77,7 +77,16 @@ class Onboarding {
   }
 }
 
-// 当 DOM 加载完成后初始化引导流程
-document.addEventListener('DOMContentLoaded', () => {
+let initialized = false;
+
+export function initOnboarding() {
+  if (initialized) return;
+  initialized = true;
+
+  const overlay = document.getElementById('onboarding-overlay');
+  const prevButton = document.querySelector('.onboarding-prev');
+  const nextButton = document.querySelector('.onboarding-next');
+  if (!overlay || !prevButton || !nextButton) return;
+
   new Onboarding();
-}); 
+}

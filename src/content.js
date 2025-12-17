@@ -1,4 +1,10 @@
-(function () {
+let didInitContentScript = false;
+let didInstallFloatingBallSync = false;
+
+export function initContentScript() {
+  if (didInitContentScript) return;
+  didInitContentScript = true;
+  const existingExtensionContainer = document.getElementById('newtabmark-extension-container');
   function getSelectedText() {
     const selection = window.getSelection();
     const selectedText = selection.toString().trim();
@@ -155,15 +161,20 @@
 
   let cachedSelectedText = "";
 
-  const extensionContainer = document.createElement('div');
-  document.body.appendChild(extensionContainer);
+  const extensionContainer = existingExtensionContainer || document.createElement('div');
+  if (!existingExtensionContainer) {
+    extensionContainer.id = 'newtabmark-extension-container';
+    (document.body || document.documentElement).appendChild(extensionContainer);
+  }
 
-  const shadow = extensionContainer.attachShadow({ mode: 'open' });
+  const shadow = extensionContainer.shadowRoot || extensionContainer.attachShadow({ mode: 'open' });
 
-  const floatingButton = document.createElement('div');
-  floatingButton.id = 'floating-button';
-  floatingButton.innerHTML = `
-    <img src="${chrome.runtime.getURL('../images/icon-48.png')}" alt="icon" class="floating-button-icon">
+  const existingFloatingButton = shadow.getElementById('floating-button');
+  const floatingButton = existingFloatingButton || document.createElement('div');
+  if (!existingFloatingButton) {
+    floatingButton.id = 'floating-button';
+    floatingButton.innerHTML = `
+    <img src="${chrome.runtime.getURL('images/icon-48.png')}" alt="icon" class="floating-button-icon">
     <div class="floating-tooltip">
       <div class="tooltip-content">
         <div class="tooltip-row">
@@ -186,13 +197,17 @@
       </button>
     </div>
   `;
+  }
 
-  const sidebarContainer = document.createElement('div');
-  sidebarContainer.id = 'sidebar-container';
-  sidebarContainer.classList.add('collapsed');
+  const existingSidebarContainer = shadow.getElementById('sidebar-container');
+  const sidebarContainer = existingSidebarContainer || document.createElement('div');
+  if (!existingSidebarContainer) {
+    sidebarContainer.id = 'sidebar-container';
+    sidebarContainer.classList.add('collapsed');
+  }
 
-  shadow.appendChild(floatingButton);
-  shadow.appendChild(sidebarContainer);
+  if (!existingFloatingButton) shadow.appendChild(floatingButton);
+  if (!existingSidebarContainer) shadow.appendChild(sidebarContainer);
 
   // 添加关闭按钮的点击事件处理
   const closeButton = floatingButton.querySelector('.tooltip-close');
@@ -244,35 +259,35 @@
   searchSwitcher.innerHTML = `
 <ul>
   <li data-url="https://www.google.com/search?q=" data-shortcut="1" ${defaultSearchEngine === 'google' ? 'class="selected"' : ''}>
-    <img src="${chrome.runtime.getURL('../images/google-logo.svg')}" alt="Google" class="search-icon">
+    <img src="${chrome.runtime.getURL('images/google-logo.svg')}" alt="Google" class="search-icon">
     <span>Google <span class="shortcut-key">Alt+1</span></span>
   </li>
   <li data-url="https://www.bing.com/search?q=" data-shortcut="2" ${defaultSearchEngine === 'bing' ? 'class="selected"' : ''}>
-    <img src="${chrome.runtime.getURL('../images/bing-logo.png')}" alt="Bing" class="search-icon">
+    <img src="${chrome.runtime.getURL('images/bing-logo.png')}" alt="Bing" class="search-icon">
     <span>Bing <span class="shortcut-key">Alt+2</span></span>
   </li>
   <li data-url="https://www.baidu.com/s?wd=" data-shortcut="3" ${defaultSearchEngine === 'baidu' ? 'class="selected"' : ''}>
-    <img src="${chrome.runtime.getURL('../images/baidu-logo.svg')}" alt="Baidu" class="search-icon">
+    <img src="${chrome.runtime.getURL('images/baidu-logo.svg')}" alt="Baidu" class="search-icon">
     <span>百度 <span class="shortcut-key">Alt+3</span></span>
   </li>
   <li data-url="https://kimi.moonshot.cn/?q=" data-shortcut="4" ${defaultSearchEngine === 'kimi' ? 'class="selected"' : ''}>
-    <img src="${chrome.runtime.getURL('../images/kimi-logo.svg')}" alt="Kimi" class="search-icon">
+    <img src="${chrome.runtime.getURL('images/kimi-logo.svg')}" alt="Kimi" class="search-icon">
     <span>Kimi <span class="shortcut-key">Alt+4</span></span>
   </li>
   <li data-url="https://felo.ai/search?q=" data-shortcut="5" ${defaultSearchEngine === 'felo' ? 'class="selected"' : ''}>
-    <img src="${chrome.runtime.getURL('../images/felo-logo.svg')}" alt="Felo" class="search-icon">
+    <img src="${chrome.runtime.getURL('images/felo-logo.svg')}" alt="Felo" class="search-icon">
     <span>Felo <span class="shortcut-key">Alt+5</span></span>
   </li>
   <li data-url="https://metaso.cn/?q=" data-shortcut="6" ${defaultSearchEngine === 'metaso' ? 'class="selected"' : ''}>
-    <img src="${chrome.runtime.getURL('../images/sider-icon/metaso-logo.png')}" alt="Metaso" class="search-icon">
+    <img src="${chrome.runtime.getURL('images/sider-icon/metaso-logo.png')}" alt="Metaso" class="search-icon">
     <span>Metaso <span class="shortcut-key">Alt+6</span></span>
   </li>
   <li data-url="https://www.doubao.com/chat/?q=" data-shortcut="7" ${defaultSearchEngine === 'doubao' ? 'class="selected"' : ''}>
-    <img src="${chrome.runtime.getURL('../images/sider-icon/doubao-logo.png')}" alt="Doubao" class="search-icon">
+    <img src="${chrome.runtime.getURL('images/sider-icon/doubao-logo.png')}" alt="Doubao" class="search-icon">
     <span>豆包 <span class="shortcut-key">Alt+7</span></span>
   </li>
   <li data-url="https://chatgpt.com/?q=" data-shortcut="8" ${defaultSearchEngine === 'ChatGPT' ? 'class="selected"' : ''}>
-    <img src="${chrome.runtime.getURL('../images/sider-icon/chatgpt-logo.svg')}" alt="ChatGPT" class="search-icon">
+    <img src="${chrome.runtime.getURL('images/sider-icon/chatgpt-logo.svg')}" alt="ChatGPT" class="search-icon">
     <span>ChatGPT <span class="shortcut-key">Alt+8</span></span>
   </li>
 </ul>
@@ -684,12 +699,6 @@
   `;
   shadow.appendChild(styleSheet);
 
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'loadDefaultBookmark') {
-      displayBookmarks();
-    }
-  });
-
   displayBookmarks();
 
   class AutoInputManager {
@@ -876,6 +885,12 @@
   // 在文件顶部声明变量
   let isFloatingBallEnabled = true;
 
+  function syncFloatingBallSettingFromStorage() {
+    chrome.storage.sync.get(['enableFloatingBall'], (result) => {
+      updateFloatingBallVisibility(result.enableFloatingBall !== false);
+    });
+  }
+
   // 更新悬浮球显示状态的函数
   function updateFloatingBallVisibility(enabled) {
     isFloatingBallEnabled = enabled;
@@ -890,21 +905,50 @@
   }
 
   // 初始化时获取设置
-  chrome.storage.sync.get(['enableFloatingBall'], (result) => {
-    updateFloatingBallVisibility(result.enableFloatingBall !== false);
-  });
+  syncFloatingBallSettingFromStorage();
 
-  // 监听来自 background 的消息
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'updateFloatingBall') {
-      updateFloatingBallVisibility(request.enabled);
-      sendResponse({ success: true });
-    }
-    return true;
-  });
+  function installFloatingBallSync() {
+    if (didInstallFloatingBallSync) return;
+    didInstallFloatingBallSync = true;
 
-  // 确保在创建悬浮球时应用当前设置
-  floatingButton.style.display = isFloatingBallEnabled ? 'flex' : 'none';
+    const syncFromStorageIfVisible = () => {
+      if (document.hidden) return;
+      syncFloatingBallSettingFromStorage();
+    };
+
+    window.addEventListener('pageshow', (event) => {
+      syncFloatingBallSettingFromStorage();
+      if (event.persisted) {
+        setTimeout(() => {
+          syncFloatingBallSettingFromStorage();
+        }, 0);
+      }
+    });
+    window.addEventListener('focus', syncFromStorageIfVisible);
+    document.addEventListener('visibilitychange', syncFromStorageIfVisible);
+
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area !== 'sync') return;
+      if (!('enableFloatingBall' in changes)) return;
+      const nextValue = changes.enableFloatingBall.newValue;
+      updateFloatingBallVisibility(nextValue !== false);
+    });
+
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.action === 'updateFloatingBall') {
+        updateFloatingBallVisibility(request.enabled);
+        sendResponse({ success: true });
+        return true;
+      }
+      if (request.action === 'loadDefaultBookmark') {
+        displayBookmarks();
+        return;
+      }
+    });
+  }
+
+  installFloatingBallSync();
+  syncFloatingBallSettingFromStorage();
 
   const style = document.createElement('style');
   style.textContent = `
@@ -961,4 +1005,6 @@
     }
   });
 
-})();
+}
+
+initContentScript();
