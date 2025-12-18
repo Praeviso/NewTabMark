@@ -26,12 +26,23 @@
 - 遗留初始化显式化：`initXxx()` 入口幂等，减少 `DOMContentLoaded`/副作用 import 依赖。
 - i18n（React 侧）对齐：`getLocalizedMessageSafe()` / `updateUILanguage(root?)`，降低首屏文案闪现。
 - New Tab / Side Panel legacy bootstrap 去重：`createLegacyBootstrap()` 统一初始化序列与 run-once。
+- Quick Links 显隐逻辑收敛：由 `src/quick-links.js` 统一根据 `chrome.storage.sync.enableQuickLinks` 同步显隐并监听变更，移除 `src/script.js` 重复监听；设置弹窗改为复用同一显隐 helper。
+- script.js i18n helper 收敛：`src/script.js` 内部 `getLocalizedMessage()` 改为复用 `src/localization.js#getLocalizedMessageSafe()`（并保留对 `window.getLocalizedMessage` 的兼容），减少重复实现与 fallback 分歧。
+- i18n substitutions 收敛：`src/localization.js` 的 `window.getLocalizedMessage(name, substitutions?)` 支持 substitutions；`src/script.js` 内确认/版本号/Toast 等场景不再直连 `chrome.i18n.getMessage`，统一走 helper。
+- 背景/壁纸初始化收敛：移除 `src/script.js` 对 `.settings-bg-option` 的重复初始化与 click 绑定；背景色仅在 `useDefaultBackground === 'true'` 时才会从设置弹窗恢复（避免壁纸模式被误覆盖）；默认无配置时回退到 `gradient-background-7` 由 `src/wallpaper.js` 负责。
 
 ### 搜索模块拆分（保持对等）
 
 - 搜索引擎数据层抽取：`src/search-engines.js` 统一引擎数据/存储/URL 计算，UI 逻辑保留在 `src/search-engine-dropdown.js`。
 - 搜索建议逻辑层抽取：`src/search/relevance.js` + `src/search/suggestions.js`，`src/script.js` 复用 service。
 - 搜索建议 UI 抽取：`src/search/suggestions-ui.js` 统一“渲染/滚动加载/键盘导航/默认建议”，`src/script.js` 仅做 wiring。
+
+### 搜索下拉（React 渲染点，保持对等）
+
+- 搜索引擎下拉菜单 React 化（Portal）：新增 `src/ui/search-engine-dropdown-portal.jsx`，在 New Tab / Side Panel 中挂载下拉菜单 DOM（保留原有 class/结构/样式）。
+- Legacy 下拉创建降级为 no-op：`src/search-engine-dropdown.js` 增加 `window.__USE_REACT_SEARCH_ENGINE_DROPDOWN__` 开关，避免 legacy 重复创建/重复绑定；并新增 `openSearchEnginesDialog()`/`getEngineDisplayName()` 供 React 复用。
+- 状态同步：legacy 在 `createSearchEngineDropdown()` 末尾派发 `searchEnginesStateChanged`，React 监听该事件与 `defaultSearchEngineChanged` 刷新引擎列表。
+- 修复 tabs active 不显示：`src/script.js` 对 `selectedSearchEngine` 做 lower-case 归一，避免历史值（如 `Google`）导致“找不到默认 tab → active 被清空”；并让 `updateSearchEngineIcon()` 兼容传入字符串。
 
 ### 关键问题修复
 
@@ -69,3 +80,28 @@
 - 设置弹窗可打开/切换/关闭（按钮/遮罩/Esc）
 - 搜索：引擎切换 + 回车搜索 + 搜索建议（滚动加载/键盘导航/Ctrl/Cmd+Enter）
 - 书签：展示/打开/右键/拖拽（如本轮未触达，可抽检 1–2 条路径）
+
+本轮额外验证点（Quick Links 显隐）：
+- 打开设置弹窗 → 勾选/取消“快捷链接”开关：`.quick-links-wrapper` 应立即 show/hide，且刷新/重载后状态保持。
+- New Tab 与 Side Panel 分别验证一次，确保控制台无新增报错。
+
+本轮额外验证点（i18n fallback）：
+- New Tab：右键书签/快捷链接打开上下文菜单，菜单项文案正常显示；设置弹窗/Toast 文案无异常。
+
+本轮额外验证点（i18n substitutions）：
+- New Tab：删除书签/快捷链接时确认弹窗文案中的标题插值正常（粗体标题/占位符不丢失）；“关于版本号”文案正常。
+
+本轮额外验证点（搜索引擎下拉 React 化）：
+- New Tab：点击搜索框左侧图标 → 下拉菜单出现/再次点击隐藏；点击页面空白处可关闭下拉。
+- New Tab：在下拉中切换默认引擎 → 图标更新、Tab active 状态更新、搜索正常。
+- New Tab：点击“添加搜索引擎” → 原有管理弹窗正常打开；在弹窗启用/禁用/新增自定义引擎后关闭弹窗 → 下拉列表与“本次使用”Tabs 同步更新。
+- Side Panel：重复以上 3 条路径验证一次（确保无重复下拉/无重复事件导致的闪烁或无法关闭）。
+
+本轮额外验证点（tabs active 修复）：
+- New Tab：任意输入触发建议后显示 tabs，默认 tab 高亮始终存在；切换默认引擎后 tabs 高亮同步更新。
+- Side Panel：同上。
+
+本轮额外验证点（背景/壁纸初始化收敛）：
+- New Tab：有壁纸时打开设置弹窗 → “背景色”选项不应被错误高亮；刷新后壁纸仍生效。
+- New Tab：点击任意背景色 → 壁纸应被清除、背景色生效、欢迎文案颜色可读；刷新后背景色保持。
+- Side Panel：重复以上 2 条路径验证一次（确保无重复监听导致的闪烁/状态错乱）。

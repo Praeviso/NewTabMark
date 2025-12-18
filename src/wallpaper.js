@@ -259,6 +259,8 @@ class WallpaperManager {
 
     // 初始化壁纸状态
     async initializeWallpaper() {
+        this.clearAllActiveStates();
+
         const savedWallpaper = localStorage.getItem('originalWallpaper');
         const useDefaultBackground = localStorage.getItem('useDefaultBackground');
         const savedBg = localStorage.getItem('selectedBackground');
@@ -278,10 +280,19 @@ class WallpaperManager {
             } else {
                 document.documentElement.className = savedBg;
             }
+
+            const welcomeElement = document.getElementById('welcome-message');
+            const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
+            if (welcomeElement && welcomeManager) {
+                welcomeManager.adjustTextColor(welcomeElement);
+            }
             return;
         }
 
         if (savedWallpaper) {
+            // 壁纸模式下不应该同时保留纯色背景 class
+            document.documentElement.className = '';
+
             // 如果使用壁纸，查找对应的选项（包括用户上传的壁纸）
             let wallpaperOption = document.querySelector(`.wallpaper-option[data-wallpaper-url="${savedWallpaper}"]`);
             
@@ -306,6 +317,32 @@ class WallpaperManager {
                 img.onerror = resolve;
                 img.src = savedWallpaper;
             });
+
+            return;
+        }
+
+        // 既没有壁纸也没有“启用纯色背景”的保存值：沿用旧逻辑，回退到默认渐变背景
+        // 注意：如果存在 savedBg 但 useDefaultBackground !== 'true'，不强行应用（保持兼容旧状态）。
+        if (!savedBg && useDefaultBackground !== 'false') {
+            const defaultBg = 'gradient-background-7';
+            const defaultBgOption = document.querySelector(`.settings-bg-option[data-bg="${defaultBg}"]`);
+            if (defaultBgOption) {
+                defaultBgOption.classList.add('active');
+                this.activeOption = defaultBgOption;
+            }
+
+            if (isDarkMode) {
+                document.documentElement.className = defaultBg;
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.className = defaultBg;
+            }
+
+            const welcomeElement = document.getElementById('welcome-message');
+            const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
+            if (welcomeElement && welcomeManager) {
+                welcomeManager.adjustTextColor(welcomeElement);
+            }
         }
     }
 

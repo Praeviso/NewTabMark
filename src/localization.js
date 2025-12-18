@@ -17,10 +17,10 @@ export function getLocalizedMessageSafe(messageName, fallback = messageName, sub
   }
 }
 
-function getLocalizedMessage(messageName) {
+function getLocalizedMessage(messageName, substitutions) {
   // 访问一次确保 chrome.i18n 可用（保留原有结构，避免未来需要 userLang）
   getUserLanguage();
-  return getLocalizedMessageSafe(messageName, messageName);
+  return getLocalizedMessageSafe(messageName, messageName, substitutions);
 }
 
 function resolveQueryRoot(root) {

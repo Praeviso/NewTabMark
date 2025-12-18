@@ -49,6 +49,10 @@ function getEngineDisplayName(engine) {
   return engine.name || '';
 }
 
+function shouldUseReactDropdown() {
+  return typeof window !== 'undefined' && window.__USE_REACT_SEARCH_ENGINE_DROPDOWN__ === true;
+}
+
 // 创建搜索引擎选项
 function createSearchEngineOption(engine, isAddButton = false) {
   const option = document.createElement('div');
@@ -257,15 +261,30 @@ function createSearchEngineDropdown() {
   initializeSearchEngine();
   createDropdownUI();
   createTemporarySearchTabs();
+
+  document.dispatchEvent(
+    new CustomEvent('searchEnginesStateChanged', {
+      detail: {
+        enabledEngines: SearchEngineManager.getEnabledEngines(),
+        defaultEngine: SearchEngineManager.getDefaultEngine()
+      }
+    })
+  );
 }
 
 // 新增下拉菜单 UI 创建函数
 function createDropdownUI() {
   // 将原来 createSearchEngineDropdown 中的 UI 创建代码移到这里
   const existingDropdown = document.querySelector('.search-engine-dropdown');
-  if (existingDropdown) {
-    existingDropdown.remove();
+
+  if (shouldUseReactDropdown()) {
+    if (existingDropdown && existingDropdown.dataset.reactManaged !== 'true') {
+      existingDropdown.remove();
+    }
+    return;
   }
+
+  if (existingDropdown) existingDropdown.remove();
   
   const searchForm = document.querySelector('.search-form');
   const iconContainer = document.querySelector('.search-icon-container');
@@ -335,6 +354,10 @@ function showSearchEnginesDialog() {
       e.stopPropagation();
     });
   }
+}
+
+export function openSearchEnginesDialog() {
+  showSearchEnginesDialog();
 }
 
 // 修改创建搜索引擎列表函数
@@ -792,6 +815,12 @@ function updateSearchEngineIcon(engine) {
     console.error('[Icon] Search engine icon element not found');
     return;
   }
+
+  if (typeof engine === 'string') {
+    const engineName = engine;
+    const resolved = SearchEngineManager.getAllEngines().find((e) => e.name === engineName);
+    engine = resolved || SearchEngineManager.getDefaultEngine();
+  }
   
   if (!engine) {
     console.error('[Icon] No engine provided');
@@ -823,5 +852,6 @@ export {
   createSearchEngineDropdown, 
   initializeSearchEngineDialog,
   initSearchEngineDropdown,
-  getSearchUrl
+  getSearchUrl,
+  getEngineDisplayName
 };

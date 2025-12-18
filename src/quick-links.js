@@ -2,6 +2,18 @@ import { ICONS } from './icons.js';
 
 let initialized = false;
 
+export function setQuickLinksVisibility(show) {
+  const quickLinksWrapper = document.querySelector('.quick-links-wrapper');
+  if (!quickLinksWrapper) return;
+  quickLinksWrapper.style.display = show ? 'flex' : 'none';
+}
+
+function syncQuickLinksVisibilityFromStorage() {
+  chrome.storage.sync.get(['enableQuickLinks'], (result) => {
+    setQuickLinksVisibility(result.enableQuickLinks !== false);
+  });
+}
+
 export function initQuickLinks() {
   if (initialized) return;
   initialized = true;
@@ -9,6 +21,14 @@ export function initQuickLinks() {
   const quickLinksContainer = document.getElementById('quick-links');
   if (!quickLinksContainer) return;
   const MAX_DISPLAY = 10;
+
+  // 统一管理快捷链接区域的显隐：初始状态 + storage 变更监听
+  syncQuickLinksVisibilityFromStorage();
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace !== 'sync') return;
+    if (!changes.enableQuickLinks) return;
+    setQuickLinksVisibility(changes.enableQuickLinks.newValue !== false);
+  });
 
   // 添加快捷链接专用的状态变量
   let quickLinkToDelete = null;

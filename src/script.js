@@ -19,6 +19,7 @@ import {
   saveUserBehavior as saveUserBehaviorService
 } from './search/suggestions.js';
 import { initSearchSuggestionsUI } from './search/suggestions-ui.js';
+import { getLocalizedMessageSafe } from './localization.js';
 
 let bookmarkTreeNodes = [];
 let defaultSearchEngine = 'google';
@@ -44,12 +45,17 @@ function initScriptIconsAndGestures() {
   replaceIconsWithSvg();
 }
 
-function getLocalizedMessage(messageName) {
+function getLocalizedMessage(messageName, substitutions) {
+  // substitutions 需要走 chrome.i18n.getMessage(name, substitutions)
+  if (substitutions !== undefined) {
+    return getLocalizedMessageSafe(messageName, messageName, substitutions);
+  }
+
   if (typeof window.getLocalizedMessage === 'function') {
     return window.getLocalizedMessage(messageName);
   }
-  const message = chrome.i18n.getMessage(messageName);
-  return message || messageName;
+
+  return getLocalizedMessageSafe(messageName, messageName);
 }
 
 function hideAllCustomContextMenus(exceptMenu = null) {
@@ -101,9 +107,9 @@ function createContextMenu() {
         
         console.log('Set itemToDelete:', itemToDelete);
         
-        const message = itemToDelete.type === 'quickLink' 
-          ? chrome.i18n.getMessage("confirmDeleteQuickLink", [`<strong>${itemToDelete.data.title}</strong>`])
-          : chrome.i18n.getMessage("confirmDeleteBookmark", [`<strong>${itemToDelete.data.title}</strong>`]);
+        const message = itemToDelete.type === 'quickLink'
+          ? getLocalizedMessage('confirmDeleteQuickLink', [`<strong>${itemToDelete.data.title}</strong>`])
+          : getLocalizedMessage('confirmDeleteBookmark', [`<strong>${itemToDelete.data.title}</strong>`]);
         
         showConfirmDialog(message, () => {
           if (itemToDelete && itemToDelete.data) {
@@ -147,39 +153,6 @@ function createContextMenu() {
   });
 
   return menu;
-}
-
-// 在文件顶部添加这个函数
-function applyBackgroundColor() {
-    const savedBg = localStorage.getItem('selectedBackground');
-    if (savedBg) {
-        const useDefaultBackground = localStorage.getItem('useDefaultBackground');
-        console.log('[Background] Current state:', {
-            savedBg,
-            useDefaultBackground,
-            hasWallpaper: localStorage.getItem('originalWallpaper')
-        });
-
-        if (useDefaultBackground !== 'true') {
-            console.log('[Background] Skipping color application - wallpaper is active');
-            document.querySelectorAll('.settings-bg-option').forEach(option => {
-                option.classList.remove('active');
-            });
-            return;
-        }
-
-        console.log('[Background] Applying background color:', savedBg);
-        
-        // 先设置背景类
-        document.documentElement.className = savedBg;
-        
-        // 使用 WelcomeManager 更新欢迎消息颜色
-        const welcomeElement = document.getElementById('welcome-message');
-        const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
-        if (welcomeElement && welcomeManager) {
-            welcomeManager.adjustTextColor(welcomeElement);
-        }
-    }
 }
 
 // 添加颜色缓存管理器
@@ -414,105 +387,6 @@ function initScriptCore() {
   // 初始化功能提示
   initFeatureTips().initAllTips();
 
-  // 加载保存的背景颜色
-  const savedBg = localStorage.getItem('selectedBackground');
-  const useDefaultBackground = localStorage.getItem('useDefaultBackground');
-  const hasWallpaper = localStorage.getItem('originalWallpaper');
-
-  console.log('[Background] Initial load state:', {
-    savedBg,
-    useDefaultBackground,
-    hasWallpaper
-  });
-
-  // 清除所有选项的 active 状态
-  document.querySelectorAll('.settings-bg-option').forEach(opt => {
-    opt.classList.remove('active');
-  });
-
-  if (savedBg) {
-    if (useDefaultBackground === 'true') {
-      console.log('[Background] Activating saved background color:', savedBg);
-      document.documentElement.className = savedBg;
-      const activeOption = document.querySelector(`[data-bg="${savedBg}"]`);
-      if (activeOption) {
-        activeOption.classList.add('active');
-      }
-    } else if (hasWallpaper) {
-      console.log('[Background] Wallpaper is active, keeping background options unselected');
-    }
-  } else {
-    console.log('[Background] No saved background, checking wallpaper state');
-    if (!hasWallpaper && useDefaultBackground !== 'false') {
-      console.log('[Background] No wallpaper, using default background');
-      document.documentElement.className = 'gradient-background-7';
-      const defaultOption = document.querySelector('[data-bg="gradient-background-7"]');
-      if (defaultOption) {
-        defaultOption.classList.add('active');
-      }
-    } else {
-      console.log('[Background] Wallpaper exists, skipping default background');
-      document.documentElement.className = '';
-    }
-  }
-
-  // 如果有壁纸，激活对应的壁纸选项
-  if (hasWallpaper) {
-    const wallpaperOption = document.querySelector(`.wallpaper-option[data-wallpaper-url="${hasWallpaper}"]`);
-    if (wallpaperOption) {
-      console.log('[Background] Activating wallpaper option');
-      wallpaperOption.classList.add('active');
-    }
-  }
-
-  // 背景选项点击事件
-  const bgOptions = document.querySelectorAll('.settings-bg-option');
-  bgOptions.forEach(option => {
-    option.addEventListener('click', function() {
-      const bgClass = this.getAttribute('data-bg');
-      console.log('[Background] Color option clicked:', {
-        bgClass,
-        previousBackground: document.documentElement.className,
-        previousWallpaper: localStorage.getItem('originalWallpaper')
-      });
-
-      // 移除所有背景选项的 active 状态
-      bgOptions.forEach(opt => {
-        opt.classList.remove('active');
-        console.log('[Background] Removing active state from:', opt.getAttribute('data-bg'));
-      });
-      
-      // 添加当前选项的 active 状态
-      this.classList.add('active');
-      console.log('[Background] Setting active state for:', bgClass);
-      
-      document.documentElement.className = bgClass;
-      localStorage.setItem('selectedBackground', bgClass);
-      localStorage.setItem('useDefaultBackground', 'true');
-      
-      // 清除壁纸相关的状态
-      document.querySelectorAll('.wallpaper-option').forEach(opt => {
-        opt.classList.remove('active');
-      });
-
-      // 清除壁纸
-      const mainElement = document.querySelector('main');
-      if (mainElement) {
-        mainElement.style.backgroundImage = 'none';
-        document.body.style.backgroundImage = 'none';
-        console.log('[Background] Cleared wallpaper');
-      }
-      localStorage.removeItem('originalWallpaper');
-
-      // 使用 WelcomeManager 更新欢迎消息颜色
-      const welcomeElement = document.getElementById('welcome-message');
-      const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
-      if (welcomeElement && welcomeManager) {
-        welcomeManager.adjustTextColor(welcomeElement);
-      }
-    });
-  });
-
   // 监听主题变化
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
@@ -533,14 +407,6 @@ function initScriptCore() {
   observer.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['class']
-  });
-
-  // 初始化快捷链接显示状态
-  chrome.storage.sync.get(['enableQuickLinks'], function(result) {
-    const quickLinksWrapper = document.querySelector('.quick-links-wrapper');
-    if (quickLinksWrapper) {
-      quickLinksWrapper.style.display = result.enableQuickLinks !== false ? 'flex' : 'none';
-    }
   });
 
   // 检测是否在 Side Panel 中运行
@@ -1604,8 +1470,8 @@ function createContextMenuItems(contextMenu, type) {
         
         // 根据类型显示不同的确认消息
         const message = itemToDelete.type === 'quickLink' 
-          ? chrome.i18n.getMessage("confirmDeleteQuickLink", [`<strong>${itemToDelete.data.title}</strong>`])
-          : chrome.i18n.getMessage("confirmDeleteBookmark", [`<strong>${itemToDelete.data.title}</strong>`]);
+          ? getLocalizedMessage('confirmDeleteQuickLink', [`<strong>${itemToDelete.data.title}</strong>`])
+          : getLocalizedMessage('confirmDeleteBookmark', [`<strong>${itemToDelete.data.title}</strong>`]);
         
         console.log('Showing confirmation dialog with message:', message);
         
@@ -1681,9 +1547,9 @@ function showDeleteConfirmDialog() {
   confirmMessage.innerHTML = '';
   
   // 根据类型显示不同的确认消息
-  const message = itemToDelete.type === 'quickLink' 
-    ? chrome.i18n.getMessage("confirmDeleteQuickLink", [`<strong>${itemToDelete.data.title}</strong>`])
-    : chrome.i18n.getMessage("confirmDeleteBookmark", [`<strong>${itemToDelete.data.title}</strong>`]);
+  const message = itemToDelete.type === 'quickLink'
+    ? getLocalizedMessage('confirmDeleteQuickLink', [`<strong>${itemToDelete.data.title}</strong>`])
+    : getLocalizedMessage('confirmDeleteBookmark', [`<strong>${itemToDelete.data.title}</strong>`]);
   confirmMessage.innerHTML = message;
   
   console.log('Showing confirmation dialog for:', {
@@ -1808,10 +1674,7 @@ function confirmBookmarkDeletion(bookmark) {
   confirmMessage.innerHTML = '';
   
   // 只显示书签删除的确认消息
-  confirmMessage.innerHTML = chrome.i18n.getMessage(
-    "confirmDeleteBookmark", 
-    [`<strong>${bookmark.title}</strong>`]
-  );
+  confirmMessage.innerHTML = getLocalizedMessage('confirmDeleteBookmark', [`<strong>${bookmark.title}</strong>`]);
   
   confirmDialog.style.display = 'block';
 
@@ -1882,10 +1745,7 @@ function confirmQuickLinkDeletion(quickLink) {
   confirmMessage.innerHTML = '';
   
   // 只显示快捷链接删除的确认消息
-  confirmMessage.innerHTML = chrome.i18n.getMessage(
-    "confirmDeleteQuickLink", 
-    [`<strong>${quickLink.title}</strong>`]
-  );
+  confirmMessage.innerHTML = getLocalizedMessage('confirmDeleteQuickLink', [`<strong>${quickLink.title}</strong>`]);
   
   confirmDialog.style.display = 'block';
 
@@ -2065,7 +1925,7 @@ function handleBookmarkDeletion() {
   chrome.bookmarks.remove(itemToDelete.data.id, function() {
     if (chrome.runtime.lastError) {
       console.error('Error deleting bookmark:', chrome.runtime.lastError);
-      Utilities.showToast(chrome.i18n.getMessage('deleteBookmarkError'));    
+      Utilities.showToast(getLocalizedMessage('deleteBookmarkError'));
     } else {
       console.log(`Bookmark deleted successfully: ID=${itemToDelete.data.id}, Title=${itemToDelete.data.title}`);
       Utilities.showToast(getLocalizedMessage('deleteSuccess'));
@@ -2558,7 +2418,7 @@ function createMenuItems(menu) {
       if (currentBookmarkFolder) {
         const folderId = currentBookmarkFolder.dataset.id;
         const folderTitle = currentBookmarkFolder.querySelector('.card-title').textContent;
-        showConfirmDialog(chrome.i18n.getMessage("confirmDeleteFolder", [`<strong>${folderTitle}</strong>`]), () => {
+        showConfirmDialog(getLocalizedMessage('confirmDeleteFolder', [`<strong>${folderTitle}</strong>`]), () => {
           chrome.bookmarks.removeTree(folderId, () => {
             currentBookmarkFolder.remove();
             Utilities.showToast(getLocalizedMessage('categoryDeleted'));
@@ -2880,7 +2740,7 @@ function openImportSharedFolderDialog(sharedRoot) {
   const counts = countSharedItems(sharedRoot);
   if (titleEl) titleEl.textContent = sharedRoot?.t || getLocalizedMessage('sharedFolderDefaultName');
   if (summaryEl) {
-    summaryEl.textContent = chrome.i18n.getMessage('sharedFolderSummary', [
+    summaryEl.textContent = getLocalizedMessage('sharedFolderSummary', [
       String(Math.max(0, counts.folders - 1)),
       String(counts.bookmarks)
     ]);
@@ -3423,8 +3283,8 @@ function initScriptFolderNameObserver() {
           
           // 根据类型显示不同的确认消息
           const message = itemToDelete.type === 'quickLink' 
-            ? chrome.i18n.getMessage("confirmDeleteQuickLink", [`<strong>${itemToDelete.data.title}</strong>`])
-            : chrome.i18n.getMessage("confirmDeleteBookmark", [`<strong>${itemToDelete.data.title}</strong>`]);
+            ? getLocalizedMessage('confirmDeleteQuickLink', [`<strong>${itemToDelete.data.title}</strong>`])
+            : getLocalizedMessage('confirmDeleteBookmark', [`<strong>${itemToDelete.data.title}</strong>`]);
           
           showConfirmDialog(message, () => {
             if (itemToDelete && itemToDelete.data) {
@@ -3986,7 +3846,7 @@ function initScriptFolderNameObserver() {
               case getLocalizedMessage('delete'):
                 const categoryId = currentCategory.dataset.id;
                 const categoryTitle = currentCategory.dataset.title;
-                showConfirmDialog(chrome.i18n.getMessage("confirmDeleteFolder", [`<strong>${categoryTitle}</strong>`]), () => {
+                showConfirmDialog(getLocalizedMessage('confirmDeleteFolder', [`<strong>${categoryTitle}</strong>`]), () => {
                   chrome.bookmarks.removeTree(categoryId, function () {
                     currentCategory.remove();
                     Utilities.showToast(getLocalizedMessage('categoryDeleted'));
@@ -4213,7 +4073,7 @@ function initScriptFolderNameObserver() {
 
   const tabsContainer = document.getElementById('tabs-container');
   const tabs = document.querySelectorAll('.tab');
-  const defaultSearchEngine = localStorage.getItem('selectedSearchEngine') || 'Google';
+  const defaultSearchEngine = (localStorage.getItem('selectedSearchEngine') || 'google').toLowerCase();
 
   // 在文件的适当位置（可能在 DOMContentLoaded 事件监听器内）添加这个标志
   let isChangingSearchEngine = false;
@@ -4362,12 +4222,13 @@ function initScriptFolderNameObserver() {
 
   // 新增恢复默认搜索引擎的函数
   function restoreDefaultSearchEngine() {
-    const defaultEngine = localStorage.getItem('selectedSearchEngine') || 'google';
+    const defaultEngine = (localStorage.getItem('selectedSearchEngine') || 'google').toLowerCase();
 
     // 更新标签状态
     const tabs = document.querySelectorAll('.tab');
     tabs.forEach(tab => {
-      if (tab.getAttribute('data-engine') === defaultEngine) {
+      const tabEngine = tab.getAttribute('data-engine');
+      if (tabEngine && tabEngine.toLowerCase() === defaultEngine) {
         tab.classList.add('active');
       } else {
         tab.classList.remove('active');
@@ -4375,8 +4236,10 @@ function initScriptFolderNameObserver() {
     });
 
     // 更新搜索引擎图标
-    updateSearchEngineIcon(defaultEngine);
+    updateSearchEngineIcon(SearchEngineManager.getDefaultEngine());
   }
+
+  document.addEventListener('defaultSearchEngineChanged', restoreDefaultSearchEngine);
 
   // 动态调整 textarea 度的函数
   function adjustTextareaHeight() {
@@ -4731,7 +4594,7 @@ function initScriptVersionNumber() {
   if (!versionElement) return;
 
   const manifest = chrome.runtime.getManifest();
-  const versionText = chrome.i18n.getMessage('version', [manifest.version]);
+  const versionText = getLocalizedMessage('version', [manifest.version]);
   versionElement.textContent = versionText;
 }
 
@@ -4762,23 +4625,6 @@ function initScriptVersionNumber() {
       event.stopPropagation();
     });
   }
-
-  // 添加一个全局函数用于更新快捷链接显示状态
-  function updateQuickLinksVisibility() {
-    chrome.storage.sync.get(['enableQuickLinks'], function(result) {
-      const quickLinksWrapper = document.querySelector('.quick-links-wrapper');
-      if (quickLinksWrapper) {
-        quickLinksWrapper.style.display = result.enableQuickLinks !== false ? 'flex' : 'none';
-      }
-    });
-  }
-
-  // 监听存储变化
-  chrome.storage.onChanged.addListener(function(changes, namespace) {
-    if (namespace === 'sync' && changes.enableQuickLinks) {
-      updateQuickLinksVisibility();
-    }
-  });
 
   // 添加搜索引擎变更事件监听
   document.addEventListener('defaultSearchEngineChanged', (event) => {

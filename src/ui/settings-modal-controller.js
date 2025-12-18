@@ -1,6 +1,7 @@
 import { getWelcomeManager } from '../welcome.js';
 import { initThemeController, setTheme, syncThemeToggleIcon } from './theme-controller.js';
 import { clearWallpaperState } from '../wallpaper.js';
+import { setQuickLinksVisibility } from '../quick-links.js';
 
 let settingsModalControllerInitialized = false;
 
@@ -83,12 +84,6 @@ function handleBackgroundChange(optionEl) {
   clearWallpaper();
 }
 
-function toggleQuickLinksVisibility(show) {
-  const quickLinksWrapper = document.querySelector('.quick-links-wrapper');
-  if (!quickLinksWrapper) return;
-  quickLinksWrapper.style.display = show ? 'flex' : 'none';
-}
-
 function loadSavedSettings() {
   const enableFloatingBallCheckbox = document.getElementById('enable-floating-ball');
   const enableQuickLinksCheckbox = document.getElementById('enable-quick-links');
@@ -103,7 +98,7 @@ function loadSavedSettings() {
   if (enableQuickLinksCheckbox) {
     chrome.storage.sync.get(['enableQuickLinks'], (result) => {
       enableQuickLinksCheckbox.checked = result.enableQuickLinks !== false;
-      toggleQuickLinksVisibility(enableQuickLinksCheckbox.checked);
+      setQuickLinksVisibility(enableQuickLinksCheckbox.checked);
     });
   }
 
@@ -114,12 +109,27 @@ function loadSavedSettings() {
   }
 
   const savedBg = localStorage.getItem('selectedBackground');
-  if (savedBg) {
+  const useDefaultBackground = localStorage.getItem('useDefaultBackground');
+  const hasWallpaper = localStorage.getItem('originalWallpaper');
+
+  if (useDefaultBackground === 'true' && savedBg) {
     document.documentElement.className = savedBg;
     document.querySelectorAll('.settings-bg-option').forEach((option) => {
       if (option.getAttribute('data-bg') === savedBg) {
         option.classList.add('active');
+      } else {
+        option.classList.remove('active');
       }
+    });
+
+    const welcomeElement = document.getElementById('welcome-message');
+    const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
+    if (welcomeElement && welcomeManager) {
+      welcomeManager.adjustTextColor(welcomeElement);
+    }
+  } else if (hasWallpaper) {
+    document.querySelectorAll('.settings-bg-option').forEach((option) => {
+      option.classList.remove('active');
     });
   }
 
@@ -186,7 +196,7 @@ export function initSettingsModalController() {
     enableQuickLinksCheckbox.addEventListener('change', () => {
       const isEnabled = enableQuickLinksCheckbox.checked;
       chrome.storage.sync.set({ enableQuickLinks: isEnabled }, () => {
-        toggleQuickLinksVisibility(isEnabled);
+        setQuickLinksVisibility(isEnabled);
       });
     });
   }
