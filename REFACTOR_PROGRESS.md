@@ -39,6 +39,8 @@
 - 搜索工具函数去重：`src/script.js` 移除重复的 `getSearchUrl()` / `debounce()` 定义，统一改为复用 `src/search-engines.js#getSearchUrl()` 与 `src/utils/debounce.js`，减少后续拆分时的阴影覆盖与行为漂移风险。
 - 搜索建议“相关性计算”抽取：新增 `src/search/relevance.js` 承载 `calculateRelevance()`（含 fuzzy/levenshtein），`src/script.js` 改为复用该实现，方便后续把搜索建议逻辑从 `script.js` 拆出。
 - 搜索建议服务抽取：新增 `src/search/suggestions.js` 承载“历史/书签建议 + 用户行为加权排序 + 最近历史默认建议”，`src/script.js` 改为复用该模块并修正 focus 时的异步建议加载（避免把 Promise 误传给渲染函数）。
+- 搜索建议遗留清理：移除 `src/script.js` 内一套重复/未使用的建议生成与用户行为逻辑；保留 `getRecentHistory()`/`getSuggestions()` 兼容壳函数，内部统一委托到 `src/search/suggestions.js`，减少后续继续拆分时的行为漂移风险。
+- 搜索建议 UI 拆分：新增 `src/search/suggestions-ui.js` 承载“建议列表渲染/滚动加载/键盘导航/默认建议”等纯 UI 行为，`src/script.js` 只负责 wiring（传入 service + 回调），进一步收敛 `script.js` 复杂度，保持 UI/交互对等。
 
 ### D) 关键问题修复与稳定性增强
 
@@ -114,5 +116,7 @@
 - 搜索建议/快捷键不变：输入触发建议列表（历史/书签/搜索建议），键盘上下选择与回车打开/搜索、以及输入防抖行为均正常。
 - 搜索建议排序不变：同样输入下，建议列表的排序与打开行为保持一致（历史/书签结果仍按相关性优先）。
 - 搜索建议交互不变：focus 时（输入框已有内容）能立即正确展示建议列表，不出现“空列表/闪一下就消失”的异常。
+- 搜索建议相关控制台无异常：不会出现 `getBingSuggestions` / `balanceResults` 等遗留函数缺失导致的报错。
+- 搜索建议 UI 行为不变：滚动到底自动加载更多建议、上下键选择/Enter 打开、Ctrl/Cmd + Enter 仍可“一次打开其它搜索引擎”。
 - 暗色模式下打开“搜索引擎管理”弹窗：右上角关闭按钮无白色矩形底，位置与点击区域合理；滚动弹窗内容时关闭按钮仍在顶部可操作。
 - 打开“搜索引擎管理”弹窗：`Perplexity` 选项显示为 `Perplexity`（而非 `perplexityLabel`）；下拉菜单与“本次使用”临时 Tabs 的引擎名称也一致。
