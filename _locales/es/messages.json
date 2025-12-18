@@ -564,5 +564,45 @@
     "gistImportHint": {
         "message": "Consejo: Descarga el HTML e impórtalo desde el Administrador de marcadores de Chrome.",
         "description": "Pista para importar el HTML"
+    },
+    "onboardingTitle": {
+        "message": "Bienvenido a NewTabMark",
+        "description": "Título del onboarding"
+    },
+    "onboardingStep1Title": {
+        "message": "Buscar",
+        "description": "Título del paso 1"
+    },
+    "onboardingStep1Desc": {
+        "message": "Usa el cuadro de búsqueda para buscar rápidamente con tu motor favorito.",
+        "description": "Descripción del paso 1"
+    },
+    "onboardingStep2Title": {
+        "message": "Enlaces rápidos",
+        "description": "Título del paso 2"
+    },
+    "onboardingStep2Desc": {
+        "message": "Accede más rápido a los sitios que visitas con frecuencia.",
+        "description": "Descripción del paso 2"
+    },
+    "onboardingStep3Title": {
+        "message": "Ajustes",
+        "description": "Título del paso 3"
+    },
+    "onboardingStep3Desc": {
+        "message": "Personaliza el tema, el fondo de pantalla y más.",
+        "description": "Descripción del paso 3"
+    },
+    "prevButton": {
+        "message": "Anterior",
+        "description": "Botón anterior"
+    },
+    "nextButton": {
+        "message": "Siguiente",
+        "description": "Botón siguiente"
+    },
+    "finishButton": {
+        "message": "Finalizar",
+        "description": "Botón finalizar"
     }
 }

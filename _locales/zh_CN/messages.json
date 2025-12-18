@@ -779,5 +779,45 @@
     "gistImportHint": {
         "message": "提示：下载 HTML 后可在 Chrome 书签管理器中导入。",
         "description": "导入提示"
+    },
+    "onboardingTitle": {
+        "message": "欢迎使用 NewTabMark",
+        "description": "引导弹层标题"
+    },
+    "onboardingStep1Title": {
+        "message": "搜索",
+        "description": "引导步骤 1 标题"
+    },
+    "onboardingStep1Desc": {
+        "message": "使用搜索框快速搜索你常用的引擎。",
+        "description": "引导步骤 1 描述"
+    },
+    "onboardingStep2Title": {
+        "message": "快捷链接",
+        "description": "引导步骤 2 标题"
+    },
+    "onboardingStep2Desc": {
+        "message": "更快访问你经常访问的网站。",
+        "description": "引导步骤 2 描述"
+    },
+    "onboardingStep3Title": {
+        "message": "设置",
+        "description": "引导步骤 3 标题"
+    },
+    "onboardingStep3Desc": {
+        "message": "自定义主题、壁纸等更多选项。",
+        "description": "引导步骤 3 描述"
+    },
+    "prevButton": {
+        "message": "上一步",
+        "description": "引导上一步按钮"
+    },
+    "nextButton": {
+        "message": "下一步",
+        "description": "引导下一步按钮"
+    },
+    "finishButton": {
+        "message": "完成",
+        "description": "引导完成按钮"
     }
 }

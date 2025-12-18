@@ -11,14 +11,22 @@ let initialized = false;
 let wallpaperManagerInstance = null;
 
 export function initWallpaper() {
-  if (initialized) return;
-  initialized = true;
+    const wallpaperContainer = document.querySelector('.wallpaper-options');
+    const uploadInput = document.getElementById('upload-wallpaper');
 
-  const wallpaperContainer = document.querySelector('.wallpaper-options');
-  const uploadInput = document.getElementById('upload-wallpaper');
-  if (!wallpaperContainer && !uploadInput) return;
+    // Settings modal DOM may be injected lazily by the React shell.
+    // If the wallpaper UI is not present yet, do NOT lock initialization.
+    if (!wallpaperContainer && !uploadInput) return;
 
-  wallpaperManagerInstance = new WallpaperManager();
+    // If we already have a manager, just refresh DOM references/bindings.
+    if (wallpaperManagerInstance) {
+        wallpaperManagerInstance.refreshDomBindings?.();
+        return;
+    }
+
+    // Only mark initialized once we successfully create the manager.
+    initialized = true;
+    wallpaperManagerInstance = new WallpaperManager();
 }
 
 export function getWallpaperManager() {
@@ -46,6 +54,16 @@ class WallpaperManager {
         this.wallpaperOptions = document.querySelectorAll('.wallpaper-option');
         this.uploadInput = document.getElementById('upload-wallpaper');
         this.mainElement = document.querySelector('main');
+
+        this.abortController = new AbortController();
+        this.hasInitializedOnce = false;
+        this.listenersBound = false;
+        this.boundNodes = {
+            uploadInput: null,
+            resetButton: null,
+            checkCacheButton: null,
+            optionsContainer: null
+        };
         
         // 初始化预设壁纸列表
         this.initializePresetWallpapers();
@@ -64,8 +82,64 @@ class WallpaperManager {
         this.loadUserWallpapers();
         
         // 初始化事件监听和其他设置
+        this.refreshDomBindings({ forceRebind: true });
+    }
+
+    destroy() {
+        this.abortController?.abort();
+        this.abortController = null;
+    }
+
+    refreshDomBindings(options = {}) {
+        const { forceRebind = false } = options;
+
+        // Re-resolve dynamic DOM nodes (settings modal can be re-mounted).
+        this.wallpaperOptions = document.querySelectorAll('.wallpaper-option');
+        this.uploadInput = document.getElementById('upload-wallpaper');
+        this.mainElement = document.querySelector('main');
+
+        const resetButton = document.getElementById('reset-wallpaper');
+        const checkCacheButton = document.getElementById('check-wallpaper-cache');
+        const optionsContainer = document.querySelector('.wallpaper-options');
+
+        const nodesChanged =
+            this.boundNodes.uploadInput !== this.uploadInput ||
+            this.boundNodes.resetButton !== resetButton ||
+            this.boundNodes.checkCacheButton !== checkCacheButton ||
+            this.boundNodes.optionsContainer !== optionsContainer;
+
+        this.boundNodes = {
+            uploadInput: this.uploadInput,
+            resetButton,
+            checkCacheButton,
+            optionsContainer
+        };
+
+        const shouldRebind = forceRebind || nodesChanged;
+
+        if (shouldRebind) {
+            this.abortController?.abort();
+            this.abortController = new AbortController();
+            this.listenersBound = false;
+        }
+
         this.initializeEventListeners();
-        this.initialize();
+
+        // Only run the heavy initialization once per page lifecycle.
+        if (!this.hasInitializedOnce) {
+            this.hasInitializedOnce = true;
+            this.initialize();
+            return;
+        }
+
+        // If the wallpaper list was re-injected, ensure options exist and active border is correct.
+        const container = document.querySelector('.wallpaper-options');
+        const hasAnyOption = !!container?.querySelector('.wallpaper-option');
+        if (container && !hasAnyOption) {
+            void this.loadPresetWallpapers();
+        } else {
+            this.syncActiveWallpaperOption();
+        }
     }
 
     normalizeWallpaperKey(value) {
@@ -201,37 +275,48 @@ class WallpaperManager {
     }
 
     initializeEventListeners() {
+        if (!this.abortController) {
+            this.abortController = new AbortController();
+        }
+        if (this.listenersBound) return;
+        const { signal } = this.abortController;
+
         // 初始化上传事件监听
         if (this.uploadInput) {
-            this.uploadInput.addEventListener('change', (event) => this.handleFileUpload(event));
+            this.uploadInput.addEventListener('change', (event) => this.handleFileUpload(event), { signal });
         }
 
         // 初始化重置按钮事件监听
         const resetButton = document.getElementById('reset-wallpaper');
         if (resetButton) {
-            resetButton.addEventListener('click', () => this.resetWallpaper());
+            resetButton.addEventListener('click', () => this.resetWallpaper(), { signal });
         }
 
         // 添加图片加载错误处理
-        window.addEventListener('error', (e) => this.handleImageError(e), true);
+        window.addEventListener('error', (e) => this.handleImageError(e), { capture: true, signal });
 
         // 添加检查缓存按钮事件监听
         const checkCacheButton = document.getElementById('check-wallpaper-cache');
         if (checkCacheButton) {
-            checkCacheButton.addEventListener('click', () => this.checkWallpaperCache());
+            checkCacheButton.addEventListener('click', () => this.checkWallpaperCache(), { signal });
         }
 
         const wallpaperOptionsContainer = document.querySelector('.wallpaper-options');
-        if (wallpaperOptionsContainer && wallpaperOptionsContainer.dataset.ntmWallpaperBound !== 'true') {
-            wallpaperOptionsContainer.dataset.ntmWallpaperBound = 'true';
-            wallpaperOptionsContainer.addEventListener('click', (event) => {
-                const option = event.target instanceof Element
-                    ? event.target.closest('.wallpaper-option')
-                    : null;
-                if (!option) return;
-                this.handleWallpaperOptionClick(option);
-            });
+        if (wallpaperOptionsContainer) {
+            wallpaperOptionsContainer.addEventListener(
+                'click',
+                (event) => {
+                    const option = event.target instanceof Element
+                        ? event.target.closest('.wallpaper-option')
+                        : null;
+                    if (!option) return;
+                    this.handleWallpaperOptionClick(option);
+                },
+                { signal }
+            );
         }
+
+        this.listenersBound = true;
     }
 
     handleBackgroundOptionClick(option) {

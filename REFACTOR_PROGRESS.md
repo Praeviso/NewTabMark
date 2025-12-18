@@ -32,7 +32,9 @@
 - 背景/壁纸初始化收敛：移除 `src/script.js` 对 `.settings-bg-option` 的重复初始化与 click 绑定；背景色仅在 `useDefaultBackground === 'true'` 时才会从设置弹窗恢复（避免壁纸模式被误覆盖）；默认无配置时回退到 `gradient-background-7` 由 `src/wallpaper.js` 负责。
 - 主题初始化收敛：将 `initThemeController()` 统一移入 `src/bootstrap-legacy-shared.js` 的启动序列，移除 `src/script.js` 内重复初始化，并让 `src/ui/settings-modal-controller.js` 不再重复读取/应用 `theme`（避免二次 setTheme 与入口分散）。
 - 设置弹窗控制器收敛：`src/ui/settings-modal-controller.js` 改为“找不到 modal 时不锁死 initialized”、监听器可 abort（避免重复绑定）；并在 `src/bootstrap-legacy-shared.js` 的共享启动序列中统一初始化（移除 `LegacyAppShell` 中的重复初始化）。同时 `openSettingsModal()` 会在打开时刷新一次设置状态，减少状态不同步。
+- 壁纸模块幂等化（适配延迟注入）：`src/wallpaper.js` 不再在 DOM 未就绪时“锁死初始化”，事件监听使用 `AbortController` 可重绑；`openSettingsModal()` 打开时触发 `initWallpaper()` 兜底初始化，避免壁纸/上传/重置在 React 外壳延迟注入场景失效。
 - 背景色/壁纸状态收敛（去重）：新增 `src/background-state.js` 统一读取/计算/应用“背景色”存储状态（`selectedBackground`/`useDefaultBackground`/`originalWallpaper`）与 `.settings-bg-option` active 同步；`src/wallpaper.js` 与 `src/ui/settings-modal-controller.js` 复用该 helper，减少重复逻辑与状态分歧风险（保持 UI/功能对等）。
+- 引导与欢迎模块幂等化（适配延迟注入）：`src/onboarding.js` / `src/welcome.js` 在找不到关键 DOM 时不再“锁死初始化”；事件监听使用 `AbortController` 绑定，避免 React 外壳重复注入/重启 bootstrap 时出现重复绑定与泄漏（保持 UI/交互对等）。
 
 ### 搜索模块拆分（保持对等）
 
@@ -116,3 +118,22 @@
 - New Tab：刷新后主题（明/暗）保持；右上角主题切换按钮点击可切换，图标同步变化；无明显闪烁。
 - New Tab：打开设置弹窗（点击齿轮）→ 关闭（关闭按钮/点击遮罩/Esc）均可用；切换任意 Tab 正常。
 - Side Panel：重复以上 2 条路径验证一次。
+
+本轮额外验证点（壁纸模块幂等初始化）：
+- New Tab：刷新后立刻打开设置弹窗 → 壁纸列表可见，点击任意壁纸可生效（背景切换 + 绿色边框 active）。
+- New Tab：上传壁纸 → 壁纸立刻生效且 active 正确；关闭设置弹窗再打开 → active 仍正确。
+- Side Panel：重复以上 2 条路径验证一次；并确认控制台无重复绑定导致的多次 alert/多次触发。
+
+本轮额外验证点（Onboarding / Welcome 幂等初始化）：
+- New Tab：首次进入（清空 `localStorage.onboardingCompleted`）应自动弹出引导；点击 Prev/Next/圆点可切换步骤；最后一步按钮文案为 `finishButton` 对应 i18n。
+- New Tab：欢迎文案可点击改名；刷新后名称保持；切换主题（明/暗）欢迎文字颜色仍可读、不会报错。
+- Side Panel：重复以上两条路径至少一次，确认不会出现“重复绑定导致一次点击触发多次”的现象。
+
+补充说明（本轮定位结果）：
+- 当前 `src/index.html` / `src/sidepanel.html` 模板中没有引导弹层的 DOM（`#onboarding-overlay` 等），导致 `initOnboarding()` 之前会直接 return，从而不会出现引导、也不会写入 `localStorage.onboardingCompleted`。
+- 已在 `src/onboarding.js` 内按既有 CSS class 动态注入缺失的引导 DOM，保证功能对等并可独立验证。
+
+本轮补齐（Onboarding i18n / 主题适配）：
+- 动态注入的引导 DOM 现在带 `data-i18n`，并在注入后调用 `updateUILanguage(overlay)`，确保文案可本地化。
+- 新增 onboarding 相关 i18n key：`onboardingTitle` / `onboardingStep{1..3}{Title,Desc}` / `prevButton` / `nextButton` / `finishButton`（已覆盖 `_locales/*/messages.json`）。
+- `src/styles.css` 增加 `[data-theme="dark"]` 下的 `.onboarding-modal/.onboarding-step/.dot` 覆盖，暗色模式下不再出现“白底引导”违和。

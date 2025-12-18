@@ -183,6 +183,40 @@ html[data-theme="dark"] .progress-bar div.active {
   background-color: rgba(255, 255, 255, 0.28);
 }
 
+/* Onboarding (dark theme) */
+[data-theme="dark"] .onboarding-modal {
+  background: #404040;
+}
+
+[data-theme="dark"] .onboarding-modal h2 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .onboarding-step {
+  background: #242424;
+}
+
+[data-theme="dark"] .onboarding-step h3 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .onboarding-step p {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+[data-theme="dark"] .onboarding-prev {
+  background: #404040;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .onboarding-prev:disabled {
+  opacity: 0.5;
+}
+
+[data-theme="dark"] .dot {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 
 
 [data-theme="dark"] .custom-width {

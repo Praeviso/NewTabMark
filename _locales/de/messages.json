@@ -592,5 +592,45 @@
     "gistImportHint": {
         "message": "Tipp: Laden Sie die HTML-Datei herunter und importieren Sie sie im Chrome-Lesezeichen-Manager.",
         "description": "Hint text for importing the exported html"
+    },
+    "onboardingTitle": {
+        "message": "Willkommen bei NewTabMark",
+        "description": "Onboarding modal title"
+    },
+    "onboardingStep1Title": {
+        "message": "Suche",
+        "description": "Onboarding step 1 title"
+    },
+    "onboardingStep1Desc": {
+        "message": "Nutzen Sie das Suchfeld, um schnell mit Ihrer bevorzugten Suchmaschine zu suchen.",
+        "description": "Onboarding step 1 description"
+    },
+    "onboardingStep2Title": {
+        "message": "Schnelllinks",
+        "description": "Onboarding step 2 title"
+    },
+    "onboardingStep2Desc": {
+        "message": "Greifen Sie schneller auf häufig besuchte Websites zu.",
+        "description": "Onboarding step 2 description"
+    },
+    "onboardingStep3Title": {
+        "message": "Einstellungen",
+        "description": "Onboarding step 3 title"
+    },
+    "onboardingStep3Desc": {
+        "message": "Passen Sie Theme, Hintergrundbild und mehr an.",
+        "description": "Onboarding step 3 description"
+    },
+    "prevButton": {
+        "message": "Zurück",
+        "description": "Onboarding previous button"
+    },
+    "nextButton": {
+        "message": "Weiter",
+        "description": "Onboarding next button"
+    },
+    "finishButton": {
+        "message": "Fertig",
+        "description": "Onboarding finish button"
     }
 }

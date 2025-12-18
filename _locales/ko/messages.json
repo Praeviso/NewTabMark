@@ -644,5 +644,45 @@
     "gistImportHint": {
         "message": "팁: HTML을 다운로드한 뒤 Chrome 북마크 관리자에서 가져오세요.",
         "description": "가져오기 팁"
+    },
+    "onboardingTitle": {
+        "message": "NewTabMark에 오신 것을 환영합니다",
+        "description": "온보딩 제목"
+    },
+    "onboardingStep1Title": {
+        "message": "검색",
+        "description": "온보딩 1단계 제목"
+    },
+    "onboardingStep1Desc": {
+        "message": "검색창에서 즐겨 사용하는 검색 엔진으로 빠르게 검색하세요.",
+        "description": "온보딩 1단계 설명"
+    },
+    "onboardingStep2Title": {
+        "message": "빠른 링크",
+        "description": "온보딩 2단계 제목"
+    },
+    "onboardingStep2Desc": {
+        "message": "자주 방문하는 사이트에 더 빠르게 접근하세요.",
+        "description": "온보딩 2단계 설명"
+    },
+    "onboardingStep3Title": {
+        "message": "설정",
+        "description": "온보딩 3단계 제목"
+    },
+    "onboardingStep3Desc": {
+        "message": "테마, 배경화면 등 다양한 옵션을 사용자화하세요.",
+        "description": "온보딩 3단계 설명"
+    },
+    "prevButton": {
+        "message": "이전",
+        "description": "온보딩 이전 버튼"
+    },
+    "nextButton": {
+        "message": "다음",
+        "description": "온보딩 다음 버튼"
+    },
+    "finishButton": {
+        "message": "완료",
+        "description": "온보딩 완료 버튼"
     }
 }

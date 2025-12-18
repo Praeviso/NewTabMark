@@ -640,5 +640,45 @@
     "gistImportHint": {
         "message": "提示：下載 HTML 後可喺 Chrome 書籤管理員入面匯入。",
         "description": "匯入提示"
+    },
+    "onboardingTitle": {
+        "message": "歡迎使用 NewTabMark",
+        "description": "引導彈層標題"
+    },
+    "onboardingStep1Title": {
+        "message": "搜尋",
+        "description": "引導步驟 1 標題"
+    },
+    "onboardingStep1Desc": {
+        "message": "用搜尋框快速搜尋你常用嘅引擎。",
+        "description": "引導步驟 1 描述"
+    },
+    "onboardingStep2Title": {
+        "message": "快捷連結",
+        "description": "引導步驟 2 標題"
+    },
+    "onboardingStep2Desc": {
+        "message": "更快存取你經常造訪嘅網站。",
+        "description": "引導步驟 2 描述"
+    },
+    "onboardingStep3Title": {
+        "message": "設定",
+        "description": "引導步驟 3 標題"
+    },
+    "onboardingStep3Desc": {
+        "message": "自訂主題、桌布等更多選項。",
+        "description": "引導步驟 3 描述"
+    },
+    "prevButton": {
+        "message": "上一步",
+        "description": "引導上一步按鈕"
+    },
+    "nextButton": {
+        "message": "下一步",
+        "description": "引導下一步按鈕"
+    },
+    "finishButton": {
+        "message": "完成",
+        "description": "引導完成按鈕"
     }
 }

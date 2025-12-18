@@ -710,5 +710,45 @@
     "gistImportHint": {
         "message": "Tip: Download the HTML and import it from Chrome Bookmark Manager.",
         "description": "Hint text for importing the exported html"
+    },
+    "onboardingTitle": {
+        "message": "Welcome to NewTabMark",
+        "description": "Onboarding modal title"
+    },
+    "onboardingStep1Title": {
+        "message": "Search",
+        "description": "Onboarding step 1 title"
+    },
+    "onboardingStep1Desc": {
+        "message": "Use the search box to quickly search with your favorite engine.",
+        "description": "Onboarding step 1 description"
+    },
+    "onboardingStep2Title": {
+        "message": "Quick Links",
+        "description": "Onboarding step 2 title"
+    },
+    "onboardingStep2Desc": {
+        "message": "Access frequently visited sites faster.",
+        "description": "Onboarding step 2 description"
+    },
+    "onboardingStep3Title": {
+        "message": "Settings",
+        "description": "Onboarding step 3 title"
+    },
+    "onboardingStep3Desc": {
+        "message": "Customize theme, wallpaper, and more.",
+        "description": "Onboarding step 3 description"
+    },
+    "prevButton": {
+        "message": "Prev",
+        "description": "Onboarding previous button"
+    },
+    "nextButton": {
+        "message": "Next",
+        "description": "Onboarding next button"
+    },
+    "finishButton": {
+        "message": "Finish",
+        "description": "Onboarding finish button"
     }
 }

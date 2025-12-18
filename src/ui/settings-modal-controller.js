@@ -1,5 +1,5 @@
 import { getWelcomeManager } from '../welcome.js';
-import { clearWallpaperState } from '../wallpaper.js';
+import { clearWallpaperState, initWallpaper } from '../wallpaper.js';
 import { setQuickLinksVisibility } from '../quick-links.js';
 import {
   applyBackgroundClass,
@@ -65,6 +65,9 @@ export function openSettingsModal(root = document) {
 
   const modalEl = getSettingsModalEl(root);
   if (!modalEl) return false;
+
+  // Settings modal DOM may be injected lazily; ensure wallpaper logic is ready.
+  initWallpaper();
 
   loadSavedSettings(modalEl.ownerDocument ?? document);
   modalEl.style.display = 'block';

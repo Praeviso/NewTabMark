@@ -8,11 +8,11 @@ const WelcomeManager = {
     },
 
     // 初始化方法
-    initialize() {
+    initialize({ signal } = {}) {
         this.updateWelcomeMessage();
         this.initializeColorCache();
-        this.setupEventListeners();
-        this.setupThemeChangeListener();
+        this.setupEventListeners({ signal });
+        this.setupThemeChangeListener({ signal });
     },
 
     // 更新欢迎消息
@@ -212,8 +212,13 @@ const WelcomeManager = {
     },
 
     // 设置事件监听器
-    setupEventListeners() {
-        document.getElementById('welcome-message').addEventListener('click', () => {
+    setupEventListeners({ signal } = {}) {
+        const welcomeEl = document.getElementById('welcome-message');
+        if (!welcomeEl) return;
+
+        const opts = signal ? { signal } : undefined;
+
+        welcomeEl.addEventListener('click', () => {
             // 使用 chrome.i18n.getMessage 获取本地化的提示文本
             const newUserName = prompt(chrome.i18n.getMessage("namePrompt"), userName);
             if (newUserName && newUserName.trim() !== "") {
@@ -221,11 +226,11 @@ const WelcomeManager = {
                 localStorage.setItem('userName', userName);
                 this.updateWelcomeMessage();
             }
-        });
+        }, opts);
     },
 
     // 添加主题变化监听方法
-    setupThemeChangeListener() {
+    setupThemeChangeListener({ signal } = {}) {
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'data-theme') {
@@ -241,24 +246,47 @@ const WelcomeManager = {
             attributes: true,
             attributeFilter: ['data-theme']
         });
+
+        if (signal) {
+            signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+        }
     }
 };
 
 let initialized = false;
 let intervalId = null;
+let abortController = null;
 
 export function getWelcomeManager() {
     return WelcomeManager;
 }
 
 export function initWelcome() {
+    const welcomeElement = document.getElementById('welcome-message');
+
+    // legacy DOM 可能尚未注入；此时不要“锁死”初始化。
+    if (!welcomeElement) return;
+
     if (initialized) return;
     initialized = true;
 
+    abortController?.abort();
+    abortController = new AbortController();
+
     if (!window.WelcomeManager) window.WelcomeManager = WelcomeManager;
-    WelcomeManager.initialize();
-    if (intervalId) {
-        clearInterval(intervalId);
-    }
+    WelcomeManager.initialize({ signal: abortController.signal });
+
+    if (intervalId) clearInterval(intervalId);
     intervalId = setInterval(() => WelcomeManager.updateWelcomeMessage(), 60000);
+
+    abortController.signal.addEventListener(
+        'abort',
+        () => {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        },
+        { once: true }
+    );
 }

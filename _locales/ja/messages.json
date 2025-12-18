@@ -644,5 +644,45 @@
     "gistImportHint": {
         "message": "ヒント：HTML をダウンロードして Chrome のブックマークマネージャーからインポートします。",
         "description": "インポートのヒント"
+    },
+    "onboardingTitle": {
+        "message": "NewTabMarkへようこそ",
+        "description": "オンボーディングのタイトル"
+    },
+    "onboardingStep1Title": {
+        "message": "検索",
+        "description": "ステップ1のタイトル"
+    },
+    "onboardingStep1Desc": {
+        "message": "検索ボックスでお気に入りの検索エンジンをすばやく検索できます。",
+        "description": "ステップ1の説明"
+    },
+    "onboardingStep2Title": {
+        "message": "クイックリンク",
+        "description": "ステップ2のタイトル"
+    },
+    "onboardingStep2Desc": {
+        "message": "よく訪れるサイトに素早くアクセスできます。",
+        "description": "ステップ2の説明"
+    },
+    "onboardingStep3Title": {
+        "message": "設定",
+        "description": "ステップ3のタイトル"
+    },
+    "onboardingStep3Desc": {
+        "message": "テーマ、壁紙などをカスタマイズできます。",
+        "description": "ステップ3の説明"
+    },
+    "prevButton": {
+        "message": "戻る",
+        "description": "前へボタン"
+    },
+    "nextButton": {
+        "message": "次へ",
+        "description": "次へボタン"
+    },
+    "finishButton": {
+        "message": "完了",
+        "description": "完了ボタン"
     }
 }
