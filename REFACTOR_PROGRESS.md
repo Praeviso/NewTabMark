@@ -35,6 +35,8 @@
 - `WelcomeManager` 逐步去全局化：新增 `getWelcomeManager()`，并保留兼容 `window.WelcomeManager`（仅缺省注入）。
 - i18n（React 侧）先行对齐：新增 `getLocalizedMessageSafe()` 并让 React 组件复用同一套取文案逻辑；`updateUILanguage(root?)` 支持传入 root 以便后续做局部刷新/增量渲染。
 - New Tab / Side Panel 的 legacy bootstrap 去重：抽出 `createLegacyBootstrap()` 统一初始化序列与 “run-once” 逻辑，减少入口重复与后续差异化迁移成本。
+- 搜索模块拆分一小步：抽出 `src/search-engines.js` 承载“搜索引擎数据 + 本地存储 + URL 计算”，`search-engine-dropdown.js` 仅保留 UI/事件处理，方便后续把搜索 UI 逐步 React 化。
+- 搜索工具函数去重：`src/script.js` 移除重复的 `getSearchUrl()` / `debounce()` 定义，统一改为复用 `src/search-engines.js#getSearchUrl()` 与 `src/utils/debounce.js`，减少后续拆分时的阴影覆盖与行为漂移风险。
 
 ### D) 关键问题修复与稳定性增强
 
@@ -42,6 +44,8 @@
 - Windows 交互兜底：支持 `Shift + 滚轮` 触发“返回上一级”（无触控板场景）。
 - 悬浮球更稳：处理 bfcache（后退/前进）与状态同步，减少“返回后悬浮球消失”偶发。
 - 年度进度条恢复“浮在背景上”观感：footer 透明（有/无壁纸都不出现浅色条带包裹），并保持主题切换下的文字/进度块可读性。
+- 搜索引擎管理弹窗样式修复：关闭按钮在暗色模式不再被白色块包裹，并调整为顶部右侧更合理的点击区域（滚动时仍可见）。
+- 搜索引擎文案回退修复：当 `_locales` 缺少某个 `xxxLabel` 时，不再直接展示 key（如 `perplexityLabel`），而是回退到内置 `displayName`（如 `Perplexity`）。
 
 ### E) 文档与仓库卫生
 
@@ -104,3 +108,7 @@
 - 右侧（或固定位置）的 History/Downloads/Passwords/Extensions 入口点击仍能打开对应的 `chrome://` 页面；点击设置齿轮仍能打开设置弹窗；设置更新提示仍按原逻辑显示与关闭。
 - 非中文 UI 语言下：Links Icons 的 tooltip（title）与设置更新提示文案首屏即为对应语言，不需要等 `updateUILanguage()` 跑完再变化。
 - 新标签页与侧边栏均可正常加载：书签/搜索/设置/壁纸/悬浮球等交互不受影响（仅初始化入口去重）。
+- 搜索引擎功能不变：下拉切换默认引擎、生效的引擎 Tab、添加/删除自定义引擎与启用开关、输入关键词回车搜索均正常。
+- 搜索建议/快捷键不变：输入触发建议列表（历史/书签/搜索建议），键盘上下选择与回车打开/搜索、以及输入防抖行为均正常。
+- 暗色模式下打开“搜索引擎管理”弹窗：右上角关闭按钮无白色矩形底，位置与点击区域合理；滚动弹窗内容时关闭按钮仍在顶部可操作。
+- 打开“搜索引擎管理”弹窗：`Perplexity` 选项显示为 `Perplexity`（而非 `perplexityLabel`）；下拉菜单与“本次使用”临时 Tabs 的引擎名称也一致。

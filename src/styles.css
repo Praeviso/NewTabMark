@@ -494,16 +494,36 @@ html[data-theme="dark"] .progress-bar div.active {
   padding: 0;
 }
 
-/* Keep search engine dialog close button sticky */
-#search-engines-dialog .close-button {
+/* Search engine dialog close button: top-right, theme-aware, no white block in dark mode */
+#search-engines-dialog .close-button.settings-modal-close {
+  display: block;
   position: sticky;
-  top: 0;
-  right: 0;
-  float: right;
-  margin: -1rem -1rem 1rem 1rem;
-  background-color: white;
-  padding: 8px;
-  z-index: 1;
+  top: 12px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  margin: 0 0 8px auto;
+  padding: 0;
+  border-radius: 9999px;
+  line-height: 32px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+#search-engines-dialog .close-button.settings-modal-close:hover,
+#search-engines-dialog .close-button.settings-modal-close:focus {
+  background-color: rgba(243, 244, 246, 0.95);
+}
+
+[data-theme="dark"] #search-engines-dialog .close-button.settings-modal-close {
+  background-color: rgba(36, 36, 36, 0.85);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] #search-engines-dialog .close-button.settings-modal-close:hover,
+[data-theme="dark"] #search-engines-dialog .close-button.settings-modal-close:focus {
+  background-color: rgba(64, 64, 64, 0.9);
 }
 
 [data-theme="dark"] #share-folder-dialog p,

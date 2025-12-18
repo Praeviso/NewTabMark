@@ -1,18 +1,18 @@
 import { initFeatureTips } from './feature-tips.js';
 import { initGestureNavigation } from './gesture-navigation.js';
-import { 
-  SearchEngineManager, 
-  updateSearchEngineIcon, 
-  createSearchEngineDropdown, 
+import {
+  updateSearchEngineIcon,
+  createSearchEngineDropdown,
   initializeSearchEngineDialog,
-  initSearchEngineDropdown,
-  getSearchUrl 
+  initSearchEngineDropdown
 } from './search-engine-dropdown.js';
+import { SearchEngineManager, getSearchUrl } from './search-engines.js';
 import { encodeSharePayload, decodeSharePayload } from './bookmark-share.js';
 import { generateNetscapeBookmarkHtml } from './bookmark-html-export.js';
 import { getStoredGistToken, setStoredGistToken, createGist } from './gist-share.js';
 import { getWelcomeManager } from './welcome.js';
 import { initThemeController } from './ui/theme-controller.js';
+import { debounce } from './utils/debounce.js';
 
 let bookmarkTreeNodes = [];
 let defaultSearchEngine = 'google';
@@ -4212,31 +4212,6 @@ function initScriptFolderNameObserver() {
   // 在文件的适当位置（可能在 DOMContentLoaded 事件监听器内）添加这个标志
   let isChangingSearchEngine = false;
 
-  // 将 getSearchUrl 函数移到文件前面，在事件监听器之前定义
-  function getSearchUrl(engine, query) {
-    const allEngines = SearchEngineManager.getAllEngines();
-    const engineConfig = allEngines.find(e => {
-      // 匹配引擎名称或别名
-      return e.name.toLowerCase() === engine.toLowerCase() || 
-             (e.aliases && e.aliases.some(alias => alias.toLowerCase() === engine.toLowerCase()));
-    });
-
-    if (!engineConfig) {
-      // 如果找不到对应的引擎配置,使用默认引擎
-      const defaultEngine = SearchEngineManager.getDefaultEngine();
-      return defaultEngine.url + encodeURIComponent(query);
-    }
-
-    // 确保 URL 中包含查询参数占位符
-    const url = engineConfig.url.includes('%s') ? 
-      engineConfig.url.replace('%s', encodeURIComponent(query)) :
-      engineConfig.url + encodeURIComponent(query);
-
-    return url;
-  }
-
-
-
   tabs.forEach(tab => {
     tab.setAttribute('tabindex', '0');
 
@@ -4329,14 +4304,6 @@ function initScriptFolderNameObserver() {
   let isSearching = false;
   let searchQueue = [];
 
-  function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-  }
-
   const debouncedPerformSearch = debounce(performSearch, 300);
 
   // Modify the search form submit event listener
@@ -4426,30 +4393,6 @@ function initScriptFolderNameObserver() {
     updateSearchEngineIcon(defaultEngine);
   }
 
-
-  // 修改 getSearchUrl 函数,使用 SearchEngineManager 中的配置
-  function getSearchUrl(engine, query) {
-    const allEngines = SearchEngineManager.getAllEngines();
-    const engineConfig = allEngines.find(e => {
-      // 匹配引擎名称或别名
-      return e.name.toLowerCase() === engine.toLowerCase() ||
-        (e.aliases && e.aliases.some(alias => alias.toLowerCase() === engine.toLowerCase()));
-    });
-
-    if (!engineConfig) {
-      // 如果找不到对应的引擎配置,使用默认引擎
-      const defaultEngine = SearchEngineManager.getDefaultEngine();
-      return defaultEngine.url + encodeURIComponent(query);
-    }
-
-    // 确保 URL 中包含查询参数占位符
-    const url = engineConfig.url.includes('%s') ? 
-      engineConfig.url.replace('%s', encodeURIComponent(query)) :
-      engineConfig.url + encodeURIComponent(query);
-
-    return url;
-  }
-
   // 动态调整 textarea 度的函数
   function adjustTextareaHeight() {
     const searchInput = document.querySelector('.search-input');
@@ -4470,15 +4413,6 @@ function initScriptFolderNameObserver() {
   
 
   const searchSuggestions = document.getElementById('search-suggestions');
-
-  // 防抖函
-  function debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-  }
   async function getRecentHistory(limit = 100, maxPerDomain = 5) {
     return new Promise((resolve) => {
       chrome.history.search({ text: '', maxResults: limit * 20 }, (historyItems) => {
@@ -4818,8 +4752,6 @@ function initScriptFolderNameObserver() {
     });
   }
 
-
-
   new Sortable(tabsContainer, {
     animation: 150,
     onEnd: function (evt) {
@@ -4841,8 +4773,6 @@ function initScriptFolderNameObserver() {
     return;
   }
 
-
-
   function updateSubmitButtonState() {
     if (searchInput.value.trim() === '') {
       tabsContainer.style.display = 'none';
@@ -4854,16 +4784,6 @@ function initScriptFolderNameObserver() {
         tabsContainer.style.display = 'none';
       }
     }
-  }
-
-
-
-  function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
   }
 
 
@@ -4891,39 +4811,6 @@ function initScriptFolderNameObserver() {
     localStorage.setItem('selectedSearchEngine', engine);
   }
 
-  // 修改 getSearchUrl 函数,使用 SearchEngineManager 中的配置
-  function getSearchUrl(engine, query) {
-    const allEngines = SearchEngineManager.getAllEngines();
-    const engineConfig = allEngines.find(e => {
-      // 匹配引擎名称或别名
-      return e.name.toLowerCase() === engine.toLowerCase() ||
-        (e.aliases && e.aliases.some(alias => alias.toLowerCase() === engine.toLowerCase()));
-    });
-
-    if (!engineConfig) {
-      // 如果找不到对应的引擎配置,使用默认引擎
-      const defaultEngine = SearchEngineManager.getDefaultEngine();
-      return defaultEngine.url + encodeURIComponent(query);
-    }
-
-    // 确保 URL 中包含查询参数占位符
-    const url = engineConfig.url.includes('%s') ? 
-      engineConfig.url.replace('%s', encodeURIComponent(query)) :
-      engineConfig.url + encodeURIComponent(query);
-
-    return url;
-  }
-
-
-
-  // 防抖函
-  function debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-  }
   // 添加这个函数定义
   async function getBingSuggestions(query) {
     try {
@@ -5667,21 +5554,6 @@ function initScriptFolderNameObserver() {
       }
     }
   })
-
-  // 添加防抖函数
-  function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
-
-
 
   function hideSuggestions() {
     if (isChangingSearchEngine) {
