@@ -33,6 +33,8 @@
 - 遗留逻辑统一显式启动并幂等（`initXxx()`），入口不再依赖 `DOMContentLoaded`。
 - “设置/特殊链接/主题/壁纸”等关键交互控制器化并收敛：避免全局事件覆盖、重复绑定与时序不确定。
 - `WelcomeManager` 逐步去全局化：新增 `getWelcomeManager()`，并保留兼容 `window.WelcomeManager`（仅缺省注入）。
+- i18n（React 侧）先行对齐：新增 `getLocalizedMessageSafe()` 并让 React 组件复用同一套取文案逻辑；`updateUILanguage(root?)` 支持传入 root 以便后续做局部刷新/增量渲染。
+- New Tab / Side Panel 的 legacy bootstrap 去重：抽出 `createLegacyBootstrap()` 统一初始化序列与 “run-once” 逻辑，减少入口重复与后续差异化迁移成本。
 
 ### D) 关键问题修复与稳定性增强
 
@@ -76,6 +78,7 @@
 遗留方案基于 `data-i18n` 与 `chrome.i18n`：
 
 - 需要定义 React 侧的 i18n 策略（继续复用 data-i18n，或引入 React i18n hook 并做映射）
+- 已完成一小步：React 组件侧统一通过 `getLocalizedMessageSafe()` 提供首屏文案/tooltip，减少“先中文/空 title 后再被 data-i18n 覆盖”的闪现
 - 迁移组件时要保持文案 key 与 `_locales/` 对齐
 
 ### D) 开发体验（可选增强）
@@ -99,3 +102,5 @@
 - Footer 年度进度条仍显示在底部（`#year-progress`），百分比与月份分段正常渲染；切换壁纸/主题后观感不变。
 - 触发 toast 的场景（如复制链接提示）仍可弹出，且文案正常显示/隐藏。
 - 右侧（或固定位置）的 History/Downloads/Passwords/Extensions 入口点击仍能打开对应的 `chrome://` 页面；点击设置齿轮仍能打开设置弹窗；设置更新提示仍按原逻辑显示与关闭。
+- 非中文 UI 语言下：Links Icons 的 tooltip（title）与设置更新提示文案首屏即为对应语言，不需要等 `updateUILanguage()` 跑完再变化。
+- 新标签页与侧边栏均可正常加载：书签/搜索/设置/壁纸/悬浮球等交互不受影响（仅初始化入口去重）。

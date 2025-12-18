@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { getLocalizedMessageSafe } from '../localization.js';
 
 function getDefaultToastText() {
-  try {
-    const message = chrome?.i18n?.getMessage?.('moreSearchSupportToast');
-    return message || 'More search support is under development...';
-  } catch {
-    return 'More search support is under development...';
-  }
+  return getLocalizedMessageSafe(
+    'moreSearchSupportToast',
+    'More search support is under development...'
+  );
 }
 
 function MoreButtonToastContent() {
@@ -25,4 +24,3 @@ export function MoreButtonToastPortal() {
   if (!target) return null;
   return createPortal(<MoreButtonToastContent />, target);
 }
-

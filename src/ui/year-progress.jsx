@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { getLocalizedMessageSafe } from '../localization.js';
 
 function getYearProgressSnapshot() {
   const currentYear = new Date().getFullYear();
@@ -11,12 +12,7 @@ function getYearProgressSnapshot() {
 }
 
 function getYearProgressText() {
-  try {
-    const message = chrome?.i18n?.getMessage?.('yearProgress');
-    return message || 'Year Progress';
-  } catch {
-    return 'Year Progress';
-  }
+  return getLocalizedMessageSafe('yearProgress', 'Year Progress');
 }
 
 function YearProgress() {
@@ -176,4 +172,3 @@ export function YearProgressPortal() {
   if (!target) return null;
   return createPortal(<YearProgress />, target);
 }
-
