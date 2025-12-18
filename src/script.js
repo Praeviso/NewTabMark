@@ -13,6 +13,11 @@ import { getStoredGistToken, setStoredGistToken, createGist } from './gist-share
 import { getWelcomeManager } from './welcome.js';
 import { initThemeController } from './ui/theme-controller.js';
 import { debounce } from './utils/debounce.js';
+import {
+  getRecentHistory as getRecentHistoryService,
+  getSuggestions as getSuggestionsService,
+  saveUserBehavior as saveUserBehaviorService
+} from './search/suggestions.js';
 
 let bookmarkTreeNodes = [];
 let defaultSearchEngine = 'google';
@@ -4259,27 +4264,6 @@ function initScriptFolderNameObserver() {
   const searchInput = document.querySelector('.search-input');
   const searchEngineIcon = document.getElementById('search-engine-icon');
 
-  searchInput.addEventListener('focus', function () {
-    searchForm.classList.add('focused');
-    if (searchInput.value.trim() === '') {
-      showDefaultSuggestions();
-    } else {
-      const suggestions = getSuggestions(searchInput.value.trim());
-      showSuggestions(suggestions);
-    }
-  });
-
-  searchInput.addEventListener('blur', () => {
-    const searchForm = document.querySelector('.search-form');
-    searchForm.classList.remove('focused');
-    // 使用 setTimeout 来延迟隐藏建议列表，允许点击建议
-    setTimeout(() => {
-      if (!searchForm.contains(document.activeElement)) {
-        hideSuggestions();
-      }
-    }, 200);
-  });
-
   if (!searchForm || !searchInput || !tabsContainer || !searchEngineIcon) {
     return;
   }
@@ -4506,7 +4490,7 @@ function initScriptFolderNameObserver() {
       text: item.title,
       url: item.url,
       type: 'history',
-      relevance: calculateRelevance(query, item.title, item.url),
+      relevance: calculateRelevanceCore(query, item.title, item.url),
       timestamp: item.lastVisitTime
     }));
 
@@ -4518,7 +4502,7 @@ function initScriptFolderNameObserver() {
       text: item.title,
       url: item.url,
       type: 'bookmark',
-      relevance: calculateRelevance(query, item.title, item.url) * RELEVANCE_CONFIG.bookmarkRelevanceBoost
+      relevance: calculateRelevanceCore(query, item.title, item.url) * RELEVANCE_CONFIG.bookmarkRelevanceBoost
     }));
 
     // 获取 Bing 建议
@@ -4752,23 +4736,6 @@ function initScriptFolderNameObserver() {
     });
   }
 
-  new Sortable(tabsContainer, {
-    animation: 150,
-    onEnd: function (evt) {
-      const orderedEngines = Array.from(tabsContainer.children).map(tab => tab.getAttribute('data-engine'));
-      localStorage.setItem('orderedSearchEngines', JSON.stringify(orderedEngines));
-    }
-  });
-
-
-  searchInput.addEventListener('focus', function () {
-    searchForm.classList.add('focused');
-  });
-
-  searchInput.addEventListener('blur', function () {
-    searchForm.classList.remove('focused');
-  });
-
   if (!searchForm || !searchInput || !tabsContainer || !searchEngineIcon) {
     return;
   }
@@ -4911,7 +4878,7 @@ function initScriptFolderNameObserver() {
       text: item.title,
       url: item.url,
       type: 'history',
-      relevance: calculateRelevance(query, item.title, item.url),
+      relevance: calculateRelevanceCore(query, item.title, item.url),
       timestamp: item.lastVisitTime
     }));
 
@@ -4923,7 +4890,7 @@ function initScriptFolderNameObserver() {
       text: item.title,
       url: item.url,
       type: 'bookmark',
-      relevance: calculateRelevance(query, item.title, item.url) * RELEVANCE_CONFIG.bookmarkRelevanceBoost
+      relevance: calculateRelevanceCore(query, item.title, item.url) * RELEVANCE_CONFIG.bookmarkRelevanceBoost
     }));
 
 
@@ -5368,12 +5335,12 @@ function initScriptFolderNameObserver() {
     li.addEventListener('click', async () => {
       if (suggestion.url) {
         window.open(suggestion.url, '_blank');
-        await saveUserBehavior(suggestion.url);
+        await saveUserBehaviorService(suggestion.url);
       } else {
         searchInput.value = suggestion.text;
         searchInput.focus();
         queueSearch();
-        await saveUserBehavior(suggestion.text);
+        await saveUserBehaviorService(suggestion.text);
       }
       hideSuggestions();
     });
@@ -5441,7 +5408,7 @@ function initScriptFolderNameObserver() {
   }
 
   async function showDefaultSuggestions() {
-    const recentHistory = await getRecentHistory(20);
+    const recentHistory = await getRecentHistoryService(20);
     const suggestions = recentHistory.map(item => ({
       text: item.text,
       url: item.url,
@@ -5457,7 +5424,7 @@ function initScriptFolderNameObserver() {
     const query = searchInput.value.trim();
     showLoadingIndicator();
     if (query) {
-      const suggestions = await getSuggestions(query);
+      const suggestions = await getSuggestionsService(query);
       hideLoadingIndicator();
       showSuggestions(suggestions);
     } else {
@@ -5476,13 +5443,13 @@ function initScriptFolderNameObserver() {
   });
 
   // 修改搜索输入框的事件监听器
-  searchInput.addEventListener('focus', () => {
+  searchInput.addEventListener('focus', async () => {
     const searchForm = document.querySelector('.search-form');
     searchForm.classList.add('focused');
     if (searchInput.value.trim() === '') {
       showDefaultSuggestions();
     } else {
-      const suggestions = getSuggestions(searchInput.value.trim());
+      const suggestions = await getSuggestionsService(searchInput.value.trim());
       showSuggestions(suggestions);
     }
   });
