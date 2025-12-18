@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 import { extractBodyInnerHtml } from './extract-body-inner-html.js';
-import { initSettingsModalController } from '../ui/settings-modal-controller.js';
 
 export function LegacyAppShell({ legacyHtml, bootstrap, stripSelectors = [] }) {
   const stripKey = useMemo(() => stripSelectors.join('|'), [stripSelectors]);
@@ -15,7 +14,6 @@ export function LegacyAppShell({ legacyHtml, bootstrap, stripSelectors = [] }) {
     (async () => {
       await bootstrap();
       if (cancelled) return;
-      initSettingsModalController();
     })();
 
     return () => {

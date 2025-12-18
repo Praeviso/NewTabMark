@@ -30,6 +30,9 @@
 - script.js i18n helper 收敛：`src/script.js` 内部 `getLocalizedMessage()` 改为复用 `src/localization.js#getLocalizedMessageSafe()`（并保留对 `window.getLocalizedMessage` 的兼容），减少重复实现与 fallback 分歧。
 - i18n substitutions 收敛：`src/localization.js` 的 `window.getLocalizedMessage(name, substitutions?)` 支持 substitutions；`src/script.js` 内确认/版本号/Toast 等场景不再直连 `chrome.i18n.getMessage`，统一走 helper。
 - 背景/壁纸初始化收敛：移除 `src/script.js` 对 `.settings-bg-option` 的重复初始化与 click 绑定；背景色仅在 `useDefaultBackground === 'true'` 时才会从设置弹窗恢复（避免壁纸模式被误覆盖）；默认无配置时回退到 `gradient-background-7` 由 `src/wallpaper.js` 负责。
+- 主题初始化收敛：将 `initThemeController()` 统一移入 `src/bootstrap-legacy-shared.js` 的启动序列，移除 `src/script.js` 内重复初始化，并让 `src/ui/settings-modal-controller.js` 不再重复读取/应用 `theme`（避免二次 setTheme 与入口分散）。
+- 设置弹窗控制器收敛：`src/ui/settings-modal-controller.js` 改为“找不到 modal 时不锁死 initialized”、监听器可 abort（避免重复绑定）；并在 `src/bootstrap-legacy-shared.js` 的共享启动序列中统一初始化（移除 `LegacyAppShell` 中的重复初始化）。同时 `openSettingsModal()` 会在打开时刷新一次设置状态，减少状态不同步。
+- 背景色/壁纸状态收敛（去重）：新增 `src/background-state.js` 统一读取/计算/应用“背景色”存储状态（`selectedBackground`/`useDefaultBackground`/`originalWallpaper`）与 `.settings-bg-option` active 同步；`src/wallpaper.js` 与 `src/ui/settings-modal-controller.js` 复用该 helper，减少重复逻辑与状态分歧风险（保持 UI/功能对等）。
 
 ### 搜索模块拆分（保持对等）
 
@@ -47,6 +50,9 @@
 ### 关键问题修复
 
 - 搜索引擎管理弹窗：暗色模式关闭按钮样式修复；缺失 i18n key（如 `perplexityLabel`）时回退显示内置 `displayName`（如 `Perplexity`）。
+- 设置弹窗壁纸选中态修复：壁纸生效后新增持久化 `selectedWallpaper`（保存“选中的壁纸 URL”而非压缩后的 dataURL），并在初始化时做 URL 归一化匹配（忽略 query/hash），确保“当前正在使用”的壁纸选项边框（绿色 active）在刷新/重开设置弹窗后仍正确显示。
+- 设置弹窗壁纸绿色边框不显示：在 `src/wallpaper.js` 增加 `syncActiveWallpaperOption()`，并在壁纸列表重建（`loadPresetWallpapers()`）及 `setWallpaper()` 成功后强制同步 active，避免上传后/刷新后/状态切换导致 active 丢失。
+- 暗色模式下壁纸 active 不显示：`src/styles.css` 增加 `[data-theme="dark"] .wallpaper-option.active` 覆盖规则，修复暗色模式下被 `[data-theme="dark"] .wallpaper-option { border: ... }` 后写入覆盖导致的绿色边框丢失。
 
 ### 文档
 
@@ -105,3 +111,8 @@
 - New Tab：有壁纸时打开设置弹窗 → “背景色”选项不应被错误高亮；刷新后壁纸仍生效。
 - New Tab：点击任意背景色 → 壁纸应被清除、背景色生效、欢迎文案颜色可读；刷新后背景色保持。
 - Side Panel：重复以上 2 条路径验证一次（确保无重复监听导致的闪烁/状态错乱）。
+
+本轮额外验证点（主题初始化收敛）：
+- New Tab：刷新后主题（明/暗）保持；右上角主题切换按钮点击可切换，图标同步变化；无明显闪烁。
+- New Tab：打开设置弹窗（点击齿轮）→ 关闭（关闭按钮/点击遮罩/Esc）均可用；切换任意 Tab 正常。
+- Side Panel：重复以上 2 条路径验证一次。

@@ -31,9 +31,15 @@ export function createLegacyBootstrap(options = {}) {
 
   return createOnce(async () => {
     await importAndInit(() => import('./localization.js'), 'initLocalization', 'localization.js');
+    await importAndInit(() => import('./ui/theme-controller.js'), 'initThemeController', 'ui/theme-controller.js');
     await importAndInit(() => import('./onboarding.js'), 'initOnboarding', 'onboarding.js');
     await importAndInit(() => import('./welcome.js'), 'initWelcome', 'welcome.js');
     await importAndInit(() => import('./wallpaper.js'), 'initWallpaper', 'wallpaper.js');
+    await importAndInit(
+      () => import('./ui/settings-modal-controller.js'),
+      'initSettingsModalController',
+      'ui/settings-modal-controller.js'
+    );
     await importAndInit(() => import('./bookmark-cleanup.js'), 'initBookmarkCleanup', 'bookmark-cleanup.js');
     await importAndInit(() => import('./quick-links.js'), 'initQuickLinks', 'quick-links.js');
     await importAndInit(() => import('./script.js'), 'initScript', 'script.js');

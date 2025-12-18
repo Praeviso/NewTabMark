@@ -1,12 +1,31 @@
 import { getWelcomeManager } from '../welcome.js';
-import { initThemeController, setTheme, syncThemeToggleIcon } from './theme-controller.js';
 import { clearWallpaperState } from '../wallpaper.js';
 import { setQuickLinksVisibility } from '../quick-links.js';
+import {
+  applyBackgroundClass,
+  clearActiveBackgroundOptions,
+  persistBackgroundSelection,
+  readBackgroundState,
+  setActiveBackgroundOption
+} from '../background-state.js';
 
 let settingsModalControllerInitialized = false;
+let settingsModalAbortController = null;
 
-function getSettingsModalEl() {
-  return document.getElementById('settings-modal');
+function resolveRootDocument(root) {
+  if (root && root.ownerDocument) return root.ownerDocument;
+  if (root && root.nodeType === Node.DOCUMENT_NODE) return root;
+  return document;
+}
+
+function getSettingsModalEl(root = document) {
+  const doc = resolveRootDocument(root);
+  if (!doc) return null;
+
+  if (root && root.nodeType !== Node.DOCUMENT_NODE) {
+    return root.querySelector?.('#settings-modal') ?? null;
+  }
+  return doc.getElementById('settings-modal');
 }
 
 function toElementTarget(target) {
@@ -35,59 +54,62 @@ function closeModal(modalEl) {
   modalEl.style.display = 'none';
 }
 
-export function openSettingsModal() {
-  const modalEl = getSettingsModalEl();
+function isModalOpen(modalEl) {
+  const doc = modalEl?.ownerDocument ?? document;
+  const win = doc.defaultView ?? window;
+  return win.getComputedStyle(modalEl).display !== 'none';
+}
+
+export function openSettingsModal(root = document) {
+  initSettingsModalController(root);
+
+  const modalEl = getSettingsModalEl(root);
   if (!modalEl) return false;
 
+  loadSavedSettings(modalEl.ownerDocument ?? document);
   modalEl.style.display = 'block';
   void modalEl.offsetHeight;
   return true;
 }
 
-export function closeSettingsModal() {
-  const modalEl = getSettingsModalEl();
+export function closeSettingsModal(root = document) {
+  const modalEl = getSettingsModalEl(root);
   if (!modalEl) return false;
 
   closeModal(modalEl);
   return true;
 }
 
-function clearWallpaper() {
-  document.querySelectorAll('.wallpaper-option').forEach((opt) => {
+function clearWallpaper(doc) {
+  doc.querySelectorAll('.wallpaper-option').forEach((opt) => {
     opt.classList.remove('active');
   });
 
   clearWallpaperState();
   localStorage.removeItem('originalWallpaper');
 
-  const welcomeElement = document.getElementById('welcome-message');
+  const welcomeElement = doc.getElementById('welcome-message');
   const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
   if (welcomeElement && welcomeManager) {
     welcomeManager.adjustTextColor(welcomeElement);
   }
 }
 
-function handleBackgroundChange(optionEl) {
+function handleBackgroundChange(optionEl, doc) {
   const bgClass = optionEl.getAttribute('data-bg');
   if (!bgClass) return;
 
-  document.querySelectorAll('.settings-bg-option').forEach((opt) => {
-    opt.classList.remove('active');
-  });
+  setActiveBackgroundOption(doc, bgClass);
+  applyBackgroundClass(doc, bgClass);
+  persistBackgroundSelection(localStorage, bgClass);
 
-  optionEl.classList.add('active');
-
-  document.documentElement.className = bgClass;
-  localStorage.setItem('selectedBackground', bgClass);
-  localStorage.setItem('useDefaultBackground', 'true');
-
-  clearWallpaper();
+  clearWallpaper(doc);
 }
 
-function loadSavedSettings() {
-  const enableFloatingBallCheckbox = document.getElementById('enable-floating-ball');
-  const enableQuickLinksCheckbox = document.getElementById('enable-quick-links');
-  const openInNewTabCheckbox = document.getElementById('open-in-new-tab');
+function loadSavedSettings(doc) {
+  const enableFloatingBallCheckbox = doc.getElementById('enable-floating-ball');
+  const enableQuickLinksCheckbox = doc.getElementById('enable-quick-links');
+  const openInNewTabCheckbox = doc.getElementById('open-in-new-tab');
 
   if (enableFloatingBallCheckbox) {
     chrome.storage.sync.get(['enableFloatingBall'], (result) => {
@@ -113,99 +135,119 @@ function loadSavedSettings() {
   const hasWallpaper = localStorage.getItem('originalWallpaper');
 
   if (useDefaultBackground === 'true' && savedBg) {
-    document.documentElement.className = savedBg;
-    document.querySelectorAll('.settings-bg-option').forEach((option) => {
-      if (option.getAttribute('data-bg') === savedBg) {
-        option.classList.add('active');
-      } else {
-        option.classList.remove('active');
-      }
-    });
+    setActiveBackgroundOption(doc, savedBg);
 
-    const welcomeElement = document.getElementById('welcome-message');
+    const welcomeElement = doc.getElementById('welcome-message');
     const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
     if (welcomeElement && welcomeManager) {
       welcomeManager.adjustTextColor(welcomeElement);
     }
   } else if (hasWallpaper) {
-    document.querySelectorAll('.settings-bg-option').forEach((option) => {
-      option.classList.remove('active');
-    });
+    clearActiveBackgroundOptions(doc);
   }
 
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme) setTheme(savedTheme, { persist: false, reapplyBackground: false });
-  syncThemeToggleIcon();
+  // Keep the page background consistent with persisted state without
+  // duplicating logic from `wallpaper.js`.
+  const state = readBackgroundState(localStorage);
+  if (state.useDefaultBackground === 'true' && state.selectedBackground) {
+    applyBackgroundClass(doc, state.selectedBackground);
+  }
+
 }
 
-export function initSettingsModalController() {
+export function initSettingsModalController(root = document) {
   if (settingsModalControllerInitialized) return;
-  settingsModalControllerInitialized = true;
 
-  const modalEl = getSettingsModalEl();
+  const modalEl = getSettingsModalEl(root);
   if (!modalEl) return;
 
-  initThemeController();
-  loadSavedSettings();
+  settingsModalControllerInitialized = true;
 
-  modalEl.addEventListener('click', (event) => {
-    const target = toElementTarget(event.target);
-    if (!target) return;
+  const doc = modalEl.ownerDocument ?? document;
+  settingsModalAbortController?.abort();
+  settingsModalAbortController = new AbortController();
+  const { signal } = settingsModalAbortController;
 
-    if (target.classList.contains('settings-modal-close')) {
-      closeSettingsModal();
-      return;
-    }
+  loadSavedSettings(doc);
 
-    if (target === modalEl) {
-      closeSettingsModal();
-      return;
-    }
+  modalEl.addEventListener(
+    'click',
+    (event) => {
+      const target = toElementTarget(event.target);
+      if (!target) return;
 
-    const tabButton = target.closest('.settings-tab-button');
-    if (tabButton) {
-      const tabName = tabButton.getAttribute('data-tab');
-      if (tabName) switchTab(modalEl, tabName);
-      return;
-    }
+      if (target.classList.contains('settings-modal-close')) {
+        closeSettingsModal(doc);
+        return;
+      }
 
-    const bgOption = target.closest('.settings-bg-option');
-    if (bgOption) {
-      handleBackgroundChange(bgOption);
-    }
-  });
+      if (target === modalEl) {
+        closeSettingsModal(doc);
+        return;
+      }
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape') return;
-    if (modalEl.style.display === 'block') closeSettingsModal();
-  });
+      const tabButton = target.closest('.settings-tab-button');
+      if (tabButton) {
+        const tabName = tabButton.getAttribute('data-tab');
+        if (tabName) switchTab(modalEl, tabName);
+        return;
+      }
 
-  const enableFloatingBallCheckbox = document.getElementById('enable-floating-ball');
+      const bgOption = target.closest('.settings-bg-option');
+      if (bgOption) {
+        handleBackgroundChange(bgOption, doc);
+      }
+    },
+    { signal }
+  );
+
+  doc.addEventListener(
+    'keydown',
+    (event) => {
+      if (event.key !== 'Escape') return;
+      if (isModalOpen(modalEl)) closeSettingsModal(doc);
+    },
+    { signal }
+  );
+
+  const enableFloatingBallCheckbox = doc.getElementById('enable-floating-ball');
   if (enableFloatingBallCheckbox) {
-    enableFloatingBallCheckbox.addEventListener('change', () => {
-      const isEnabled = enableFloatingBallCheckbox.checked;
-      chrome.runtime.sendMessage({ action: 'updateFloatingBallSetting', enabled: isEnabled }, () => {
-        if (!chrome.runtime.lastError) return;
-        chrome.storage.sync.set({ enableFloatingBall: isEnabled });
-      });
-    });
+    enableFloatingBallCheckbox.addEventListener(
+      'change',
+      () => {
+        const isEnabled = enableFloatingBallCheckbox.checked;
+        chrome.runtime.sendMessage({ action: 'updateFloatingBallSetting', enabled: isEnabled }, () => {
+          if (!chrome.runtime.lastError) return;
+          chrome.storage.sync.set({ enableFloatingBall: isEnabled });
+        });
+      },
+      { signal }
+    );
   }
 
-  const enableQuickLinksCheckbox = document.getElementById('enable-quick-links');
+  const enableQuickLinksCheckbox = doc.getElementById('enable-quick-links');
   if (enableQuickLinksCheckbox) {
-    enableQuickLinksCheckbox.addEventListener('change', () => {
-      const isEnabled = enableQuickLinksCheckbox.checked;
-      chrome.storage.sync.set({ enableQuickLinks: isEnabled }, () => {
-        setQuickLinksVisibility(isEnabled);
-      });
-    });
+    enableQuickLinksCheckbox.addEventListener(
+      'change',
+      () => {
+        const isEnabled = enableQuickLinksCheckbox.checked;
+        chrome.storage.sync.set({ enableQuickLinks: isEnabled }, () => {
+          setQuickLinksVisibility(isEnabled);
+        });
+      },
+      { signal }
+    );
   }
 
-  const openInNewTabCheckbox = document.getElementById('open-in-new-tab');
+  const openInNewTabCheckbox = doc.getElementById('open-in-new-tab');
   if (openInNewTabCheckbox) {
-    openInNewTabCheckbox.addEventListener('change', () => {
-      const isEnabled = openInNewTabCheckbox.checked;
-      chrome.storage.sync.set({ openInNewTab: isEnabled });
-    });
+    openInNewTabCheckbox.addEventListener(
+      'change',
+      () => {
+        const isEnabled = openInNewTabCheckbox.checked;
+        chrome.storage.sync.set({ openInNewTab: isEnabled });
+      },
+      { signal }
+    );
   }
 }

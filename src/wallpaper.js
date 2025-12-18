@@ -1,4 +1,11 @@
 import { getWelcomeManager } from './welcome.js';
+import {
+    applyBackgroundClass,
+    computeBackgroundClassToApply,
+    persistBackgroundSelection,
+    readBackgroundState,
+    setActiveBackgroundOption
+} from './background-state.js';
 
 let initialized = false;
 let wallpaperManagerInstance = null;
@@ -59,6 +66,50 @@ class WallpaperManager {
         // 初始化事件监听和其他设置
         this.initializeEventListeners();
         this.initialize();
+    }
+
+    normalizeWallpaperKey(value) {
+        if (!value || typeof value !== 'string') return '';
+        // dataURL (uploads / compressed) should match exactly
+        if (value.startsWith('data:')) return value;
+        // ignore query/hash for remote URLs (e.g. Unsplash optimization params)
+        return value.split('#')[0].split('?')[0];
+    }
+
+    findWallpaperOptionByKey(key) {
+        if (!key) return null;
+
+        const direct = document.querySelector(`.wallpaper-option[data-wallpaper-url="${key}"]`);
+        if (direct) return direct;
+
+        const normalizedTarget = this.normalizeWallpaperKey(key);
+        if (!normalizedTarget) return null;
+
+        const options = document.querySelectorAll('.wallpaper-option');
+        for (const option of options) {
+            const optionUrl = option.getAttribute('data-wallpaper-url');
+            if (!optionUrl) continue;
+            if (this.normalizeWallpaperKey(optionUrl) === normalizedTarget) return option;
+        }
+
+        return null;
+    }
+
+    syncActiveWallpaperOption(keyOverride) {
+        const selectedWallpaper = localStorage.getItem('selectedWallpaper');
+        const savedWallpaper = localStorage.getItem('originalWallpaper');
+        const activeKey = keyOverride || selectedWallpaper || savedWallpaper;
+        if (!activeKey) return;
+
+        document.querySelectorAll('.wallpaper-option').forEach((opt) => {
+            opt.classList.remove('active');
+        });
+
+        const option = this.findWallpaperOptionByKey(activeKey);
+        if (option) {
+            option.classList.add('active');
+            this.activeOption = option;
+        }
     }
 
     // 新增方法：初始化预设壁纸列表
@@ -136,6 +187,9 @@ class WallpaperManager {
                 wallpaperContainer.appendChild(option);
             });
         }
+
+        // If we rebuilt the list (e.g. after upload), re-apply active border.
+        this.syncActiveWallpaperOption();
     }
 
     initialize() {
@@ -262,24 +316,16 @@ class WallpaperManager {
         this.clearAllActiveStates();
 
         const savedWallpaper = localStorage.getItem('originalWallpaper');
-        const useDefaultBackground = localStorage.getItem('useDefaultBackground');
-        const savedBg = localStorage.getItem('selectedBackground');
-        const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+        const selectedWallpaper = localStorage.getItem('selectedWallpaper');
+        const backgroundState = readBackgroundState(localStorage);
+        const bgClassToApply = computeBackgroundClassToApply(backgroundState);
 
-        if (useDefaultBackground === 'true' && savedBg) {
-            // 如果使用纯色背景，激活对应的选项
-            const bgOption = document.querySelector(`.settings-bg-option[data-bg="${savedBg}"]`);
-            if (bgOption) {
-                bgOption.classList.add('active');
-                this.activeOption = bgOption;
-            }
-            // 在暗黑模式下保持暗色背景
-            if (isDarkMode) {
-                document.documentElement.className = savedBg;
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
-                document.documentElement.className = savedBg;
-            }
+        if (bgClassToApply) {
+            setActiveBackgroundOption(document, bgClassToApply);
+            const bgOption = document.querySelector(`.settings-bg-option[data-bg="${bgClassToApply}"]`);
+            if (bgOption) this.activeOption = bgOption;
+
+            applyBackgroundClass(document, bgClassToApply);
 
             const welcomeElement = document.getElementById('welcome-message');
             const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
@@ -293,14 +339,16 @@ class WallpaperManager {
             // 壁纸模式下不应该同时保留纯色背景 class
             document.documentElement.className = '';
 
+            const activeWallpaperKey = selectedWallpaper || savedWallpaper;
+
             // 如果使用壁纸，查找对应的选项（包括用户上传的壁纸）
-            let wallpaperOption = document.querySelector(`.wallpaper-option[data-wallpaper-url="${savedWallpaper}"]`);
+            let wallpaperOption = this.findWallpaperOptionByKey(activeWallpaperKey);
             
             // 如果找不到对应选项，可能是用户上传的壁纸
             if (!wallpaperOption) {
                 // 重新加载壁纸选项
                 await this.loadPresetWallpapers();
-                wallpaperOption = document.querySelector(`.wallpaper-option[data-wallpaper-url="${savedWallpaper}"]`);
+                wallpaperOption = this.findWallpaperOptionByKey(activeWallpaperKey);
             }
             
             if (wallpaperOption) {
@@ -321,29 +369,7 @@ class WallpaperManager {
             return;
         }
 
-        // 既没有壁纸也没有“启用纯色背景”的保存值：沿用旧逻辑，回退到默认渐变背景
-        // 注意：如果存在 savedBg 但 useDefaultBackground !== 'true'，不强行应用（保持兼容旧状态）。
-        if (!savedBg && useDefaultBackground !== 'false') {
-            const defaultBg = 'gradient-background-7';
-            const defaultBgOption = document.querySelector(`.settings-bg-option[data-bg="${defaultBg}"]`);
-            if (defaultBgOption) {
-                defaultBgOption.classList.add('active');
-                this.activeOption = defaultBgOption;
-            }
-
-            if (isDarkMode) {
-                document.documentElement.className = defaultBg;
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
-                document.documentElement.className = defaultBg;
-            }
-
-            const welcomeElement = document.getElementById('welcome-message');
-            const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
-            if (welcomeElement && welcomeManager) {
-                welcomeManager.adjustTextColor(welcomeElement);
-            }
-        }
+        // No-op: background fallback handled by `computeBackgroundClassToApply` above.
     }
 
     // 重置壁纸
@@ -351,13 +377,20 @@ class WallpaperManager {
         // 清除所有选中状态
         this.clearAllActiveStates();
         this.clearWallpaper();
-        localStorage.setItem('useDefaultBackground', 'true');
+        const defaultBg = 'gradient-background-7';
+
+        // 恢复默认时应同步更新“当前纯色背景”存储值，避免刷新后设置面板 active 仍指向旧值
+        persistBackgroundSelection(localStorage, defaultBg);
+
+        // 恢复默认背景意味着不再使用壁纸：清理壁纸存储，避免状态残留
+        localStorage.removeItem('originalWallpaper');
+
         // 重置为默认背景时可以选中默认的纯色背景选项
-        const defaultBgOption = document.querySelector('.settings-bg-option[data-bg="gradient-background-7"]');
+        const defaultBgOption = document.querySelector(`.settings-bg-option[data-bg="${defaultBg}"]`);
         if (defaultBgOption) {
             defaultBgOption.classList.add('active');
             this.activeOption = defaultBgOption;
-            document.documentElement.className = 'gradient-background-7';
+            applyBackgroundClass(document, defaultBg);
         }
         // 使用本地化的成功提示
         alert(chrome.i18n.getMessage('wallpaperResetSuccess'));
@@ -402,6 +435,8 @@ class WallpaperManager {
         if (!url) return;
 
         try {
+            const selectedWallpaperUrl = url;
+
             // 如果是 Unsplash 图片，添加优化参数
             if (url.includes('images.unsplash.com')) {
                 url = `${url}?q=80&w=1920&auto=format&fit=crop`;
@@ -412,7 +447,10 @@ class WallpaperManager {
                 option.classList.remove('active');
             });
             document.documentElement.className = '';
-            await this.applyAndSaveWallpaper(url);
+            await this.applyAndSaveWallpaper(url, selectedWallpaperUrl);
+
+            // Ensure the active border is visible even if options were rebuilt.
+            this.syncActiveWallpaperOption(selectedWallpaperUrl);
         } catch (error) {
             console.error('设置壁纸失败:', error);
             alert('设置壁纸失败，请重试');
@@ -420,7 +458,7 @@ class WallpaperManager {
     }
 
     // 修改 applyAndSaveWallpaper 方法
-    async applyAndSaveWallpaper(dataUrl) {
+    async applyAndSaveWallpaper(dataUrl, selectedWallpaperUrl = dataUrl) {
         try {
             // 在保存新壁纸前，先清除所有相关的存储
             this.clearWallpaperCache();
@@ -431,6 +469,11 @@ class WallpaperManager {
             try {
                 // 尝试保存压缩后的数据
                 localStorage.setItem('originalWallpaper', compressedDataUrl);
+
+                // 保存“选中的壁纸 URL”，用于在设置弹窗中正确标记 active（绿色边框）
+                // 对于预设壁纸：保存原始 URL（而不是压缩后的 dataURL），避免无法匹配 data-wallpaper-url。
+                // 对于上传壁纸：selectedWallpaperUrl 本身就是 dataURL，可直接匹配。
+                localStorage.setItem('selectedWallpaper', selectedWallpaperUrl);
             } catch (storageError) {
                 console.warn('无法保存壁纸到本地存储，将只保存在内存中');
             }

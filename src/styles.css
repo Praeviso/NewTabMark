@@ -838,6 +838,10 @@ html[data-theme="dark"][class*="gradient-background"] {
   background-color: #242424;
 }
 
+[data-theme="dark"] .wallpaper-option.active {
+  border-color: #10b981;
+}
+
 /* 暗黑模式下的背景颜色选项样式 */
 [data-theme="dark"] .settings-bg-option {
   opacity: 0.8;  /* 降低亮色背景的不透明度 */

@@ -11,7 +11,6 @@ import { encodeSharePayload, decodeSharePayload } from './bookmark-share.js';
 import { generateNetscapeBookmarkHtml } from './bookmark-html-export.js';
 import { getStoredGistToken, setStoredGistToken, createGist } from './gist-share.js';
 import { getWelcomeManager } from './welcome.js';
-import { initThemeController } from './ui/theme-controller.js';
 import { debounce } from './utils/debounce.js';
 import {
   getRecentHistory as getRecentHistoryService,
@@ -579,7 +578,6 @@ function initScriptBookmarksAndTheme() {
 
   // ... 其他代码 ...
 
-  initThemeController();
 
 
 
