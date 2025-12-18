@@ -1,10 +1,28 @@
 import { ICONS } from './icons.js';
+import { getLocalizedMessageSafe, updateUILanguage } from './localization.js';
 
 // 新功能提示管理类
 class FeatureTips {
   constructor() {
     this.fadeOutDuration = 300; // 淡出动画时长(毫秒)
     void this.init();
+  }
+
+  getMessage(messageName, fallback = messageName, substitutions) {
+    return getLocalizedMessageSafe(messageName, fallback, substitutions);
+  }
+
+  bindCloseOnce(tipContainer, onClose) {
+    if (!tipContainer) return false;
+
+    const closeButton = tipContainer.querySelector('.tip-close');
+    if (!closeButton) return false;
+
+    if (tipContainer.dataset.closeBound === 'true') return true;
+    tipContainer.dataset.closeBound = 'true';
+
+    closeButton.addEventListener('click', onClose);
+    return true;
   }
 
   // 初始化
@@ -95,16 +113,17 @@ class FeatureTips {
     const tipsElement = document.createElement('div');
     tipsElement.className = 'feature-tips';
 
-    const messageText = chrome.i18n
-      .getMessage(featureKey + 'Feature')
-      .replace(/\n/g, '<br>');
+    const messageText = this.getMessage(featureKey + 'Feature', featureKey + 'Feature').replace(
+      /\n/g,
+      '<br>'
+    );
 
     tipsElement.innerHTML = `
       <div class="feature-tips-content">
         <div class="tip-content">
           ${ICONS.info}
           <div class="tip-text">
-            <div class="feature-tips-title">${chrome.i18n.getMessage('newFeatureTitle')}</div>
+            <div class="feature-tips-title">${this.getMessage('newFeatureTitle', 'New Feature')}</div>
             <div class="feature-description">${messageText}</div>
           </div>
           <button class="tip-close" aria-label="关闭提示">
@@ -116,10 +135,7 @@ class FeatureTips {
 
     document.body.appendChild(tipsElement);
 
-    const closeButton = tipsElement.querySelector('.tip-close');
-    closeButton.addEventListener('click', () => {
-      this.closeTips(tipsElement);
-    });
+    this.bindCloseOnce(tipsElement, () => this.closeTips(tipsElement));
   }
 
   // 关闭提示
@@ -152,8 +168,8 @@ class FeatureTips {
     if (tipContainer) {
       tipContainer.style.display = 'block';
 
-      const closeButton = tipContainer.querySelector('.tip-close');
-      closeButton.addEventListener('click', () => {
+      // legacy DOM 可能被重复注入；避免重复绑定 close
+      this.bindCloseOnce(tipContainer, () => {
         tipContainer.classList.add('tip-fade-out');
         setTimeout(() => {
           tipContainer.style.display = 'none';
@@ -161,6 +177,9 @@ class FeatureTips {
           this.showSettingsUpdateTip();
         }, 300);
       });
+
+      // tip DOM 可能在 initLocalization 之后才注入；兜底刷新一次 i18n
+      updateUILanguage(tipContainer);
     }
   }
 
@@ -175,17 +194,18 @@ class FeatureTips {
     if (tipContainer) {
       tipContainer.style.display = 'block';
 
-      const closeButton = tipContainer.querySelector('.tip-close');
-      if (!closeButton) return;
-      if (tipContainer.dataset.closeBound === 'true') return;
-      tipContainer.dataset.closeBound = 'true';
-      closeButton.addEventListener('click', () => {
+      if (!this.bindCloseOnce(tipContainer, () => {
         tipContainer.classList.add('tip-fade-out');
         setTimeout(() => {
           tipContainer.style.display = 'none';
           localStorage.setItem('settingsUpdateTipShown', 'true');
         }, 300);
-      });
+      })) {
+        return;
+      }
+
+      // tip DOM 可能在 initLocalization 之后才注入；兜底刷新一次 i18n
+      updateUILanguage(tipContainer);
     }
   }
 
@@ -206,6 +226,11 @@ export function initFeatureTips() {
   if (instance) return instance;
   instance = new FeatureTips();
   return instance;
+}
+
+// 给共享 bootstrap 用：确保 UI tips 按需展示（不影响 bookmark-cleanup 等仅需创建实例的场景）
+export function initFeatureTipsUI() {
+  return initFeatureTips().initAllTips();
 }
 
 // 兼容旧引用：避免 import 时自启动，需先调用 initFeatureTips()

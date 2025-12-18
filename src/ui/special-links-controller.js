@@ -55,5 +55,11 @@ export function initSpecialLinksController() {
   if (initialized) return;
   initialized = true;
 
+  // React portals (LinksIcons/SettingsIcon) handle clicks directly.
+  // Skip binding to avoid duplicate behavior and reduce global listeners.
+  if (document?.documentElement?.dataset?.ntmReactSpecialLinks === 'true') {
+    return;
+  }
+
   document.addEventListener('click', handleDocumentClick);
 }

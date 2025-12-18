@@ -34,6 +34,7 @@ export function createLegacyBootstrap(options = {}) {
     await importAndInit(() => import('./ui/theme-controller.js'), 'initThemeController', 'ui/theme-controller.js');
     await importAndInit(() => import('./onboarding.js'), 'initOnboarding', 'onboarding.js');
     await importAndInit(() => import('./welcome.js'), 'initWelcome', 'welcome.js');
+    await importAndInit(() => import('./feature-tips.js'), 'initFeatureTipsUI', 'feature-tips.js');
     await importAndInit(() => import('./wallpaper.js'), 'initWallpaper', 'wallpaper.js');
     await importAndInit(
       () => import('./ui/settings-modal-controller.js'),

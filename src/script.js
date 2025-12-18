@@ -1,4 +1,3 @@
-import { initFeatureTips } from './feature-tips.js';
 import { initGestureNavigation } from './gesture-navigation.js';
 import {
   updateSearchEngineIcon,
@@ -70,13 +69,19 @@ function createContextMenu() {
   console.log('Creating context menu');
   
   // 移除任何已存在的上下文菜单
-  const existingMenu = document.querySelector('.custom-context-menu');
+  const existingMenu =
+    document.querySelector('.bookmark-context-menu') ||
+    document.querySelector('.custom-context-menu:not(.bookmark-folder-context-menu)');
   if (existingMenu) {
     existingMenu.remove();
   }
 
   const menu = document.createElement('div');
-  menu.className = 'custom-context-menu';
+  menu.className = 'bookmark-context-menu custom-context-menu';
+  // Prevent click-away handlers from closing the menu while interacting inside it.
+  menu.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
   document.body.appendChild(menu);
 
   const menuItems = [
@@ -382,9 +387,6 @@ function initScriptCore() {
 
   // 只调用一次搜索引擎初始化
   initSearchEngineDropdown();
-
-  // 初始化功能提示
-  initFeatureTips().initAllTips();
 
   // 监听主题变化
   const observer = new MutationObserver((mutations) => {
@@ -750,6 +752,11 @@ function initScriptBookmarksAndTheme() {
     if (contextMenu) {
       contextMenu.style.display = 'none';
       currentBookmark = null;  // 重置 currentBookmark
+    }
+
+    if (bookmarkFolderContextMenu) {
+      bookmarkFolderContextMenu.style.display = 'none';
+      currentBookmarkFolder = null;
     }
   });
 }
@@ -2342,6 +2349,10 @@ function createBookmarkFolderContextMenu() {
 
   const menu = document.createElement('div');
   menu.className = 'bookmark-folder-context-menu custom-context-menu';
+  // Prevent click-away handlers from closing the menu while interacting inside it.
+  menu.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
   document.body.appendChild(menu);
 
   // 直接创建菜单项，不需要获取书签数量
@@ -4595,41 +4606,6 @@ function initScriptVersionNumber() {
   const versionText = getLocalizedMessage('version', [manifest.version]);
   versionElement.textContent = versionText;
 }
-
-  // 修改文档点击事件监听器，同时处理书签和文件夹的上下文菜单
-  document.addEventListener('click', function (event) {
-    // 关闭书签上下文菜单
-    if (contextMenu) {
-      contextMenu.style.display = 'none';
-      currentBookmark = null;
-    }
-    
-    // 关闭文件夹上下文菜单
-    if (bookmarkFolderContextMenu) {
-      bookmarkFolderContextMenu.style.display = 'none';
-      currentBookmarkFolder = null;
-    }
-  });
-
-  // 为上下文菜单添加阻止冒泡，防止点击菜单本身时关闭
-  if (contextMenu) {
-    contextMenu.addEventListener('click', function(event) {
-      event.stopPropagation();
-    });
-  }
-
-  if (bookmarkFolderContextMenu) {
-    bookmarkFolderContextMenu.addEventListener('click', function(event) {
-      event.stopPropagation();
-    });
-  }
-
-  // 添加搜索引擎变更事件监听
-  document.addEventListener('defaultSearchEngineChanged', (event) => {
-    console.log('[Search] Default engine changed:', event.detail.engine);
-    // 可以在这里添加其他需要响应搜索引擎变更的逻辑
-    createTemporarySearchTabs(); // 添加这行以更新临时搜索标签
-  });
 
 let scriptInitialized = false;
 

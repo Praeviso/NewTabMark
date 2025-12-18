@@ -35,6 +35,9 @@
 - 壁纸模块幂等化（适配延迟注入）：`src/wallpaper.js` 不再在 DOM 未就绪时“锁死初始化”，事件监听使用 `AbortController` 可重绑；`openSettingsModal()` 打开时触发 `initWallpaper()` 兜底初始化，避免壁纸/上传/重置在 React 外壳延迟注入场景失效。
 - 背景色/壁纸状态收敛（去重）：新增 `src/background-state.js` 统一读取/计算/应用“背景色”存储状态（`selectedBackground`/`useDefaultBackground`/`originalWallpaper`）与 `.settings-bg-option` active 同步；`src/wallpaper.js` 与 `src/ui/settings-modal-controller.js` 复用该 helper，减少重复逻辑与状态分歧风险（保持 UI/功能对等）。
 - 引导与欢迎模块幂等化（适配延迟注入）：`src/onboarding.js` / `src/welcome.js` 在找不到关键 DOM 时不再“锁死初始化”；事件监听使用 `AbortController` 绑定，避免 React 外壳重复注入/重启 bootstrap 时出现重复绑定与泄漏（保持 UI/交互对等）。
+- 新功能提示（Feature Tips）初始化收敛 + 去重绑定：`src/feature-tips.js` 统一使用 `getLocalizedMessageSafe()` 获取文案，并对 `.search-engine-update-tip` / `.settings-update-tip` 的关闭按钮做“只绑定一次”（`data-close-bound`）防止 React 外壳重复 bootstrap 时重复绑定；同时在展示 tip 时对 tip 容器调用 `updateUILanguage()` 兜底 i18n（适配延迟注入）。并将“展示 tips”的入口从 `src/script.js` 收敛到 `src/bootstrap-legacy-shared.js`（避免入口分散）。
+- 书签/文件夹右键菜单副作用收敛：移除 `src/script.js` 的模块级 `document.addEventListener(...)`（避免 import 即绑定监听、以及引用未定义函数导致的潜在报错）；并为“书签菜单”增加独立 class（`.bookmark-context-menu`），避免创建书签菜单时误删文件夹菜单（两者都带 `.custom-context-menu`）。同时点击空白处可统一关闭两种菜单，点击菜单内部不会误关闭（保持 UI/交互对等）。
+- 快捷入口/设置齿轮点击逻辑迁移到 React Portal：`src/ui/links-icons.jsx` / `src/ui/settings-icon.jsx` 直接处理 `chrome://history|downloads|settings/passwords|extensions` 与 `openSettingsModal()`；`src/ui/special-links-controller.js` 在 React 场景下（`documentElement.dataset.ntmReactSpecialLinks === 'true'`）不再绑定全局 click 监听，减少重复响应与全局副作用（保持 UI/交互对等）。
 
 ### 搜索模块拆分（保持对等）
 
@@ -89,6 +92,11 @@
 - 搜索：引擎切换 + 回车搜索 + 搜索建议（滚动加载/键盘导航/Ctrl/Cmd+Enter）
 - 书签：展示/打开/右键/拖拽（如本轮未触达，可抽检 1–2 条路径）
 
+本轮额外验证点（上下文菜单副作用收敛）：
+- New Tab：右键任意书签卡片 → 菜单正常出现；点击菜单内部不会立刻消失；点击页面空白处菜单关闭。
+- New Tab：右键任意文件夹卡片 → 文件夹菜单正常出现；随后右键书签卡片 → 两种菜单切换/显示正常（不会因为创建书签菜单而把文件夹菜单 DOM 删掉）。
+- Side Panel：重复以上两条路径至少一次，控制台无新增报错。
+
 本轮额外验证点（Quick Links 显隐）：
 - 打开设置弹窗 → 勾选/取消“快捷链接”开关：`.quick-links-wrapper` 应立即 show/hide，且刷新/重载后状态保持。
 - New Tab 与 Side Panel 分别验证一次，确保控制台无新增报错。
@@ -137,3 +145,13 @@
 - 动态注入的引导 DOM 现在带 `data-i18n`，并在注入后调用 `updateUILanguage(overlay)`，确保文案可本地化。
 - 新增 onboarding 相关 i18n key：`onboardingTitle` / `onboardingStep{1..3}{Title,Desc}` / `prevButton` / `nextButton` / `finishButton`（已覆盖 `_locales/*/messages.json`）。
 - `src/styles.css` 增加 `[data-theme="dark"]` 下的 `.onboarding-modal/.onboarding-step/.dot` 覆盖，暗色模式下不再出现“白底引导”违和。
+
+本轮额外验证点（Feature Tips 初始化收敛 / 去重绑定）：
+- New Tab：清空 `localStorage.settingsUpdateTipShown` 后刷新页面：设置齿轮旁的 `.settings-update-tip` 显示与关闭正常；重复刷新不应出现“一次点击触发多次关闭/多次 setItem”。（注：New Tab 的 legacy 模板不包含 `.search-engine-update-tip`，因此清空 `searchEngineUpdateTipShown` 不会触发“搜索引擎更新提示”，会按原逻辑直接走 settings tip。）
+- Side Panel：清空 `localStorage.searchEngineUpdateTipShown` 后打开侧边栏：`.search-engine-update-tip` 显示与关闭正常；关闭后应自动继续走 settings tip（与原逻辑一致）；重复刷新不应重复绑定导致闪烁或多次触发。
+- 版本新功能弹窗（`.feature-tips`）：由 `localStorage.lastVersion` + `src/feature-tips.js#getVersionFeatures()` 控制，且仅在 `versionFeatures` 映射中存在“当前版本号”或落在版本区间时才会出现；当前 `manifest.json#version` 为 `1.2.0`，而映射示例为 `1.238/1.239`，因此仅清空 `lastVersion` 可能不会出现该类提示（属原有逻辑）。
+
+本轮额外验证点（快捷入口/设置齿轮点击迁移）：
+- New Tab：点击左下角四个图标（History/Downloads/Passwords/Extensions）应分别打开对应 `chrome://` 页面；控制台无报错。
+- New Tab：点击右下角齿轮应打开设置弹窗；点击遮罩/关闭按钮/Esc 均可关闭。
+- Side Panel：重复以上两条路径至少一次；确保不会出现“点击一次打开两次/闪烁”（避免 React 与 legacy 双重响应）。

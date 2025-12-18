@@ -1,5 +1,12 @@
 import { useMemo } from 'react';
 import { getLocalizedMessageSafe } from '../localization.js';
+import { openSettingsModal } from './settings-modal-controller.js';
+
+// React portals own the click handling for special links.
+// This is used by legacy controllers to avoid binding global listeners.
+if (typeof document !== 'undefined') {
+  document.documentElement.dataset.ntmReactSpecialLinks = 'true';
+}
 
 export function SettingsIcon() {
   const settingsLinkTitle = useMemo(
@@ -22,6 +29,10 @@ export function SettingsIcon() {
         id="settings-link"
         data-i18n-title="settingsLinkTitle"
         title={settingsLinkTitle}
+        onClick={(e) => {
+          e.preventDefault();
+          openSettingsModal(document);
+        }}
       >
         <span className="material-icons">settings</span>
       </a>
