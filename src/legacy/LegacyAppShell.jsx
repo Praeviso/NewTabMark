@@ -1,11 +1,15 @@
 import { useEffect, useMemo } from 'react';
 import { extractBodyInnerHtml } from './extract-body-inner-html.js';
 
-export function LegacyAppShell({ legacyHtml, bootstrap, stripSelectors = [] }) {
+export function LegacyAppShell({ legacyHtml, bootstrap, stripSelectors = [], replaceSelectors = [] }) {
   const stripKey = useMemo(() => stripSelectors.join('|'), [stripSelectors]);
+  const replaceKey = useMemo(
+    () => replaceSelectors.map((r) => `${r?.selector || ''}=>${r?.placeholderId || ''}`).join('|'),
+    [replaceSelectors]
+  );
   const legacyBody = useMemo(
-    () => extractBodyInnerHtml(legacyHtml, { stripSelectors }),
-    [legacyHtml, stripKey, stripSelectors]
+    () => extractBodyInnerHtml(legacyHtml, { stripSelectors, replaceSelectors }),
+    [legacyHtml, stripKey, stripSelectors, replaceKey, replaceSelectors]
   );
 
   useEffect(() => {

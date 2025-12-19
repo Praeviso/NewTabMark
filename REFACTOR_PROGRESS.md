@@ -26,7 +26,7 @@
 - 遗留初始化显式化：`initXxx()` 入口幂等，减少 `DOMContentLoaded`/副作用 import 依赖。
 - i18n（React 侧）对齐：`getLocalizedMessageSafe()` / `updateUILanguage(root?)`，降低首屏文案闪现。
 - New Tab / Side Panel legacy bootstrap 去重：`createLegacyBootstrap()` 统一初始化序列与 run-once。
-- Quick Links 显隐逻辑收敛：由 `src/quick-links.js` 统一根据 `chrome.storage.sync.enableQuickLinks` 同步显隐并监听变更，移除 `src/script.js` 重复监听；设置弹窗改为复用同一显隐 helper。
+- Quick Links 初始化幂等化 + 显隐监听去重：修复 `src/quick-links.js#initQuickLinks()` 在 DOM 未就绪时提前置 `initialized=true` 导致“锁死不再初始化”；并抽取 `initQuickLinksVisibility()` 统一做一次性 storage 显隐同步与监听绑定。
 - script.js i18n helper 收敛：`src/script.js` 内部 `getLocalizedMessage()` 改为复用 `src/localization.js#getLocalizedMessageSafe()`（并保留对 `window.getLocalizedMessage` 的兼容），减少重复实现与 fallback 分歧。
 - i18n substitutions 收敛：`src/localization.js` 的 `window.getLocalizedMessage(name, substitutions?)` 支持 substitutions；`src/script.js` 内确认/版本号/Toast 等场景不再直连 `chrome.i18n.getMessage`，统一走 helper。
 - 背景/壁纸初始化收敛：移除 `src/script.js` 对 `.settings-bg-option` 的重复初始化与 click 绑定；背景色仅在 `useDefaultBackground === 'true'` 时才会从设置弹窗恢复（避免壁纸模式被误覆盖）；默认无配置时回退到 `gradient-background-7` 由 `src/wallpaper.js` 负责。
@@ -38,6 +38,9 @@
 - 新功能提示（Feature Tips）初始化收敛 + 去重绑定：`src/feature-tips.js` 统一使用 `getLocalizedMessageSafe()` 获取文案，并对 `.search-engine-update-tip` / `.settings-update-tip` 的关闭按钮做“只绑定一次”（`data-close-bound`）防止 React 外壳重复 bootstrap 时重复绑定；同时在展示 tip 时对 tip 容器调用 `updateUILanguage()` 兜底 i18n（适配延迟注入）。并将“展示 tips”的入口从 `src/script.js` 收敛到 `src/bootstrap-legacy-shared.js`（避免入口分散）。
 - 书签/文件夹右键菜单副作用收敛：移除 `src/script.js` 的模块级 `document.addEventListener(...)`（避免 import 即绑定监听、以及引用未定义函数导致的潜在报错）；并为“书签菜单”增加独立 class（`.bookmark-context-menu`），避免创建书签菜单时误删文件夹菜单（两者都带 `.custom-context-menu`）。同时点击空白处可统一关闭两种菜单，点击菜单内部不会误关闭（保持 UI/交互对等）。
 - 快捷入口/设置齿轮点击逻辑迁移到 React Portal：`src/ui/links-icons.jsx` / `src/ui/settings-icon.jsx` 直接处理 `chrome://history|downloads|settings/passwords|extensions` 与 `openSettingsModal()`；`src/ui/special-links-controller.js` 在 React 场景下（`documentElement.dataset.ntmReactSpecialLinks === 'true'`）不再绑定全局 click 监听，减少重复响应与全局副作用（保持 UI/交互对等）。
+- 主题切换按钮迁移到 React 渲染点（Portal 思路一致）：将 legacy 模板中的 `.theme-toggle` 从注入 DOM 中剥离，由 `src/ui/theme-toggle.jsx` 渲染同结构的按钮（`#theme-toggle-btn`），继续复用 `src/ui/theme-controller.js#initThemeController()` 维持原有行为与图标更新，避免重复 DOM/重复 id（保持 UI/交互对等）。
+- Quick Links 迁移到 React 渲染点（原位替换 + Portal）：为保持原有布局不变，`src/legacy/extract-body-inner-html.js` 支持 `replaceSelectors` 将 legacy 区块替换为占位容器；New Tab/Side Panel 用占位符原位替换 `.quick-links-wrapper`，由 `src/ui/quick-links-portal.jsx` 渲染同结构 `.quick-links-wrapper/#quick-links` 并调用 `initQuickLinks()` 复用原逻辑（保持 UI/样式/交互对等）。
+- 搜索建议容器迁移到 React 渲染点（原位替换 + Portal）：New Tab/Side Panel 用占位符原位替换 `.search-suggestions-wrapper`，由 `src/ui/search-suggestions-portal.jsx` 渲染同结构的 `.search-suggestions-wrapper/#search-suggestions/#tabs-container`（Side Panel 维持原有默认 tabs 结构；New Tab 仅保留 `searchTips` 占位，tabs 仍由 legacy 逻辑按需创建）。Portal 使用 `useLayoutEffect` 确保 DOM 在 legacy `initScript()` 执行前就绪（保持 UI/交互对等）。
 
 ### 搜索模块拆分（保持对等）
 
@@ -101,6 +104,11 @@
 - 打开设置弹窗 → 勾选/取消“快捷链接”开关：`.quick-links-wrapper` 应立即 show/hide，且刷新/重载后状态保持。
 - New Tab 与 Side Panel 分别验证一次，确保控制台无新增报错。
 
+本轮额外验证点（Quick Links React 渲染点）：
+- New Tab：Quick Links 区域仍位于搜索框下方、书签区域上方（布局位置不变）；图标/标题/hover 样式与原来一致。
+- New Tab：右键任意 Quick Link → 菜单项、编辑/删除/复制/二维码等功能正常。
+- Side Panel：重复以上 2 条路径至少一次；并确认没有出现“Quick Links 渲染两份/点击触发两次”。
+
 本轮额外验证点（i18n fallback）：
 - New Tab：右键书签/快捷链接打开上下文菜单，菜单项文案正常显示；设置弹窗/Toast 文案无异常。
 
@@ -155,3 +163,7 @@
 - New Tab：点击左下角四个图标（History/Downloads/Passwords/Extensions）应分别打开对应 `chrome://` 页面；控制台无报错。
 - New Tab：点击右下角齿轮应打开设置弹窗；点击遮罩/关闭按钮/Esc 均可关闭。
 - Side Panel：重复以上两条路径至少一次；确保不会出现“点击一次打开两次/闪烁”（避免 React 与 legacy 双重响应）。
+
+本轮额外验证点（主题切换按钮 React 化）：
+- New Tab：右下角主题按钮可切换明/暗；刷新页面后主题保持；图标随主题变化；控制台无新增报错。
+- Side Panel：重复以上路径至少一次，确保无重复切换/无闪烁。

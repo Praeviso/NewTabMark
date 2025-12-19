@@ -1,6 +1,8 @@
 import { ICONS } from './icons.js';
 
 let initialized = false;
+let visibilityInitialized = false;
+let visibilityStorageListener = null;
 
 export function setQuickLinksVisibility(show) {
   const quickLinksWrapper = document.querySelector('.quick-links-wrapper');
@@ -9,26 +11,38 @@ export function setQuickLinksVisibility(show) {
 }
 
 function syncQuickLinksVisibilityFromStorage() {
+  if (!globalThis.chrome?.storage?.sync?.get) return;
   chrome.storage.sync.get(['enableQuickLinks'], (result) => {
     setQuickLinksVisibility(result.enableQuickLinks !== false);
   });
 }
 
-export function initQuickLinks() {
-  if (initialized) return;
-  initialized = true;
+export function initQuickLinksVisibility() {
+  if (visibilityInitialized) return;
+  visibilityInitialized = true;
 
-  const quickLinksContainer = document.getElementById('quick-links');
-  if (!quickLinksContainer) return;
-  const MAX_DISPLAY = 10;
-
-  // 统一管理快捷链接区域的显隐：初始状态 + storage 变更监听
   syncQuickLinksVisibilityFromStorage();
-  chrome.storage.onChanged.addListener((changes, namespace) => {
+
+  if (!globalThis.chrome?.storage?.onChanged?.addListener) return;
+  visibilityStorageListener = (changes, namespace) => {
     if (namespace !== 'sync') return;
     if (!changes.enableQuickLinks) return;
     setQuickLinksVisibility(changes.enableQuickLinks.newValue !== false);
-  });
+  };
+  chrome.storage.onChanged.addListener(visibilityStorageListener);
+}
+
+export function initQuickLinks() {
+  if (initialized) return;
+  // Ensure visibility is always kept in sync, even if the quick links DOM is injected later.
+  initQuickLinksVisibility();
+
+  const quickLinksContainer = document.getElementById('quick-links');
+  // Do NOT lock initialization if DOM is not ready yet.
+  if (!quickLinksContainer) return;
+
+  initialized = true;
+  const MAX_DISPLAY = 10;
 
   // 添加快捷链接专用的状态变量
   let quickLinkToDelete = null;
