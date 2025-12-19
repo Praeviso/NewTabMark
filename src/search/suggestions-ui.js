@@ -1,4 +1,17 @@
-import { debounce } from '../utils/debounce.js';
+function debounce(fn, wait) {
+  let timeout;
+
+  function debounced(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn.apply(this, args), wait);
+  }
+
+  debounced.cancel = () => {
+    clearTimeout(timeout);
+  };
+
+  return debounced;
+}
 
 export function initSearchSuggestionsUI({
   searchInput,
@@ -6,6 +19,7 @@ export function initSearchSuggestionsUI({
   searchFormWrapper,
   lineContainer,
   tabsContainer,
+  suggestionsWrapper,
   isChangingSearchEngine = () => false,
   getSuggestions,
   getRecentHistory,
@@ -19,13 +33,26 @@ export function initSearchSuggestionsUI({
     return {
       hideSuggestions() {},
       showSuggestions() {},
-      showDefaultSuggestions: async () => {}
+      showDefaultSuggestions: async () => {},
+      dispose() {}
     };
   }
+
+  // Idempotency: if legacy bootstrap runs again, avoid duplicate listeners.
+  // Dispose the previous instance bound to this input.
+  const existing = searchInput.__ntmSearchSuggestionsUI;
+  if (existing && typeof existing.dispose === 'function') {
+    existing.dispose();
+  }
+
+  const abortController = new AbortController();
+  const { signal } = abortController;
 
   let allSuggestions = [];
   let displayedSuggestions = 0;
   let isScrollListenerAttached = false;
+  const resolvedSuggestionsWrapper =
+    suggestionsWrapper || searchSuggestions.closest('.search-suggestions-wrapper') || document.querySelector('.search-suggestions-wrapper');
 
   function throttle(func, limit) {
     let inThrottle = false;
@@ -75,8 +102,7 @@ export function initSearchSuggestionsUI({
     }
 
     searchFormWrapper.classList.remove('focused-with-suggestions');
-    const suggestionsWrapper = document.querySelector('.search-suggestions-wrapper');
-    if (suggestionsWrapper) suggestionsWrapper.style.display = 'none';
+    if (resolvedSuggestionsWrapper) resolvedSuggestionsWrapper.style.display = 'none';
 
     searchSuggestions.style.display = 'none';
     searchSuggestions.innerHTML = '';
@@ -105,8 +131,7 @@ export function initSearchSuggestionsUI({
 
     searchFormWrapper.classList.add('focused-with-suggestions');
 
-    const suggestionsWrapper = document.querySelector('.search-suggestions-wrapper');
-    if (suggestionsWrapper) suggestionsWrapper.style.display = 'block';
+    if (resolvedSuggestionsWrapper) resolvedSuggestionsWrapper.style.display = 'block';
     searchSuggestions.style.display = 'block';
 
     if (lineContainer) lineContainer.style.display = 'block';
@@ -243,15 +268,21 @@ export function initSearchSuggestionsUI({
     }
   }, 300);
 
-  searchInput.addEventListener('input', () => {
+  searchInput.addEventListener(
+    'input',
+    () => {
     handleInput();
     updateSubmitButtonState?.();
     if (searchInput.value.trim() === '') {
       showDefaultSuggestions();
     }
-  });
+    },
+    { signal }
+  );
 
-  searchInput.addEventListener('focus', async () => {
+  searchInput.addEventListener(
+    'focus',
+    async () => {
     searchFormWrapper.classList.add('focused');
     if (searchInput.value.trim() === '') {
       await showDefaultSuggestions();
@@ -259,18 +290,26 @@ export function initSearchSuggestionsUI({
       const suggestions = await getSuggestions?.(searchInput.value.trim());
       showSuggestions(suggestions);
     }
-  });
+    },
+    { signal }
+  );
 
-  searchInput.addEventListener('blur', () => {
+  searchInput.addEventListener(
+    'blur',
+    () => {
     searchFormWrapper.classList.remove('focused');
     setTimeout(() => {
       if (!searchFormWrapper.contains(document.activeElement)) {
         hideSuggestions();
       }
     }, 200);
-  });
+    },
+    { signal }
+  );
 
-  searchInput.addEventListener('keydown', (e) => {
+  searchInput.addEventListener(
+    'keydown',
+    (e) => {
     const items = searchSuggestions.querySelectorAll('li');
     let index = Array.from(items).findIndex((item) => item.classList.contains('keyboard-selected'));
 
@@ -319,14 +358,35 @@ export function initSearchSuggestionsUI({
         if (textEl) searchInput.value = textEl.textContent;
       }
     }
-  });
+    },
+    { signal }
+  );
 
   if (tabsContainer) {
-    tabsContainer.addEventListener('mousedown', () => {
-      updateSubmitButtonState?.();
-    });
+    tabsContainer.addEventListener(
+      'mousedown',
+      () => {
+        updateSubmitButtonState?.();
+      },
+      { signal }
+    );
   }
 
-  return { hideSuggestions, showSuggestions, showDefaultSuggestions };
+  function dispose() {
+    try {
+      handleInput.cancel?.();
+      hideSuggestions();
+    } finally {
+      abortController.abort();
+      if (isScrollListenerAttached) {
+        searchSuggestions.removeEventListener('scroll', throttledHandleScroll);
+        isScrollListenerAttached = false;
+      }
+    }
+  }
+
+  searchInput.__ntmSearchSuggestionsUI = { dispose };
+
+  return { hideSuggestions, showSuggestions, showDefaultSuggestions, dispose };
 }
 

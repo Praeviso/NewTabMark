@@ -4560,6 +4560,7 @@ function initScriptFolderNameObserver() {
     searchFormWrapper: document.querySelector('.search-form'),
     lineContainer: document.getElementById('line-container'),
     tabsContainer,
+    suggestionsWrapper: document.querySelector('.search-suggestions-wrapper'),
     isChangingSearchEngine: () => isChangingSearchEngine,
     getSuggestions: getSuggestionsService,
     getRecentHistory: getRecentHistoryService,
@@ -4569,6 +4570,16 @@ function initScriptFolderNameObserver() {
     saveUserBehavior: saveUserBehaviorService,
     updateSubmitButtonState
   });
+
+  // Cleanup to prevent listener leaks when the page is torn down.
+  try {
+    const ui = searchInput.__ntmSearchSuggestionsUI;
+    if (ui?.dispose) {
+      window.addEventListener('pagehide', () => ui.dispose(), { once: true });
+    }
+  } catch {
+    // noop
+  }
 
 
   // 修改这个函数
