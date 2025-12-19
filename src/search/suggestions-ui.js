@@ -1,17 +1,4 @@
-function debounce(fn, wait) {
-  let timeout;
-
-  function debounced(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn.apply(this, args), wait);
-  }
-
-  debounced.cancel = () => {
-    clearTimeout(timeout);
-  };
-
-  return debounced;
-}
+import { debounce } from '../utils/debounce.js';
 
 export function initSearchSuggestionsUI({
   searchInput,
@@ -48,11 +35,27 @@ export function initSearchSuggestionsUI({
   const abortController = new AbortController();
   const { signal } = abortController;
 
+  // When the page loses focus (e.g. user clicks the browser address bar), we hide suggestions.
+  // Some browsers may restore focus to the textarea briefly when returning to the tab, causing
+  // a momentary show/hide flash. Track this so we only show suggestions again on explicit user intent.
+  let hiddenDueToPageBlur = false;
+  let lastUserFocusIntentAt = 0;
+
   let allSuggestions = [];
   let displayedSuggestions = 0;
   let isScrollListenerAttached = false;
   const resolvedSuggestionsWrapper =
     suggestionsWrapper || searchSuggestions.closest('.search-suggestions-wrapper') || document.querySelector('.search-suggestions-wrapper');
+
+  function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   function throttle(func, limit) {
     let inThrottle = false;
@@ -119,6 +122,11 @@ export function initSearchSuggestionsUI({
     updateSubmitButtonState?.();
   }
 
+  function hideDueToPageBlur() {
+    hiddenDueToPageBlur = true;
+    hideSuggestions();
+  }
+
   function showSuggestions(suggestions) {
     if (!Array.isArray(suggestions) || suggestions.length === 0) {
       hideSuggestions();
@@ -163,24 +171,38 @@ export function initSearchSuggestionsUI({
 </svg>`;
 
     const maxTextLength = 20;
-    const truncatedText =
+    const safeFullText = escapeHtml(suggestion.text);
+    const truncatedTextRaw =
       suggestion.text.length > maxTextLength
         ? `${suggestion.text.substring(0, maxTextLength)}...`
         : suggestion.text;
+    const safeTruncatedText = escapeHtml(truncatedTextRaw);
+
+    const safeDisplayUrl = displayUrl ? escapeHtml(displayUrl) : '';
+    const safeType = escapeHtml(suggestion.type);
 
     li.innerHTML = `
     ${suggestion.type === 'search' ? searchSvgIcon : '<span class="material-icons suggestion-icon"></span>'}
     <div class="suggestion-content">
-      <span class="suggestion-text" title="${suggestion.text}">${truncatedText}</span>
-      ${displayUrl ? `<span class="suggestion-dash">-</span><span class="suggestion-url">${displayUrl}</span>` : ''}
+      <span class="suggestion-text" title="${safeFullText}">${safeTruncatedText}</span>
+      ${safeDisplayUrl ? `<span class="suggestion-dash">-</span><span class="suggestion-url">${safeDisplayUrl}</span>` : ''}
     </div>
-    <span class="suggestion-type">${suggestion.type}</span>
+    <span class="suggestion-type">${safeType}</span>
   `;
 
     if (suggestion.url && suggestion.type !== 'search') {
       getFavicon(suggestion.url, (faviconUrl) => {
         const iconSpan = li.querySelector('.suggestion-icon');
-        if (iconSpan) iconSpan.innerHTML = faviconUrl ? `<img src="${faviconUrl}" alt="" class="favicon">` : '';
+        if (!iconSpan) return;
+
+        iconSpan.innerHTML = '';
+        if (!faviconUrl) return;
+
+        const img = document.createElement('img');
+        img.src = faviconUrl;
+        img.alt = '';
+        img.className = 'favicon';
+        iconSpan.appendChild(img);
       });
     }
 
@@ -271,6 +293,7 @@ export function initSearchSuggestionsUI({
   searchInput.addEventListener(
     'input',
     () => {
+    hiddenDueToPageBlur = false;
     handleInput();
     updateSubmitButtonState?.();
     if (searchInput.value.trim() === '') {
@@ -280,16 +303,37 @@ export function initSearchSuggestionsUI({
     { signal }
   );
 
+  // Capture user intent to focus (mouse/touch) so we can re-enable auto-show.
+  const markUserFocusIntent = () => {
+    lastUserFocusIntentAt = Date.now();
+    hiddenDueToPageBlur = false;
+  };
+  searchInput.addEventListener('pointerdown', markUserFocusIntent, { signal });
+  searchInput.addEventListener('mousedown', markUserFocusIntent, { signal });
+  searchInput.addEventListener('touchstart', markUserFocusIntent, { signal, passive: true });
+
   searchInput.addEventListener(
     'focus',
     async () => {
     searchFormWrapper.classList.add('focused');
-    if (searchInput.value.trim() === '') {
-      await showDefaultSuggestions();
-    } else {
-      const suggestions = await getSuggestions?.(searchInput.value.trim());
-      showSuggestions(suggestions);
+    // If we previously hid suggestions because the page lost focus, don't auto-show
+    // on tab return unless there is explicit user focus intent.
+    const userInitiatedFocus = Date.now() - lastUserFocusIntentAt < 500;
+    if (hiddenDueToPageBlur && !userInitiatedFocus) {
+      return;
     }
+
+    // Defer showing one tick to avoid a show/hide flash when focus is transient.
+    setTimeout(async () => {
+      if (!document.hasFocus() || document.activeElement !== searchInput) return;
+
+      if (searchInput.value.trim() === '') {
+        await showDefaultSuggestions();
+      } else {
+        const suggestions = await getSuggestions?.(searchInput.value.trim());
+        showSuggestions(suggestions);
+      }
+    }, 0);
     },
     { signal }
   );
@@ -299,6 +343,13 @@ export function initSearchSuggestionsUI({
     () => {
     searchFormWrapper.classList.remove('focused');
     setTimeout(() => {
+      // If the page lost focus (e.g. user clicked browser UI/address bar),
+      // `document.activeElement` may remain unchanged. Treat that as a blur-away.
+      if (!document.hasFocus()) {
+        hideSuggestions();
+        return;
+      }
+
       if (!searchFormWrapper.contains(document.activeElement)) {
         hideSuggestions();
       }
@@ -314,6 +365,10 @@ export function initSearchSuggestionsUI({
     let index = Array.from(items).findIndex((item) => item.classList.contains('keyboard-selected'));
 
     switch (e.key) {
+      case 'Escape':
+        e.preventDefault();
+        hideSuggestions();
+        return;
       case 'ArrowDown':
         e.preventDefault();
         if (index < items.length - 1) index++;
@@ -358,6 +413,37 @@ export function initSearchSuggestionsUI({
         if (textEl) searchInput.value = textEl.textContent;
       }
     }
+    },
+    { signal }
+  );
+
+  // Hide suggestions when the page loses focus or is backgrounded.
+  // This covers cases like clicking Chrome's address bar where the input blur
+  // may not update `document.activeElement` as expected.
+  window.addEventListener(
+    'blur',
+    () => {
+      hideDueToPageBlur();
+    },
+    { signal }
+  );
+
+  window.addEventListener(
+    'focus',
+    () => {
+      // On tab return some browsers may momentarily refocus the input.
+      // Keep auto-show suppressed until explicit user intent.
+      // (If the user clicks the input, markUserFocusIntent will clear this.)
+    },
+    { signal }
+  );
+
+  document.addEventListener(
+    'visibilitychange',
+    () => {
+      if (document.visibilityState === 'hidden') {
+        hideDueToPageBlur();
+      }
     },
     { signal }
   );

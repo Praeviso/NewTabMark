@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 
 function SearchSuggestions({ variant }) {
   return (
-    <div className="search-suggestions-wrapper">
+    <div className="search-suggestions-wrapper" data-ntm-search-suggestions-root="true">
       <div className="line-container" id="line-container">
         <hr className="custom-hr" />
       </div>

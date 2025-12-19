@@ -1,20 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { initQuickLinks, initQuickLinksVisibility } from '../quick-links.js';
+import { createQuickLinksController } from '../quick-links/quick-links-controller.js';
 
 function QuickLinks() {
-  // Keep visibility in sync even if the feature is hidden.
-  useEffect(() => {
-    initQuickLinksVisibility();
-  }, []);
+  const wrapperRef = useRef(null);
 
-  // Initialize the full Quick Links feature once the container exists.
   useEffect(() => {
-    initQuickLinks();
+    const controller = createQuickLinksController({ root: wrapperRef.current });
+    return () => controller.dispose();
   }, []);
 
   return (
-    <div className="quick-links-wrapper">
+    <div ref={wrapperRef} className="quick-links-wrapper">
       <div id="quick-links" className="quick-links-container" />
     </div>
   );

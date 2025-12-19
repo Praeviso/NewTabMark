@@ -39,6 +39,15 @@ export function clearWallpaperState() {
   if (manager?.clearWallpaperCache) manager.clearWallpaperCache();
   if (manager?.clearWallpaper) manager.clearWallpaper();
 
+    // Fallback: if manager isn't ready, still clear persisted wallpaper state.
+    try {
+        localStorage.removeItem('originalWallpaper');
+        localStorage.removeItem('selectedWallpaper');
+        localStorage.removeItem('wallpaperThumbnail');
+    } catch {
+        // ignore
+    }
+
   document.body.classList.remove('has-wallpaper');
   document.body.style.removeProperty('--wallpaper-image');
   document.body.style.backgroundImage = 'none';
@@ -170,6 +179,17 @@ class WallpaperManager {
     }
 
     syncActiveWallpaperOption(keyOverride) {
+        // If a solid/default background is currently selected, wallpaper options
+        // should NOT show an active state (avoids dual-active after refresh).
+        const backgroundState = readBackgroundState(localStorage);
+        const bgClassToApply = computeBackgroundClassToApply(backgroundState);
+        if (bgClassToApply) {
+            document.querySelectorAll('.wallpaper-option').forEach((opt) => {
+                opt.classList.remove('active');
+            });
+            return;
+        }
+
         const selectedWallpaper = localStorage.getItem('selectedWallpaper');
         const savedWallpaper = localStorage.getItem('originalWallpaper');
         const activeKey = keyOverride || selectedWallpaper || savedWallpaper;
@@ -468,7 +488,7 @@ class WallpaperManager {
         persistBackgroundSelection(localStorage, defaultBg);
 
         // 恢复默认背景意味着不再使用壁纸：清理壁纸存储，避免状态残留
-        localStorage.removeItem('originalWallpaper');
+        this.clearWallpaperCache();
 
         // 重置为默认背景时可以选中默认的纯色背景选项
         const defaultBgOption = document.querySelector(`.settings-bg-option[data-bg="${defaultBg}"]`);

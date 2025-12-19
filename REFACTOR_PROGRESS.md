@@ -43,9 +43,38 @@
 - 可清理：新增 `dispose()`（AbortController + 取消 debounce + 清理 scroll listener + hide UI），并在 `src/script.js` 的 `pagehide` 时机调用。
 - 行为不变：保留原有 DOM 结构、样式 class、交互（输入/聚焦/失焦、键盘上下选择、Enter/ Ctrl|Cmd+Enter、滚动加载）。
 
+补充修复（保持对等）：
+- Esc：搜索建议列表支持按 `Esc` 立即隐藏。
+- 页面失焦隐藏：当页面失去焦点（例如点击 Chrome 顶部地址栏/搜索框）或切到后台时，会隐藏搜索建议，避免建议面板“悬挂”。
+- 回到页面不闪：从地址栏切回 New Tab/Side Panel 时，不会短暂闪出建议列表；只有用户再次主动聚焦/输入才会显示。
+
+补充重构（保持对等）：
+- 统一 debounce：`src/search/suggestions-ui.js` 改用 `src/utils/debounce.js`（新增 `cancel()`），避免重复实现并确保 dispose 能可靠取消定时任务。
+- 渲染安全性收敛：建议项标题/文本改为 HTML 转义后再写入 DOM（结构与 class 不变），避免 history/bookmark 标题包含特殊字符时造成注入风险。
+
+### 搜索 wiring 收敛（保持对等）
+
+- 新增 `src/search/search-controller.js`：把“搜索建议 UI 的 wiring（DOM 作用域查询 + init）+ pagehide dispose 生命周期”收敛为可复用入口。
+- `src/script.js` 改为调用 `initSearchController(...)`，并移除重复声明的 `updateSubmitButtonState/queueSearch/processSearchQueue` 以及手写 pagehide dispose 片段，避免同一作用域内后声明覆盖前声明的隐患。
+- 行为不变：仍使用原有 DOM 结构、class、布局；tabs 显隐逻辑与建议 UI 交互保持一致。
+
+### 搜索建议容器 Portal 稳定化（保持对等）
+
+- 建议容器由 React Portal 渲染保持稳定：在 `src/ui/search-suggestions-portal.jsx` 的根节点新增 `data-ntm-search-suggestions-root` 标记（不影响样式/布局）。
+- legacy 侧 DOM 查询收敛到 `.search-form` 作用域：`src/script.js` 不再依赖全局 `getElementById` 的“先用后声明”隐患，改为优先在表单子树内查找 `#tabs-container/#search-suggestions/#line-container`，避免未来出现重复节点时取错目标。
+- 行为不变：搜索建议显示/隐藏、滚动加载、tabs 展示逻辑保持不变。
+
 ### 其他关键修复
 
 - 壁纸：`selectedWallpaper` 持久化 + URL 归一化匹配；active 同步与暗色 active 边框修复。
+
+### 体验一致性修复（保持对等）
+
+### Quick Links 初始化收敛（保持对等）
+
+- 新增 `src/quick-links/quick-links-controller.js`：把 Quick Links 的 wiring（初始化 + `pagehide` 清理）收敛为可复用入口，避免未来 React 重挂载/重复 bootstrap 时出现重复监听与状态锁死。
+- `src/ui/quick-links-portal.jsx` 改为使用 controller，并在 React unmount 时调用 `dispose()`；Portal 渲染的 DOM 结构、class 与布局保持不变（`.quick-links-wrapper` + `#quick-links`）。
+- `src/quick-links.js` 补齐最小清理能力：新增 `disposeQuickLinksVisibility()` / `disposeQuickLinks()`；同时 `initQuickLinks({ root? })` 支持在给定 root 下查找 `#quick-links`（默认行为不变）。
 
 ### 文档
 
@@ -78,6 +107,11 @@
 - New Tab / Side Panel 能正常加载（无白屏/无明显闪烁/控制台无关键报错）
 - 设置弹窗可打开/切换/关闭（按钮/遮罩/Esc）
 - 搜索：引擎切换 + 回车搜索 + 搜索建议（滚动加载/键盘导航/Ctrl/Cmd+Enter）
+
+本轮建议重点回归（搜索建议容器相关）：
+- New Tab：输入后能出现建议列表；滚动到底部会继续加载；Esc/点击空白/失焦能隐藏。
+- Side Panel：同上；并确认 tabs 区域的展示/隐藏逻辑与之前一致（有建议时显示、无建议时隐藏）。
+- New Tab：输入出建议后点击地址栏隐藏 → 再点回页面（不点输入）不应闪出建议；此后点击输入/继续输入仍可正常显示建议。
 - 书签：展示/打开/右键/拖拽（如本轮未触达，可抽检 1–2 条路径）
 
 近期改动重点回归（按需抽检）：

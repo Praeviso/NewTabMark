@@ -4,8 +4,13 @@ let initialized = false;
 let visibilityInitialized = false;
 let visibilityStorageListener = null;
 
-export function setQuickLinksVisibility(show) {
-  const quickLinksWrapper = document.querySelector('.quick-links-wrapper');
+function getQuickLinksWrapper(root) {
+  if (root?.classList?.contains?.('quick-links-wrapper')) return root;
+  return root?.querySelector?.('.quick-links-wrapper') || document.querySelector('.quick-links-wrapper');
+}
+
+export function setQuickLinksVisibility(show, root) {
+  const quickLinksWrapper = getQuickLinksWrapper(root);
   if (!quickLinksWrapper) return;
   quickLinksWrapper.style.display = show ? 'flex' : 'none';
 }
@@ -32,12 +37,27 @@ export function initQuickLinksVisibility() {
   chrome.storage.onChanged.addListener(visibilityStorageListener);
 }
 
-export function initQuickLinks() {
+export function disposeQuickLinksVisibility() {
+  if (!visibilityInitialized) return;
+  visibilityInitialized = false;
+
+  if (visibilityStorageListener && globalThis.chrome?.storage?.onChanged?.removeListener) {
+    try {
+      chrome.storage.onChanged.removeListener(visibilityStorageListener);
+    } catch {
+      // noop
+    }
+  }
+  visibilityStorageListener = null;
+}
+
+export function initQuickLinks({ root } = {}) {
   if (initialized) return;
   // Ensure visibility is always kept in sync, even if the quick links DOM is injected later.
   initQuickLinksVisibility();
 
-  const quickLinksContainer = document.getElementById('quick-links');
+  const quickLinksContainer =
+    root?.querySelector?.('#quick-links') || document.getElementById('quick-links');
   // Do NOT lock initialization if DOM is not ready yet.
   if (!quickLinksContainer) return;
 
@@ -391,7 +411,6 @@ export function initQuickLinks() {
 
   // 3. 优化渲染函数，使用 DocumentFragment 减少重排
   function renderQuickLinks(shortcuts) {
-    const quickLinksContainer = document.getElementById('quick-links');
     const fragment = document.createDocumentFragment();
     
     quickLinksContainer.innerHTML = '';
@@ -1037,5 +1056,29 @@ export function initQuickLinks() {
       });
     }
     backButton.style.display = 'block';
+  }
+
+  // Expose a handle for controller-style disposal.
+  quickLinksContainer.__ntmQuickLinksInitialized = true;
+}
+
+export function disposeQuickLinks({ root } = {}) {
+  if (!initialized) return;
+  initialized = false;
+
+  // Remove context menus created by this module.
+  document.querySelectorAll('.custom-context-menu[data-owner="quick-links"]').forEach((menu) => {
+    menu.remove();
+  });
+
+  const quickLinksContainer =
+    root?.querySelector?.('#quick-links') || document.getElementById('quick-links');
+  if (quickLinksContainer) {
+    try {
+      quickLinksContainer.innerHTML = '';
+      delete quickLinksContainer.__ntmQuickLinksInitialized;
+    } catch {
+      // noop
+    }
   }
 }

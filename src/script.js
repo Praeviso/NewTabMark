@@ -16,7 +16,7 @@ import {
   getSuggestions as getSuggestionsService,
   saveUserBehavior as saveUserBehaviorService
 } from './search/suggestions.js';
-import { initSearchSuggestionsUI } from './search/suggestions-ui.js';
+import { initSearchController } from './search/search-controller.js';
 import { getLocalizedMessageSafe } from './localization.js';
 
 let bookmarkTreeNodes = [];
@@ -4080,8 +4080,10 @@ function initScriptFolderNameObserver() {
     });
   }
 
-  const tabsContainer = document.getElementById('tabs-container');
-  const tabs = document.querySelectorAll('.tab');
+  const tabsContainer = document.querySelector('.search-form #tabs-container') || document.getElementById('tabs-container');
+  const searchSuggestions =
+    document.querySelector('.search-form #search-suggestions') || document.getElementById('search-suggestions');
+  const tabs = tabsContainer ? Array.from(tabsContainer.querySelectorAll('.tab')) : [];
   const defaultSearchEngine = (localStorage.getItem('selectedSearchEngine') || 'google').toLowerCase();
 
   // 在文件的适当位置（可能在 DOMContentLoaded 事件监听器内）添加这个标志
@@ -4112,18 +4114,20 @@ function initScriptFolderNameObserver() {
     });
   });
 
-  new Sortable(tabsContainer, {
-    animation: 150,
-    onEnd: function (evt) {
-      const orderedEngines = Array.from(tabsContainer.children).map(tab => tab.getAttribute('data-engine'));
-      localStorage.setItem('orderedSearchEngines', JSON.stringify(orderedEngines));
-    }
-  });
+  if (tabsContainer) {
+    new Sortable(tabsContainer, {
+      animation: 150,
+      onEnd: function () {
+        const orderedEngines = Array.from(tabsContainer.children).map((tab) => tab.getAttribute('data-engine'));
+        localStorage.setItem('orderedSearchEngines', JSON.stringify(orderedEngines));
+      }
+    });
+  }
 
   const savedOrder = JSON.parse(localStorage.getItem('orderedSearchEngines'));
-  if (savedOrder) {
-    savedOrder.forEach(engineName => {
-      const tab = Array.from(tabs).find(tab => tab.getAttribute('data-engine') === engineName);
+  if (tabsContainer && savedOrder) {
+    savedOrder.forEach((engineName) => {
+      const tab = Array.from(tabs).find((t) => t.getAttribute('data-engine') === engineName);
       if (tab) {
         tabsContainer.appendChild(tab);
       }
@@ -4134,7 +4138,7 @@ function initScriptFolderNameObserver() {
   const searchInput = document.querySelector('.search-input');
   const searchEngineIcon = document.getElementById('search-engine-icon');
 
-  if (!searchForm || !searchInput || !tabsContainer || !searchEngineIcon) {
+  if (!searchForm || !searchInput || !tabsContainer || !searchEngineIcon || !searchSuggestions) {
     return;
   }
 
@@ -4268,8 +4272,6 @@ function initScriptFolderNameObserver() {
   // 初始化时调整高度
   adjustTextareaHeight();
   
-
-  const searchSuggestions = document.getElementById('search-suggestions');
   async function getRecentHistory(limit = 100, maxPerDomain = 5) {
     return getRecentHistoryService(limit, maxPerDomain);
   }
@@ -4518,49 +4520,11 @@ function initScriptFolderNameObserver() {
     });
   }
 
-  if (!searchForm || !searchInput || !tabsContainer || !searchEngineIcon) {
-    return;
-  }
-
-  function updateSubmitButtonState() {
-    if (searchInput.value.trim() === '') {
-      tabsContainer.style.display = 'none';
-    } else {
-      // 只有当搜索建议列表不为空时才显示 tabs-container
-      if (searchSuggestions.children.length > 0) {
-        tabsContainer.style.display = 'flex';
-      } else {
-        tabsContainer.style.display = 'none';
-      }
-    }
-  }
-
-
-  function queueSearch() {
-    const query = searchInput.value.trim();
-    if (query === '') {
-      return;
-    }
-    searchQueue.push(query);
-    processSearchQueue();
-  }
-
-  function processSearchQueue() {
-    if (isSearching || searchQueue.length === 0) {
-      return;
-    }
-    
-    const query = searchQueue.shift();
-    debouncedPerformSearch(query);
-  }
-
-  initSearchSuggestionsUI({
+  initSearchController({
+    searchForm,
     searchInput,
-    searchSuggestions,
-    searchFormWrapper: document.querySelector('.search-form'),
-    lineContainer: document.getElementById('line-container'),
     tabsContainer,
-    suggestionsWrapper: document.querySelector('.search-suggestions-wrapper'),
+    searchSuggestions,
     isChangingSearchEngine: () => isChangingSearchEngine,
     getSuggestions: getSuggestionsService,
     getRecentHistory: getRecentHistoryService,
@@ -4570,16 +4534,6 @@ function initScriptFolderNameObserver() {
     saveUserBehavior: saveUserBehaviorService,
     updateSubmitButtonState
   });
-
-  // Cleanup to prevent listener leaks when the page is torn down.
-  try {
-    const ui = searchInput.__ntmSearchSuggestionsUI;
-    if (ui?.dispose) {
-      window.addEventListener('pagehide', () => ui.dispose(), { once: true });
-    }
-  } catch {
-    // noop
-  }
 
 
   // 修改这个函数
