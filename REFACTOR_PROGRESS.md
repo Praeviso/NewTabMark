@@ -106,6 +106,13 @@
 - 保留 legacy class（`.search-suggestions-wrapper`、`.search-suggestions`、`.tabs`、`.tab` 等）以确保 legacy JS 查询正常。
 - 行为不变：搜索建议显隐、tabs 切换、暗色模式适配。
 
+### More Button Toast Tailwind 化（保持对等）
+
+- `src/ui/more-button-toast.jsx` 文本样式已迁移至 Tailwind CSS。
+- `<p>` 标签：`m-0 text-[13px] text-inherit`（去除默认边距、13px 字号、继承父容器颜色）。
+- 容器样式（`.toast`）保留 legacy CSS：`fixed top-[20%] left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/80 text-white px-4 py-2.5 rounded-lg z-[10000] text-center max-w-[80%]`。
+- 行为不变：toast 显隐动画由 `.show` class 控制。
+
 
 ### Legacy 控制器标记废弃（保持对等）
 

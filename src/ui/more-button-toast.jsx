@@ -11,7 +11,14 @@ function getDefaultToastText() {
 
 function MoreButtonToastContent() {
   const defaultText = useMemo(getDefaultToastText, []);
-  return <p data-i18n="moreSearchSupportToast">{defaultText}</p>;
+  return (
+    <p
+      className="m-0 text-[13px] text-inherit"
+      data-i18n="moreSearchSupportToast"
+    >
+      {defaultText}
+    </p>
+  );
 }
 
 export function MoreButtonToastPortal() {
