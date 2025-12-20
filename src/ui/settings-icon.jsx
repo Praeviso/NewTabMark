@@ -74,7 +74,9 @@ export function SettingsIcon() {
         style={{ display: 'none' }}
       >
         <div className="tip-content flex p-3 items-start gap-2">
-          <span className="material-icons text-xl" style={{ color: '#10b981' }}>info</span>
+          <span className="text-xl" style={{ color: '#10b981' }}>
+            <span className="material-icons">info</span>
+          </span>
           <div className={[
             'tip-text flex-1 text-sm leading-relaxed',
             'text-gray-700 [[data-theme=dark]_&]:text-gray-200'
