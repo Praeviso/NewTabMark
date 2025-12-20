@@ -25,7 +25,7 @@ export function SettingsIcon() {
   // Container classes: fixed position, white bg (dark: neutral-700), rounded, shadow, flex center
   // Using arbitrary selector for data-theme dark mode compatibility
   const containerClasses = [
-    'fixed right-8 top-[calc(25%+210px)] z-[2]',
+    'fixed right-8 top-[calc(30%_+_250px)] z-[2]',
     'w-10 h-10 flex items-center justify-center',
     'bg-white rounded-xl shadow-md',
     'transition-all duration-300',
