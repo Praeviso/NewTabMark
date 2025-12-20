@@ -24,7 +24,15 @@
 - 共享外壳 `LegacyAppShell`：注入 legacy DOM + 显式 bootstrap，New Tab/Side Panel 复用同一启动序列。
 - 已迁移渲染点：年进度、More toast、快捷入口、设置齿轮、主题切换、Quick Links、搜索建议容器、搜索引擎下拉、侧边栏切换按钮。
 
+### Sidebar Container Tailwind 化（保持对等）
+
+- `src/index.html` 和 `src/sidepanel.html` 中的 `#sidebar-container` 样式已迁移至 Tailwind CSS。
+- 容器类：`flex collapsed relative h-screen transition-[margin-left] duration-300`。
+- 保留 `collapsed` class 以兼容 `.collapsed { margin-left: -16rem; }` 控制侧边栏收起状态。
+- 行为不变：侧边栏展开/收起动画正常工作。
+
 ### ToggleSidebar React 化 + Tailwind 化（保持对等）
+
 
 - `src/ui/toggle-sidebar.jsx` 现在完全管理侧边栏切换逻辑：React 组件内部维护展开/收起状态、处理点击事件、同步 `#sidebar-container` 的 `collapsed` class。
 - 新增 `data-ntm-react-toggle-sidebar` 标记：React 加载时在 `document.documentElement` 设置该属性，`script.js` 检测到后跳过事件绑定，避免重复监听。
