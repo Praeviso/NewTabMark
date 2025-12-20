@@ -22,11 +22,36 @@ export function SettingsIcon() {
     []
   );
 
+  // Container classes: fixed position, white bg (dark: neutral-700), rounded, shadow, flex center
+  // Using arbitrary selector for data-theme dark mode compatibility
+  const containerClasses = [
+    'fixed right-8 top-[calc(25%+210px)] z-[2]',
+    'w-10 h-10 flex items-center justify-center',
+    'bg-white rounded-xl shadow-md',
+    'transition-all duration-300',
+    // Dark mode via data-theme attribute
+    '[[data-theme=dark]_&]:bg-neutral-700'
+  ].join(' ');
+
+  // Link classes: flex center, gray text with hover effects
+  const linkClasses = [
+    'flex items-center justify-center',
+    'w-7 h-7 rounded-lg',
+    'text-gray-500 no-underline',
+    'transition-all duration-300',
+    'hover:text-emerald-500 hover:bg-gray-100',
+    'active:scale-95',
+    // Dark mode
+    '[[data-theme=dark]_&]:text-white',
+    '[[data-theme=dark]_&]:hover:text-neutral-900'
+  ].join(' ');
+
   return (
-    <div className="settings-icon">
+    <div className={containerClasses}>
       <a
         href="#settings"
         id="settings-link"
+        className={linkClasses}
         data-i18n-title="settingsLinkTitle"
         title={settingsLinkTitle}
         onClick={(e) => {

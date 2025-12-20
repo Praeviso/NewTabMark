@@ -112,6 +112,15 @@
   - `SettingsIcon`（`src/ui/settings-icon.jsx`）：处理设置弹窗打开。
   - legacy `initSpecialLinksController()` 在 React 加载后（`ntmReactSpecialLinks=true`）为 no-op。
 
+### SettingsIcon Tailwind 化（保持对等）
+
+- `src/ui/settings-icon.jsx` 容器和链接样式已迁移至 Tailwind CSS：
+  - 容器：`fixed right-8 top-[calc(25%+210px)] z-[2] w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-md transition-all duration-300`
+  - 链接：`flex items-center justify-center w-7 h-7 rounded-lg text-gray-500 hover:text-emerald-500 hover:bg-gray-100 active:scale-95`
+  - 暗色模式：使用 `[[data-theme=dark]_&]` 任意选择器实现（容器 `bg-neutral-700`，链接 `text-white`）
+- 行为不变：点击打开设置弹窗，悬停变绿色背景灰色。
+- `.settings-update-tip` 子组件结构保留使用 legacy CSS。
+
 ## 当前实现方式（重要说明）
 
 当前并未把业务完全 React 组件化，而是 React 负责挂载与引导：注入遗留 DOM → 显式 bootstrap 遗留模块 → 初始化控制器。该方案用于快速保证“功能/视觉对等”，并为后续逐模块 React 化提供落脚点。
