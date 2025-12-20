@@ -55,10 +55,27 @@ export function ToggleSidebar() {
 
     // Button text and position are controlled by CSS based on sidebar state.
     // We keep the same id and classes for style compatibility.
+    // Tailwind classes replicate legacy #toggle-sidebar styles from output.css/styles.css
     return (
         <button
             id="toggle-sidebar"
-            className="bg-gray-300 p-1 rounded-r-md"
+            className={[
+                // positioning & layer
+                'fixed bottom-8 z-[1000]',
+                // size
+                'w-9 h-9',
+                // shape & border
+                'rounded-full border border-zinc-100',
+                // background & text (light)
+                'bg-white text-gray-500 font-bold',
+                // hover (light)
+                'hover:bg-gray-200 hover:text-gray-900',
+                // transition
+                'transition-[left] duration-300 cursor-pointer',
+                // dark mode overrides
+                '[[data-theme=dark]_&]:bg-neutral-700 [[data-theme=dark]_&]:border-neutral-700',
+                '[[data-theme=dark]_&]:hover:bg-neutral-700 [[data-theme=dark]_&]:hover:text-white',
+            ].join(' ')}
             onClick={handleToggle}
             style={{ left: isCollapsed ? '2rem' : '14.75rem' }}
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}

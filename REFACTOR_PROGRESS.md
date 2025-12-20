@@ -138,6 +138,16 @@
   - 暗色模式：使用 `[[data-theme=dark]_&]` 任意选择器实现（按钮 `bg-neutral-700`，SVG `fill-white hover:fill-neutral-900`）
 - 行为不变：点击切换明/暗主题，图标随主题变化，hover 变绿色。
 
+### ToggleSidebar Tailwind 化（保持对等）
+
+- `src/ui/toggle-sidebar.jsx` 按钮样式已迁移至 Tailwind CSS：
+  - 定位：`fixed bottom-8 z-[1000]`，`left` 通过 `style` 属性动态控制（2rem / 14.75rem）
+  - 尺寸：`w-9 h-9`
+  - 形状：`rounded-full border border-zinc-100`
+  - 颜色：`bg-white text-gray-500 font-bold`
+  - Hover：`hover:bg-gray-200 hover:text-gray-900`
+  - 暗色模式：使用 `[[data-theme=dark]_&]` 任意选择器实现（`bg-neutral-700 border-neutral-700`，hover `text-white`）
+- 行为不变：点击切换侧边栏展开/收起，按钮位置随状态变化，图标 `<`/`>` 更新。
 
 ## 当前实现方式（重要说明）
 
