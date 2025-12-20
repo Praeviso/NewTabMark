@@ -94,6 +94,18 @@
 - 保留 legacy class（`.search-engine-dropdown`、`.search-engine-option` 等）以确保 legacy JS 查询正常。
 - 行为不变：点击切换搜索引擎、下拉菜单显隐、暗色模式适配。
 
+### Search Suggestions Portal Tailwind 化（保持对等）
+
+- `src/ui/search-suggestions-portal.jsx` 样式已迁移至 Tailwind CSS。
+- wrapper：`absolute top-full left-0 right-0 bg-white rounded-b-xl shadow-md z-[1000] overflow-hidden hidden` + 暗色模式背景。
+- custom-hr：`border-t border-gray-200` + 暗色模式边框色。
+- tabs-container：`relative p-2 flex justify-start items-center overflow-x-auto whitespace-nowrap z-[5] pl-[30px] bg-white scrollbar-none` + 暗色模式。
+- search-tips：`text-xs mr-2`。
+- tab：`flex-shrink-0 cursor-pointer px-1.5 py-0.5 rounded-2xl text-gray-500 text-xs inline-flex items-center mr-1.5 bg-gray-100 border border-transparent transition-colors hover:bg-gray-200` + 暗色模式。
+- tab.active：`bg-blue-50 text-blue-600 border-gray-300`。
+- 保留 legacy class（`.search-suggestions-wrapper`、`.search-suggestions`、`.tabs`、`.tab` 等）以确保 legacy JS 查询正常。
+- 行为不变：搜索建议显隐、tabs 切换、暗色模式适配。
+
 
 ### Legacy 控制器标记废弃（保持对等）
 
