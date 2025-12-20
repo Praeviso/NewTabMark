@@ -129,6 +129,15 @@
   - 暗色模式：使用 `[[data-theme=dark]_&]` 任意选择器实现（容器 `bg-neutral-700`，链接 `text-white hover:text-neutral-900`）
 - 行为不变：点击跳转对应 Chrome 链接（history/downloads/passwords/extensions），悬停变绿色背景灰色。
 
+### ThemeToggle Tailwind 化（保持对等）
+
+- `src/ui/theme-toggle.jsx` 容器和按钮样式已迁移至 Tailwind CSS：
+  - 容器：`fixed right-8 top-[30%] z-[2]`
+  - 按钮：`flex items-center justify-center w-10 h-10 bg-white border-none rounded-xl text-gray-500 cursor-pointer shadow-md transition-all duration-300 hover:text-emerald-500 hover:bg-gray-100`
+  - SVG 图标：`[&_svg]:fill-gray-500 [&_svg]:p-1 [&_svg]:rounded-lg hover:[&_svg]:fill-emerald-500`
+  - 暗色模式：使用 `[[data-theme=dark]_&]` 任意选择器实现（按钮 `bg-neutral-700`，SVG `fill-white hover:fill-neutral-900`）
+- 行为不变：点击切换明/暗主题，图标随主题变化，hover 变绿色。
+
 
 ## 当前实现方式（重要说明）
 

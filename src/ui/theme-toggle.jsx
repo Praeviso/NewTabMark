@@ -87,10 +87,36 @@ export function ThemeToggle() {
   // Get the appropriate icon based on current theme
   const iconHtml = theme === 'dark' ? ICONS.dark_mode : ICONS.light_mode;
 
+  // Container classes: fixed position at right side
+  const containerClasses = [
+    'fixed right-8 top-[30%] z-[2]'
+  ].join(' ');
+
+  // Button classes: square button with rounded corners, shadow, hover effects
+  // SVG icon styling is handled via nested selectors
+  const buttonClasses = [
+    'flex items-center justify-center',
+    'w-10 h-10',
+    'bg-white border-none rounded-xl',
+    'text-gray-500 cursor-pointer',
+    'shadow-md',
+    'transition-all duration-300',
+    'hover:text-emerald-500 hover:bg-gray-100',
+    // Dark mode
+    '[[data-theme=dark]_&]:bg-neutral-700',
+    '[[data-theme=dark]_&]:border-neutral-700',
+    // SVG fill colors via Tailwind. Note: actual SVG fill is handled via CSS below
+    '[&_svg]:fill-gray-500 [&_svg]:p-1 [&_svg]:rounded-lg [&_svg]:transition-all [&_svg]:duration-200',
+    'hover:[&_svg]:fill-emerald-500 hover:[&_svg]:bg-gray-100',
+    '[[data-theme=dark]_&_svg]:fill-white',
+    '[[data-theme=dark]_&]:hover:[&_svg]:fill-neutral-900'
+  ].join(' ');
+
   return (
-    <div className="theme-toggle">
+    <div className={containerClasses}>
       <button
         id="theme-toggle-btn"
+        className={buttonClasses}
         title={title}
         onClick={handleToggle}
         dangerouslySetInnerHTML={{ __html: iconHtml }}
