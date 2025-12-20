@@ -53,6 +53,14 @@
 - 行为不变：点击打开设置弹窗，悬停变绿色背景灰色。
 - `.settings-update-tip` 子组件结构保留使用 legacy CSS。
 
+### Quick Links Portal 容器 Tailwind 化（保持对等）
+
+- `src/ui/quick-links-portal.jsx` 外层容器样式已迁移至 Tailwind CSS。
+- wrapper：`flex justify-center w-full`。
+- container：`flex gap-0.5 justify-center min-h-[80px] overflow-x-hidden py-2.5 w-[800px]` + 响应式断点（840px/480px/368px 自动换行/缩小间距）。
+- 保留 legacy class（`.quick-links-wrapper`、`.quick-links-container`）以确保 `initQuickLinks()` 仍可查找 DOM。
+- 行为不变：Quick Links 正常渲染、右键菜单、编辑/删除等功能。
+
 ### Legacy 控制器标记废弃（保持对等）
 
 - `src/progress.js` 已标记为 `@deprecated`：年进度渲染完全由 React 组件 `YearProgressPortal`（`src/ui/year-progress.jsx`）接管。

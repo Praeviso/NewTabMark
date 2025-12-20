@@ -11,8 +11,25 @@ function QuickLinks() {
   }, []);
 
   return (
-    <div ref={wrapperRef} className="quick-links-wrapper">
-      <div id="quick-links" className="quick-links-container" />
+    <div
+      ref={wrapperRef}
+      className="quick-links-wrapper flex justify-center w-full"
+    >
+      <div
+        id="quick-links"
+        className={[
+          // Legacy class for DOM queries
+          'quick-links-container',
+          // Base styles
+          'flex gap-0.5 justify-center min-h-[80px] overflow-x-hidden py-2.5 w-[800px]',
+          // Responsive: max-width 840px
+          'max-[840px]:flex-wrap max-[840px]:gap-2',
+          // Responsive: max-width 480px
+          'max-[480px]:gap-1',
+          // Responsive: max-width 368px
+          'max-[368px]:gap-1',
+        ].join(' ')}
+      />
     </div>
   );
 }
