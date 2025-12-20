@@ -48,10 +48,17 @@
 
 ### SettingsIcon Tailwind 化（保持对等）
 
-- `src/ui/settings-icon.jsx` 容器和链接样式已迁移至 Tailwind CSS。
+- `src/ui/settings-icon.jsx` 容器、链接及更新提示样式已迁移至 Tailwind CSS。
 - 暗色模式：使用 `[[data-theme=dark]_&]` 任意选择器实现。
 - 行为不变：点击打开设置弹窗，悬停变绿色背景灰色。
-- `.settings-update-tip` 子组件结构保留使用 legacy CSS。
+- `.settings-update-tip` 子组件已 Tailwind 化：
+  - wrapper：`absolute right-[60px] bottom-0 w-[280px] z-[1000] bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.15)]` + 暗色模式背景。
+  - tip-content：`flex p-3 items-start gap-2`。
+  - info 图标：`text-xl text-emerald-500`。
+  - tip-text：`flex-1 text-sm leading-relaxed text-gray-700` + 暗色模式。
+  - tip-close 按钮：`p-1 cursor-pointer flex items-center justify-center bg-transparent border-none text-gray-400 hover:text-gray-700` + 暗色模式。
+  - tip-arrow：`absolute -right-1.5 bottom-5 w-3 h-3 rotate-45 bg-white shadow-[3px_-3px_3px_rgba(0,0,0,0.05)]` + 暗色模式。
+
 
 ### Quick Links Portal 容器 Tailwind 化（保持对等）
 

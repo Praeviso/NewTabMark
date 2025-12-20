@@ -61,17 +61,40 @@ export function SettingsIcon() {
       >
         <span className="material-icons">settings</span>
       </a>
-      <div className="settings-update-tip" style={{ display: 'none' }}>
-        <div className="tip-content">
-          <span className="material-icons">info</span>
-          <div className="tip-text">
-            <p data-i18n="settingsUpdateTip">{settingsUpdateTipText}</p>
+      {/* Settings Update Tip - Tailwind-ified */}
+      <div
+        className={[
+          'settings-update-tip', // preserve legacy class
+          'absolute right-[60px] bottom-0 w-[280px] z-[1000]',
+          'bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.15)]',
+          'animate-[tipFadeIn_0.3s_ease-out]',
+          // Dark mode
+          '[[data-theme=dark]_&]:bg-gray-800 [[data-theme=dark]_&]:shadow-[0_2px_8px_rgba(0,0,0,0.3)]'
+        ].join(' ')}
+        style={{ display: 'none' }}
+      >
+        <div className="tip-content flex p-3 items-start gap-2">
+          <span className="material-icons text-xl text-emerald-500">info</span>
+          <div className={[
+            'tip-text flex-1 text-sm leading-relaxed',
+            'text-gray-700 [[data-theme=dark]_&]:text-gray-200'
+          ].join(' ')}>
+            <p data-i18n="settingsUpdateTip" className="m-0">{settingsUpdateTipText}</p>
           </div>
-          <button className="tip-close">
-            <span className="material-icons">close</span>
+          <button className={[
+            'tip-close p-1 cursor-pointer flex items-center justify-center',
+            'bg-transparent border-none',
+            'text-gray-400 hover:text-gray-700',
+            '[[data-theme=dark]_&]:text-gray-500 [[data-theme=dark]_&]:hover:text-gray-200'
+          ].join(' ')}>
+            <span className="material-icons text-xl">close</span>
           </button>
         </div>
-        <div className="tip-arrow"></div>
+        <div className={[
+          'tip-arrow absolute -right-1.5 bottom-5 w-3 h-3 rotate-45',
+          'bg-white shadow-[3px_-3px_3px_rgba(0,0,0,0.05)]',
+          '[[data-theme=dark]_&]:bg-gray-800'
+        ].join(' ')} />
       </div>
     </div>
   );
