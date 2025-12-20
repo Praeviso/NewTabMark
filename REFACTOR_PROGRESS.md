@@ -82,6 +82,18 @@
 - 保留 legacy class（`.year-progress`、`.progress-bar`、`.progress-percentage`）以确保动态颜色调整 DOM 查询正常。
 - 行为不变：进度条显示、暗色模式适配、壁纸颜色动态调整。
 
+### Search Engine Dropdown Tailwind 化（保持对等）
+
+- `src/ui/search-engine-dropdown-portal.jsx` 样式已迁移至 Tailwind CSS。
+- 下拉容器：`absolute left-0 top-full bg-white rounded-xl shadow-lg p-4 z-[1000] w-[580px] mt-2` + 暗色模式背景/阴影。
+- 选项容器：`grid grid-cols-6 gap-3` + 响应式断点（480px 切换为 3 列）。
+- 单个选项：`cursor-pointer p-2 rounded-lg transition-colors hover:bg-gray-100` + 暗色模式悬停效果。
+- 选项内容：`flex flex-col items-center gap-1.5`。
+- 选项图标：`h-6 mb-1` + 暗色模式白底衬托。
+- 选项标签：`text-xs text-gray-800` + 暗色模式文字颜色。
+- 保留 legacy class（`.search-engine-dropdown`、`.search-engine-option` 等）以确保 legacy JS 查询正常。
+- 行为不变：点击切换搜索引擎、下拉菜单显隐、暗色模式适配。
+
 
 ### Legacy 控制器标记废弃（保持对等）
 

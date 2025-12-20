@@ -124,36 +124,39 @@ function SearchEngineDropdown({ searchForm }) {
 
   return (
     <div
-      className="search-engine-dropdown"
+      className="search-engine-dropdown absolute left-0 top-full bg-white rounded-xl shadow-lg p-4 z-[1000] w-[580px] mt-2 [[data-theme=dark]_&]:bg-[#242424] [[data-theme=dark]_&]:border-[#404040] [[data-theme=dark]_&]:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.3)] max-[480px]:w-[calc(100vw-32px)] max-[480px]:left-4 max-[480px]:right-4"
       data-react-managed="true"
       style={{ display: open ? 'block' : 'none' }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="search-engine-options-container">
+      <div className="search-engine-options-container grid grid-cols-6 gap-3 max-[480px]:grid-cols-3">
         {enabledEngines.map((engine) => {
           const engineName = getEngineDisplayName(engine);
           return (
             <div
               key={engine.name}
-              className="search-engine-option"
+              className="search-engine-option cursor-pointer p-2 rounded-lg transition-colors hover:bg-gray-100 [[data-theme=dark]_&]:text-gray-200 [[data-theme=dark]_&]:hover:bg-[#333333]"
               onClick={() => selectEngine(engine)}
             >
-              <div className="search-engine-option-content">
+              <div className="search-engine-option-content flex flex-col items-center gap-1.5">
                 <img
                   src={engine.icon}
                   alt={engineName}
-                  className="search-engine-option-icon"
+                  className="search-engine-option-icon h-6 mb-1 [[data-theme=dark]_&]:bg-white [[data-theme=dark]_&]:p-0.5 [[data-theme=dark]_&]:rounded"
                 />
-                <span className="search-engine-option-label">{engineName}</span>
+                <span className="search-engine-option-label text-xs text-gray-800 [[data-theme=dark]_&]:text-gray-200">{engineName}</span>
               </div>
             </div>
           );
         })}
 
-        <div className="search-engine-option" onClick={openDialog}>
-          <div className="search-engine-option-content add-engine">
+        <div
+          className="search-engine-option cursor-pointer p-2 rounded-lg transition-colors hover:bg-gray-100 [[data-theme=dark]_&]:text-gray-200 [[data-theme=dark]_&]:hover:bg-[#333333]"
+          onClick={openDialog}
+        >
+          <div className="search-engine-option-content add-engine flex flex-col items-center gap-1.5 [[data-theme=dark]_&]:text-gray-400 [[data-theme=dark]_&]:hover:text-gray-200">
             <span dangerouslySetInnerHTML={{ __html: addIconHtml }} />
-            <span className="search-engine-option-label">{addSearchEngineText}</span>
+            <span className="search-engine-option-label text-xs text-gray-800 [[data-theme=dark]_&]:text-gray-200">{addSearchEngineText}</span>
           </div>
         </div>
       </div>
