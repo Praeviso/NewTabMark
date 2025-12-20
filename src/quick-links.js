@@ -81,74 +81,74 @@ export function initQuickLinks({ root } = {}) {
     const MAX_WIDTH_MIXED = 15; // 混合语言最大宽度
 
     function getVisualWidth(str) {
-        return str.split('').reduce((width, char) => {
-            return width + (/[\u4e00-\u9fa5]/.test(char) ? 2 : 1);
-        }, 0);
+      return str.split('').reduce((width, char) => {
+        return width + (/[\u4e00-\u9fa5]/.test(char) ? 2 : 1);
+      }, 0);
     }
 
     function cleanTitle(title) {
-        if (!title || typeof title !== 'string') return '';
-        
-        // 移除常见的无用后缀
-        title = title.replace(/\s*[-|·:]\s*.*$/, '');
-        
-        // 移除常见的网站后缀保留有效的标题部分
-        title = title.replace(/\s*(官方网站|首页|网|网站|官网)$/, '');
-        
-        // 如果标题太长，尝试提取品牌名
-        if (title.length > 20) {
-            const parts = title.split(/\s+/);
-            title = parts.length > 1 ? parts.slice(0, 2).join(' ') : title.substring(0, 20);
-        }
-        
-        // 如果清理后仍为空，返回原始标题的某种变体
-        const cleanedTitle = title.trim();
-        if (cleanedTitle === '') {
-            return title;
-        }
-        
-        return cleanedTitle;
+      if (!title || typeof title !== 'string') return '';
+
+      // 移除常见的无用后缀
+      title = title.replace(/\s*[-|·:]\s*.*$/, '');
+
+      // 移除常见的网站后缀保留有效的标题部分
+      title = title.replace(/\s*(官方网站|首页|网|网站|官网)$/, '');
+
+      // 如果标题太长，尝试提取品牌名
+      if (title.length > 20) {
+        const parts = title.split(/\s+/);
+        title = parts.length > 1 ? parts.slice(0, 2).join(' ') : title.substring(0, 20);
+      }
+
+      // 如果清理后仍为空，返回原始标题的某种变体
+      const cleanedTitle = title.trim();
+      if (cleanedTitle === '') {
+        return title;
+      }
+
+      return cleanedTitle;
     }
 
     title = cleanTitle(title);
 
     // 处理标题
     if (title && title.trim() !== '') {
-        const visualWidth = getVisualWidth(title);
-        const chineseCharCount = (title.match(/[\u4e00-\u9fa5]/g) || []).length;
-        const chineseRatio = chineseCharCount / title.length;
+      const visualWidth = getVisualWidth(title);
+      const chineseCharCount = (title.match(/[\u4e00-\u9fa5]/g) || []).length;
+      const chineseRatio = chineseCharCount / title.length;
 
-        let maxWidth;
-        if (chineseRatio === 0) {
-            maxWidth = MAX_WIDTH_EN;
-        } else if (chineseRatio === 1) {
-            maxWidth = MAX_WIDTH_CN;
-        } else {
-            maxWidth = Math.round(MAX_WIDTH_MIXED * (1 - chineseRatio) + MAX_WIDTH_CN * chineseRatio / 2);
-        }
+      let maxWidth;
+      if (chineseRatio === 0) {
+        maxWidth = MAX_WIDTH_EN;
+      } else if (chineseRatio === 1) {
+        maxWidth = MAX_WIDTH_CN;
+      } else {
+        maxWidth = Math.round(MAX_WIDTH_MIXED * (1 - chineseRatio) + MAX_WIDTH_CN * chineseRatio / 2);
+      }
 
-        if (visualWidth > maxWidth) {
-            let truncated = '';
-            let currentWidth = 0;
-            for (let char of title) {
-                const charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
-                if (currentWidth + charWidth > maxWidth) break;
-                truncated += char;
-                currentWidth += charWidth;
-            }
-            return truncated; // 返回截断后的标题
+      if (visualWidth > maxWidth) {
+        let truncated = '';
+        let currentWidth = 0;
+        for (let char of title) {
+          const charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
+          if (currentWidth + charWidth > maxWidth) break;
+          truncated += char;
+          currentWidth += charWidth;
         }
-        return title; // 返回清理后的标题
+        return truncated; // 返回截断后的标题
+      }
+      return title; // 返回清理后的标题
     } else {
-        // 处理 URL
-        try {
-            const hostname = new URL(url).hostname;
-            let name = hostname.replace(/^www\./, '').split('.')[0];
-            name = name.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/-/g, ' ');
-            return getVisualWidth(name) > MAX_WIDTH_EN ? name.substring(0, MAX_WIDTH_EN) : name;
-        } catch (error) {
-            return 'Unknown Site';
-        }
+      // 处理 URL
+      try {
+        const hostname = new URL(url).hostname;
+        let name = hostname.replace(/^www\./, '').split('.')[0];
+        name = name.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/-/g, ' ');
+        return getVisualWidth(name) > MAX_WIDTH_EN ? name.substring(0, MAX_WIDTH_EN) : name;
+      } catch (error) {
+        return 'Unknown Site';
+      }
     }
   }
 
@@ -197,10 +197,10 @@ export function initQuickLinks({ root } = {}) {
       const url = new URL(item.url);
       const domain = url.hostname;
       const path = url.pathname + url.search;
-      
+
       if (!domainVisits.has(domain)) {
-        domainVisits.set(domain, { 
-          totalCount: 0, 
+        domainVisits.set(domain, {
+          totalCount: 0,
           lastVisit: 0,
           mainPage: null,
           lastSubPage: null,
@@ -210,7 +210,7 @@ export function initQuickLinks({ root } = {}) {
 
       const domainInfo = domainVisits.get(domain);
       domainInfo.totalCount += 1;
-      
+
       if (item.lastVisitTime > domainInfo.lastVisit) {
         domainInfo.lastVisit = item.lastVisitTime;
       }
@@ -224,7 +224,7 @@ export function initQuickLinks({ root } = {}) {
       .map(([domain, info]) => {
         // 优先选择主页面，如果没有主页面则选择最后访问的子页面
         const representativeItem = info.mainPage || info.lastSubPage;
-        
+
         if (!representativeItem) return null; // 跳过没有有效项目的域名
 
         return {
@@ -252,11 +252,11 @@ export function initQuickLinks({ root } = {}) {
     data: null,
     timestamp: 0,
     maxAge: 5 * 60 * 1000, // 5分钟缓存
-    
+
     isValid() {
       return this.data && (Date.now() - this.timestamp < this.maxAge);
     },
-    
+
     set(data) {
       this.data = data;
       this.timestamp = Date.now();
@@ -266,7 +266,7 @@ export function initQuickLinks({ root } = {}) {
         timestamp: this.timestamp
       }));
     },
-    
+
     load() {
       const cached = localStorage.getItem('quickLinksCache');
       if (cached) {
@@ -282,18 +282,18 @@ export function initQuickLinks({ root } = {}) {
     // 首先尝试使用缓存数据快速渲染
     if (quickLinksCache.isValid()) {
       renderQuickLinks(quickLinksCache.data);
-      
-      
+
+
       // 在后台更新缓存
       updateQuickLinksCache();
       return;
     }
-    
+
     // 如果没有有效缓存，则正常加载
     const fixedShortcuts = await getFixedShortcuts();
     const fixedUrls = new Set(fixedShortcuts.map(shortcut => shortcut.url));
     const blacklist = await getBlacklist();
-    
+
     // 添加搜索引擎域名到黑名单
     const searchEngineDomains = [
       'kimi.moonshot.cn',
@@ -319,12 +319,12 @@ export function initQuickLinks({ root } = {}) {
 
     // 重新获取更新后的黑名单
     const updatedBlacklist = await getBlacklist();
-    
+
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-    chrome.history.search({ 
-      text: '', 
+    chrome.history.search({
+      text: '',
       startTime: oneMonthAgo.getTime(),
       maxResults: 1000
     }, function (historyItems) {
@@ -356,7 +356,7 @@ export function initQuickLinks({ root } = {}) {
       }
 
       renderQuickLinks(allShortcuts);
-      
+
     });
   }
 
@@ -365,15 +365,15 @@ export function initQuickLinks({ root } = {}) {
     const fixedShortcuts = await getFixedShortcuts();
     const fixedUrls = new Set(fixedShortcuts.map(shortcut => shortcut.url));
     const blacklist = await getBlacklist();
-    
+
     // 重新获取更新后的黑名单
     const updatedBlacklist = await getBlacklist();
-    
+
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-    chrome.history.search({ 
-      text: '', 
+    chrome.history.search({
+      text: '',
       startTime: oneMonthAgo.getTime(),
       maxResults: 1000
     }, function (historyItems) {
@@ -412,23 +412,32 @@ export function initQuickLinks({ root } = {}) {
   // 3. 优化渲染函数，使用 DocumentFragment 减少重排
   function renderQuickLinks(shortcuts) {
     const fragment = document.createDocumentFragment();
-    
+
     quickLinksContainer.innerHTML = '';
 
     // 渲染实际的快捷链接
     shortcuts.forEach((site) => {
       const linkItem = document.createElement('div');
-      linkItem.className = 'quick-link-item-container';
+      // Legacy class + Tailwind: flex column, centered, 80px width
+      linkItem.className = 'quick-link-item-container flex flex-col items-center w-20';
       linkItem.dataset.url = site.url;
 
       const link = document.createElement('a');
       link.href = site.url;
-      link.className = 'quick-link-item';
-      
+      // Legacy class + Tailwind: 60x60 circle, white bg, shadow, hover scale
+      link.className = [
+        'quick-link-item',
+        'flex items-center justify-center w-[60px] h-[60px]',
+        'bg-white rounded-full shadow-md',
+        'transition-transform duration-200',
+        'hover:scale-105 hover:shadow-lg',
+        '[[data-theme=dark]_&]:bg-neutral-700',
+      ].join(' ');
+
       // 修改点击事件处理
-      link.addEventListener('click', async function(event) {
+      link.addEventListener('click', async function (event) {
         event.preventDefault();
-        
+
         try {
           // 通过页面文件名判断环境
           const isSidePanel = window.location.pathname.endsWith('sidepanel.html');
@@ -472,6 +481,8 @@ export function initQuickLinks({ root } = {}) {
       img.src = site.favicon;
       img.alt = `${site.name} Favicon`;
       img.loading = 'lazy'; // 添加图片懒加载
+      // Tailwind: 24x24 favicon size
+      img.className = 'w-6 h-6 object-contain';
       img.addEventListener('error', function () {
         this.src = '../images/placeholder-icon.svg';
       });
@@ -480,6 +491,8 @@ export function initQuickLinks({ root } = {}) {
 
       const span = document.createElement('span');
       span.textContent = site.name;
+      // Tailwind: text style with ellipsis truncation
+      span.className = 'mt-2 text-xs text-gray-500 text-center max-w-full overflow-hidden text-ellipsis whitespace-nowrap block w-full';
 
       linkItem.appendChild(link);
       linkItem.appendChild(span);
@@ -497,24 +510,24 @@ export function initQuickLinks({ root } = {}) {
     // 智能添加占位符
     const placeholdersNeeded = Math.min(0, 10 - shortcuts.length); // 最多显示3个占位符
     if (shortcuts.length < 10) {
-        for (let i = 0; i < placeholdersNeeded; i++) {
-            const placeholder = document.createElement('div');
-            placeholder.className = 'quick-link-placeholder';
-            
-            // 添加提示文本（可选）
-            if (i === 0 && shortcuts.length === 0) {
-                const hint = document.createElement('span');
-                hint.className = 'placeholder-hint';
-                hint.textContent = '访问网站将自动添加到这里';
-                placeholder.appendChild(hint);
-            }
-            
-            fragment.appendChild(placeholder);
+      for (let i = 0; i < placeholdersNeeded; i++) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'quick-link-placeholder';
+
+        // 添加提示文本（可选）
+        if (i === 0 && shortcuts.length === 0) {
+          const hint = document.createElement('span');
+          hint.className = 'placeholder-hint';
+          hint.textContent = '访问网站将自动添加到这里';
+          placeholder.appendChild(hint);
         }
+
+        fragment.appendChild(placeholder);
+      }
     }
 
     quickLinksContainer.appendChild(fragment);
-   
+
   }
 
   // 显示上下文菜单
@@ -522,7 +535,7 @@ export function initQuickLinks({ root } = {}) {
     console.log('=== Quick Link Context Menu ===');
     console.log('Event:', e.type);
     console.log('Site:', site);
-    
+
     e.preventDefault();
     e.stopPropagation();
     e.__ntmContextMenuHandled = true;
@@ -559,11 +572,11 @@ export function initQuickLinks({ root } = {}) {
     menuItems.forEach((item, index) => {
       const menuItem = document.createElement('div');
       menuItem.className = 'custom-context-menu-item';
-      
+
       const icon = document.createElement('span');
       icon.className = 'material-icons';
       icon.innerHTML = ICONS[item.icon];
-      
+
       const text = document.createElement('span');
       text.textContent = item.text;
 
@@ -627,7 +640,7 @@ export function initQuickLinks({ root } = {}) {
 
     editDialog.style.display = 'block';
 
-    document.getElementById('edit-form').onsubmit = function(event) {
+    document.getElementById('edit-form').onsubmit = function (event) {
       event.preventDefault();
       const newName = editNameInput.value.trim();
       const newUrl = editUrlInput.value.trim();
@@ -645,11 +658,11 @@ export function initQuickLinks({ root } = {}) {
       }
     };
 
-    document.querySelector('.cancel-button').onclick = function() {
+    document.querySelector('.cancel-button').onclick = function () {
       editDialog.style.display = 'none';
     };
 
-    document.querySelector('.close-button').onclick = function() {
+    document.querySelector('.close-button').onclick = function () {
       editDialog.style.display = 'none';
     };
   }
@@ -663,14 +676,14 @@ export function initQuickLinks({ root } = {}) {
       const span = linkItem.querySelector('span');
 
       link.href = site.url;
-      
+
       // 更新 favicon
       const newFaviconUrl = faviconURL(site.url);
       img.src = newFaviconUrl;
       img.alt = `${site.name} Favicon`;
-      
+
       // 添加错误处理，如果新的 favicon 加载失败，使用默认图标
-      img.onerror = function() {
+      img.onerror = function () {
         this.src = '../images/placeholder-icon.svg';
       };
 
@@ -688,42 +701,42 @@ export function initQuickLinks({ root } = {}) {
   function addToBlacklistConfirm(site) {
     console.log('=== Quick Link Delete Confirmation ===');
     console.log('Quick link to delete:', site);
-    
+
     const confirmDialog = document.getElementById('confirm-dialog');
     const confirmMessage = document.getElementById('confirm-dialog-message');
     const confirmDeleteQuickLinkMessage = document.getElementById('confirm-delete-quick-link-message');
-    
+
     // 保存要删除的快捷链接
     quickLinkToDelete = site;
     console.log('Set quickLinkToDelete:', quickLinkToDelete);
-    
+
     // 确保两个消息元素都正确显示
     if (confirmMessage) {
       confirmMessage.style.display = 'none'; // 隐藏默认的确认消息
     }
-    
+
     if (confirmDeleteQuickLinkMessage) {
       confirmDeleteQuickLinkMessage.style.display = 'block'; // 显示快捷链接的确认消息
       confirmDeleteQuickLinkMessage.innerHTML = chrome.i18n.getMessage(
-        "confirmDeleteQuickLinkMessage", 
+        "confirmDeleteQuickLinkMessage",
         `<strong>${site.name}</strong>`
       );
       console.log('Setting quick link delete message:', confirmDeleteQuickLinkMessage.innerHTML);
     } else {
       console.error('Quick link delete message element not found');
     }
-    
+
     confirmDialog.style.display = 'block';
-    
+
     // 修改确认按钮处理程序
-    document.getElementById('confirm-delete-button').onclick = function() {
+    document.getElementById('confirm-delete-button').onclick = function () {
       console.log('=== Quick Link Delete Confirmed ===');
       console.log('Current quickLinkToDelete:', quickLinkToDelete);
-      
+
       if (quickLinkToDelete) {
         const domain = new URL(quickLinkToDelete.url).hostname;
         console.log('Deleting domain:', domain);
-        
+
         addToBlacklist(domain).then((added) => {
           console.log('Domain added to blacklist:', added);
           if (added) {
@@ -750,9 +763,9 @@ export function initQuickLinks({ root } = {}) {
         console.error('No quick link selected for deletion');
       }
     };
-    
+
     // 修改取消按钮处理程序
-    document.getElementById('cancel-delete-button').onclick = function() {
+    document.getElementById('cancel-delete-button').onclick = function () {
       console.log('=== Quick Link Delete Cancelled ===');
       console.log('Clearing quickLinkToDelete:', quickLinkToDelete);
       confirmDialog.style.display = 'none';
@@ -1016,7 +1029,7 @@ export function initQuickLinks({ root } = {}) {
         if (!domainInfo.subPages) {
           domainInfo.subPages = new Map();
         }
-        
+
         const existingSubPage = domainInfo.subPages.get(path);
         if (existingSubPage) {
           existingSubPage.visitCount++;
@@ -1045,7 +1058,7 @@ export function initQuickLinks({ root } = {}) {
       backButton.innerHTML = '<span class="material-icons">arrow_back</span>';
       backButton.title = '返回快捷链接';
       document.querySelector('main').appendChild(backButton);
-      
+
       backButton.addEventListener('click', () => {
         const iframe = document.querySelector('.quick-link-iframe');
         if (iframe) {

@@ -61,6 +61,16 @@
 - 保留 legacy class（`.quick-links-wrapper`、`.quick-links-container`）以确保 `initQuickLinks()` 仍可查找 DOM。
 - 行为不变：Quick Links 正常渲染、右键菜单、编辑/删除等功能。
 
+### Quick Links Item Tailwind 化（保持对等）
+
+- `src/quick-links.js` 的 `renderQuickLinks()` 中动态创建元素已添加 Tailwind 类。
+- item-container：`flex flex-col items-center w-20`（保留 legacy class）。
+- item（图标容器）：`flex items-center justify-center w-[60px] h-[60px] bg-white rounded-full shadow-md` + hover 放大 + dark mode 背景。
+- img：`w-6 h-6 object-contain`。
+- span：`mt-2 text-xs text-gray-500 text-center` + 文字截断。
+- 行为不变：Quick Links 正常渲染、悬停效果、右键菜单。
+
+
 ### Legacy 控制器标记废弃（保持对等）
 
 - `src/progress.js` 已标记为 `@deprecated`：年进度渲染完全由 React 组件 `YearProgressPortal`（`src/ui/year-progress.jsx`）接管。
