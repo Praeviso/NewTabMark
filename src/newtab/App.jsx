@@ -9,6 +9,7 @@ import { SearchEngineDropdownPortal } from '../ui/search-engine-dropdown-portal.
 import { ThemeTogglePortal } from '../ui/theme-toggle.jsx';
 import { QuickLinksPortal } from '../ui/quick-links-portal.jsx';
 import { SearchSuggestionsPortal } from '../ui/search-suggestions-portal.jsx';
+import { ToggleSidebar } from '../ui/toggle-sidebar.jsx';
 
 export function App() {
   return (
@@ -16,7 +17,7 @@ export function App() {
       <LegacyAppShell
         legacyHtml={legacyIndexHtml}
         bootstrap={bootstrapLegacyNewtab}
-        stripSelectors={['.links-icons', '.settings-icon', '.theme-toggle']}
+        stripSelectors={['.links-icons', '.settings-icon', '.theme-toggle', '#toggle-sidebar']}
         replaceSelectors={[
           { selector: '.search-suggestions-wrapper', placeholderId: 'ntm-search-suggestions-portal' },
           { selector: '.quick-links-wrapper', placeholderId: 'ntm-quick-links-portal' }
@@ -30,6 +31,7 @@ export function App() {
       <LinksIcons />
       <SettingsIcon />
       <ThemeTogglePortal />
+      <ToggleSidebar />
     </>
   );
 }
