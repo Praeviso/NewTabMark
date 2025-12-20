@@ -4,7 +4,7 @@
 
 - **构建**：MV3 + Vite 多入口，New Tab / Side Panel / Background / Content Script 均从 `dist/` 运行
 - **架构**：React 外壳挂载 + 遗留 DOM 模板 + 显式 bootstrap（legacy 逻辑驱动为主）
-- **Tailwind 化**：已完成 16 个组件/容器迁移
+- **Tailwind 化**：已完成 18 个组件/容器迁移
 
 ## 已完成 Tailwind 化组件
 
@@ -25,6 +25,8 @@
 | Settings Modal Layout | `index.html` / `sidepanel.html` | `.settings-layout` flex mt-5，`.settings-sidebar` w-[210px] border-r，`.settings-content` flex-1 mx-5 |
 | Settings Tab Buttons | `index.html` / `sidepanel.html` | 基础样式 Tailwind 化，保留 `.active` legacy class |
 | Setting Option | `index.html` / `sidepanel.html` | `flex justify-between items-center mt-4 text-sm`，开关/标签布局 |
+| Settings Section Title | `index.html` / `sidepanel.html` | `text-sm font-medium text-gray-700 dark:text-gray-200 my-3`，h4 小标题 |
+| Settings Background Options | `index.html` / `sidepanel.html` | `flex flex-wrap gap-2.5 mb-5`，背景色选项容器 |
 
 ## 已完成其他重构
 
