@@ -205,10 +205,13 @@
     </div>
   </div>
   <!-- 在 body 标签结束前添加 -->
-  <div id="settings-modal" class="settings-modal">
-    <div class="settings-modal-content">
-      <span class="settings-modal-close">&times;</span>
-      <h2 class="settings-modal-title" data-i18n="settingsTitle">设置</h2>
+  <div id="settings-modal" class="settings-modal fixed inset-0 z-[1002] overflow-auto bg-black/40 backdrop-blur-[10px]">
+    <div
+      class="settings-modal-content bg-white/90 mx-auto mt-[10%] p-5 border border-gray-400 w-4/5 max-w-[700px] h-[600px] rounded-xl shadow-md">
+      <span
+        class="settings-modal-close float-right text-2xl font-medium text-gray-400 cursor-pointer hover:text-black">&times;</span>
+      <h2 class="settings-modal-title m-0 mb-8 ml-2 text-[26px] font-semibold text-gray-900"
+        data-i18n="settingsTitle">设置</h2>
       <div class="settings-layout">
         <div class="settings-sidebar">
           <button class="settings-tab-button active" data-tab="appearance" data-i18n="appearanceTab">外观设置</button>
@@ -221,7 +224,8 @@
         </div>
         <div class="settings-content">
           <div id="appearance-settings" class="settings-tab-content active">
-            <h3 class="settings-modal-subtitle" data-i18n="backgroundTitle">背景设置</h3>
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="backgroundTitle">背景设置</h3>
 
             <h4 class="settings-section-title" data-i18n="solidBackgroundTitle">纯色背景</h4>
             <div class="settings-background-options">
@@ -255,7 +259,8 @@
             </div>
           </div>
           <div id="floating-ball-settings" class="settings-tab-content">
-            <h3 class="settings-modal-subtitle" data-i18n="floatingBallSettingsTitle">悬浮球设置</h3>
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="floatingBallSettingsTitle">悬浮球设置</h3>
             <p data-i18n="floatingBallDescription">开启悬浮球后会在页面右上角显示一个可点击的悬浮图标，用于快速访问搜索引擎和书签。</p>
             <div class="setting-option">
               <label for="enable-floating-ball" class="switch-label" data-i18n="enableFloatingBall">启悬浮球</label>
@@ -266,7 +271,8 @@
             </div>
           </div>
           <div id="quick-links-settings" class="settings-tab-content">
-            <h3 class="settings-modal-subtitle" data-i18n="quickLinksSettings">Quick Links Settings</h3>
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="quickLinksSettings">Quick Links Settings</h3>
             <p data-i18n="quickLinksDescription">开启快捷链接后，将在搜索框下方显示您最常访问的网站，方便快速访问。访问新的网站时会自动更新快捷链接列表。</p>
             <div class="setting-option">
               <label for="enable-quick-links" class="switch-label" data-i18n="enableQuickLinks">启用快捷链接</label>
@@ -278,7 +284,8 @@
           </div>
           <!-- 添加链接打开方式设置面板 -->
           <div id="link-opening-settings" class="settings-tab-content">
-            <h3 class="settings-modal-subtitle" data-i18n="linkOpeningSettingsTitle">链接打开方式</h3>
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="linkOpeningSettingsTitle">链接打开方式</h3>
             <p data-i18n="linkOpeningDescription">设置在主页面中点击书签和快捷链接时的打开方式。</p>
             <div class="setting-option">
               <label for="open-in-new-tab" class="switch-label" data-i18n="openInNewTab">在新标签页中打开</label>
@@ -289,7 +296,8 @@
             </div>
           </div>
           <div id="bookmark-management-settings" class="settings-tab-content">
-            <h3 class="settings-modal-subtitle" data-i18n="bookmarkCleanupSettingsTitle">书签清理与统计</h3>
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="bookmarkCleanupSettingsTitle">书签清理与统计</h3>
             <p data-i18n="bookmarkCleanupSettingsDescription">清理重复和失效的书签，查看书签使用统计数据，帮助您更好地管理书签。</p>
 
             <div class="bookmark-cleanup-actions">
@@ -300,7 +308,8 @@
             </div>
           </div>
           <div id="about-settings" class="settings-tab-content">
-            <h3 class="settings-modal-subtitle" data-i18n="aboutTitle">About NewTabMark</h3>
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="aboutTitle">About NewTabMark</h3>
             <div class="about-content">
               <img src="../images/logo.svg" alt="NewTabMark Logo" class="about-logo">
               <p class="about-version" data-i18n="version">Version</p>

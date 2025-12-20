@@ -4,7 +4,7 @@
 
 - **构建**：MV3 + Vite 多入口，New Tab / Side Panel / Background / Content Script 均从 `dist/` 运行
 - **架构**：React 外壳挂载 + 遗留 DOM 模板 + 显式 bootstrap（legacy 逻辑驱动为主）
-- **Tailwind 化**：已完成 12 个组件/容器迁移
+- **Tailwind 化**：已完成 13 个组件/容器迁移
 
 ## 已完成 Tailwind 化组件
 
@@ -21,6 +21,7 @@
 | Search Engine Dropdown | `search-engine-dropdown-portal.jsx` | 6 列网格 + 响应式 |
 | Search Suggestions Portal | `search-suggestions-portal.jsx` | 建议列表 + tabs 切换 |
 | More Button Toast | `more-button-toast.jsx` | `fixed top-[20%]` 居中 toast |
+| Settings Modal Container | `index.html` / `sidepanel.html` | overlay `fixed inset-0 backdrop-blur`，content `rounded-xl shadow-md`，title/subtitle dark mode |
 
 ## 已完成其他重构
 

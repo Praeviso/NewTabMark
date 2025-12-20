@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="loading-wallpaper">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +23,7 @@
   <script type="module" src="settings.js"></script>
   <script type="module" src="search-engine-dropdown.js"></script>
 </head>
+
 <body class="h-screen flex flex-col">
   <div id="sidebar-container" class="flex collapsed relative h-screen transition-[margin-left] duration-300">
     <aside class="custom-width p-4 overflow-auto border-r border-gray-200 relative">
@@ -44,7 +46,8 @@
                   class="search-engine-icon">
                 <span class="dropdown-indicator">▼</span>
               </div>
-              <textarea class="search-input" data-i18n-placeholder="searchPlaceholder" rows="1" style="width: 100%; resize: none; padding-left: 40px;"></textarea>
+              <textarea class="search-input" data-i18n-placeholder="searchPlaceholder" rows="1"
+                style="width: 100%; resize: none; padding-left: 40px;"></textarea>
             </div>
             <div class="search-suggestions-wrapper">
               <div class="line-container" id="line-container">
@@ -119,8 +122,8 @@
         </div>
       </div>
       <footer class="bg-gray-50 text-center p-4 border-t border-gray-200 mt-auto">
-      <!-- 新增的进度条容器 -->
-      <div id="year-progress" class="year-progress-container"></div>
+        <!-- 新增的进度条容器 -->
+        <div id="year-progress" class="year-progress-container"></div>
       </footer>
       <div id="side-panel-content" class="side-panel-content">
         <iframe id="side-panel-iframe" class="side-panel-iframe"></iframe>
@@ -167,23 +170,28 @@
     </div>
   </div>
   <!-- 在 body 标签结束前添加 -->
-  <div id="settings-modal" class="settings-modal">
-    <div class="settings-modal-content">
-      <span class="settings-modal-close">&times;</span>
-      <h2 class="settings-modal-title" data-i18n="settingsTitle">设置</h2>
+  <div id="settings-modal" class="settings-modal fixed inset-0 z-[1002] overflow-auto bg-black/40 backdrop-blur-[10px]">
+    <div
+      class="settings-modal-content bg-white/90 mx-auto mt-[10%] p-5 border border-gray-400 w-4/5 max-w-[700px] h-[600px] rounded-xl shadow-md">
+      <span
+        class="settings-modal-close float-right text-2xl font-medium text-gray-400 cursor-pointer hover:text-black">&times;</span>
+      <h2 class="settings-modal-title m-0 mb-8 ml-2 text-[26px] font-semibold text-gray-900"
+        data-i18n="settingsTitle">设置</h2>
       <div class="settings-layout">
         <div class="settings-sidebar">
           <button class="settings-tab-button active" data-tab="appearance" data-i18n="appearanceTab">外观设置</button>
           <button class="settings-tab-button" data-tab="floating-ball" data-i18n="floatingBallTab">悬浮球设置</button>
           <button class="settings-tab-button" data-tab="quick-links" data-i18n="quickLinksTab">网站推荐</button>
           <button class="settings-tab-button" data-tab="link-opening" data-i18n="linkOpeningTab">链接打开方式</button>
-          <button class="settings-tab-button" data-tab="bookmark-management" data-i18n="bookmarkManagementTab">书签管理</button>
+          <button class="settings-tab-button" data-tab="bookmark-management"
+            data-i18n="bookmarkManagementTab">书签管理</button>
           <button class="settings-tab-button" data-tab="about" data-i18n="aboutTab">关于</button>
         </div>
         <div class="settings-content">
           <div id="appearance-settings" class="settings-tab-content active">
-            <h3 class="settings-modal-subtitle" data-i18n="backgroundTitle">背景设置</h3>
-            
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="backgroundTitle">背景设置</h3>
+
             <h4 class="settings-section-title" data-i18n="solidBackgroundTitle">纯色背景</h4>
             <div class="settings-background-options">
               <div class="settings-bg-option gradient-background-1" data-bg="gradient-background-1"></div>
@@ -194,7 +202,7 @@
               <div class="settings-bg-option gradient-background-6" data-bg="gradient-background-6"></div>
               <div class="settings-bg-option gradient-background-7" data-bg="gradient-background-7"></div>
             </div>
-            
+
             <h4 class="settings-section-title" data-i18n="wallpaperTitle">壁纸</h4>
             <div class="wallpaper-section">
               <div class="wallpaper-options">
@@ -216,18 +224,20 @@
             </div>
           </div>
           <div id="floating-ball-settings" class="settings-tab-content">
-             <h3 class="settings-modal-subtitle" data-i18n="floatingBallSettingsTitle">悬浮球设置</h3>
-             <p data-i18n="floatingBallDescription">开启悬浮球后会在页面右上角显示一个可点击的悬浮图标，用于快速访问搜索引擎和书签。</p>
-             <div class="setting-option">
-               <label for="enable-floating-ball" class="switch-label" data-i18n="enableFloatingBall">启悬浮球</label>
-               <label class="switch">
-                 <input type="checkbox" id="enable-floating-ball">
-                 <span class="slider round"></span>
-               </label>
-             </div>
-           </div>
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="floatingBallSettingsTitle">悬浮球设置</h3>
+            <p data-i18n="floatingBallDescription">开启悬浮球后会在页面右上角显示一个可点击的悬浮图标，用于快速访问搜索引擎和书签。</p>
+            <div class="setting-option">
+              <label for="enable-floating-ball" class="switch-label" data-i18n="enableFloatingBall">启悬浮球</label>
+              <label class="switch">
+                <input type="checkbox" id="enable-floating-ball">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
           <div id="quick-links-settings" class="settings-tab-content">
-            <h3 class="settings-modal-subtitle" data-i18n="quickLinksSettings">Quick Links Settings</h3>
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="quickLinksSettings">Quick Links Settings</h3>
             <p data-i18n="quickLinksDescription">开启快捷链接后，将在搜索框下方显示您最常访问的网站，方便快速访问。访问新的网站时会自动更新快捷链接列表。</p>
             <div class="setting-option">
               <label for="enable-quick-links" class="switch-label" data-i18n="enableQuickLinks">启用快捷链接</label>
@@ -239,7 +249,8 @@
           </div>
           <!-- 添加链接打开方式设置面板 -->
           <div id="link-opening-settings" class="settings-tab-content">
-            <h3 class="settings-modal-subtitle" data-i18n="linkOpeningSettingsTitle">链接打开方式</h3>
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="linkOpeningSettingsTitle">链接打开方式</h3>
             <p data-i18n="linkOpeningDescription">设置在主页面中点击书签和快捷链接时的打开方式。</p>
             <div class="setting-option">
               <label for="open-in-new-tab" class="switch-label" data-i18n="openInNewTab">在新标签页中打开</label>
@@ -249,27 +260,29 @@
               </label>
             </div>
           </div>
-           <div id="bookmark-management-settings" class="settings-tab-content">
-             <h3 class="settings-modal-subtitle" data-i18n="bookmarkCleanupSettingsTitle">书签清理与统计</h3>
-             <p data-i18n="bookmarkCleanupSettingsDescription">清理重复和失效的书签，查看书签使用统计数据，帮助您更好地管理书签。</p>
-             
-             <div class="bookmark-cleanup-actions">
-               <button id="open-bookmark-cleanup" class="primary-button">
-                 <span class="material-icons">cleaning_services</span>
-                 <span data-i18n="openBookmarkCleanup">打开书签清理工具</span>
-               </button>
-             </div>
-           </div>
-           <div id="about-settings" class="settings-tab-content">
-             <h3 class="settings-modal-subtitle" data-i18n="aboutTitle">About NewTabMark</h3>
-             <div class="about-content">
-               <img src="../images/logo.svg" alt="NewTabMark Logo" class="about-logo">
-               <p class="about-version" data-i18n="version">Version</p>
-               <p class="about-description" data-i18n="aboutDescription">
-                 NewTabMark is a bookmarks-first new tab extension focused on fast access and organization.
-               </p>
-             </div>
-           </div>
+          <div id="bookmark-management-settings" class="settings-tab-content">
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="bookmarkCleanupSettingsTitle">书签清理与统计</h3>
+            <p data-i18n="bookmarkCleanupSettingsDescription">清理重复和失效的书签，查看书签使用统计数据，帮助您更好地管理书签。</p>
+
+            <div class="bookmark-cleanup-actions">
+              <button id="open-bookmark-cleanup" class="primary-button">
+                <span class="material-icons">cleaning_services</span>
+                <span data-i18n="openBookmarkCleanup">打开书签清理工具</span>
+              </button>
+            </div>
+          </div>
+          <div id="about-settings" class="settings-tab-content">
+            <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"
+              data-i18n="aboutTitle">About NewTabMark</h3>
+            <div class="about-content">
+              <img src="../images/logo.svg" alt="NewTabMark Logo" class="about-logo">
+              <p class="about-version" data-i18n="version">Version</p>
+              <p class="about-description" data-i18n="aboutDescription">
+                NewTabMark is a bookmarks-first new tab extension focused on fast access and organization.
+              </p>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -311,7 +324,8 @@
       <p id="import-shared-folder-summary"></p>
       <div class="buttons">
         <button id="import-shared-folder-cancel" class="cancel-button" data-i18n="cancelButton">Cancel</button>
-        <button id="import-shared-folder-confirm" class="primary-button" data-i18n="importSharedFolderButton">Import</button>
+        <button id="import-shared-folder-confirm" class="primary-button"
+          data-i18n="importSharedFolderButton">Import</button>
       </div>
     </div>
   </div>
@@ -319,7 +333,8 @@
     <div class="modal-content">
       <span id="gist-token-close" class="close-button">&times;</span>
       <h2 data-i18n="gistTokenDialogTitle">GitHub Token</h2>
-      <p data-i18n="gistTokenDialogDesc">Enter a GitHub Personal Access Token with “gist” scope. It will be stored locally.</p>
+      <p data-i18n="gistTokenDialogDesc">Enter a GitHub Personal Access Token with “gist” scope. It will be stored
+        locally.</p>
       <label for="github-gist-token" data-i18n="gistTokenLabel">Token</label>
       <input id="github-gist-token" class="custom-input" type="password" autocomplete="off" />
       <div class="buttons">
@@ -342,7 +357,8 @@
       <textarea id="share-folder-gist-raw-link" class="custom-input" rows="2" readonly></textarea>
       <div class="buttons">
         <button id="copy-share-folder-gist-raw-link" class="primary-button" data-i18n="copyRawLink">Copy</button>
-        <button id="download-share-folder-html" class="cancel-button" data-i18n="downloadBookmarkHtml">Download HTML</button>
+        <button id="download-share-folder-html" class="cancel-button" data-i18n="downloadBookmarkHtml">Download
+          HTML</button>
       </div>
       <p data-i18n="gistImportHint">Tip: Download the HTML and import it from Chrome Bookmark Manager.</p>
     </div>
@@ -364,13 +380,13 @@
           <h3 class="category-title" data-i18n="aiSearchEnginesTitle">__MSG_aiSearchEnginesTitle__</h3>
           <div class="search-engine-grid" id="ai-search-engines"></div>
         </div>
-        
+
         <!-- 搜索引擎 -->
         <div class="search-engine-category">
           <h3 class="category-title" data-i18n="generalSearchEnginesTitle">__MSG_generalSearchEnginesTitle__</h3>
           <div class="search-engine-grid" id="search-engines"></div>
         </div>
-        
+
         <!-- 社交媒体 -->
         <div class="search-engine-category">
           <h3 class="category-title" data-i18n="socialSearchEnginesTitle">__MSG_socialSearchEnginesTitle__</h3>
@@ -382,18 +398,22 @@
           <h3 class="category-title" data-i18n="customSearchEnginesTitle">__MSG_customSearchEnginesTitle__</h3>
           <div class="custom-engine-container">
             <div class="custom-engine-grid" id="custom-engines"></div>
-            
+
             <div class="custom-engine-form">
               <div class="input-container">
-                <input type="text" id="custom-engine-name" data-i18n-placeholder="searchEngineNamePlaceholder" class="custom-input">
+                <input type="text" id="custom-engine-name" data-i18n-placeholder="searchEngineNamePlaceholder"
+                  class="custom-input">
               </div>
               <div class="input-container">
-                <input type="text" id="custom-engine-url" data-i18n-placeholder="searchEngineUrlPlaceholder" class="custom-input">
+                <input type="text" id="custom-engine-url" data-i18n-placeholder="searchEngineUrlPlaceholder"
+                  class="custom-input">
               </div>
               <div class="input-container">
-                <input type="text" id="custom-engine-icon" data-i18n-placeholder="searchEngineIconPlaceholder" class="custom-input">
+                <input type="text" id="custom-engine-icon" data-i18n-placeholder="searchEngineIconPlaceholder"
+                  class="custom-input">
               </div>
-              <button id="add-custom-engine" class="custom-button" data-i18n="addSearchEngineButton">__MSG_addSearchEngineButton__</button>
+              <button id="add-custom-engine" class="custom-button"
+                data-i18n="addSearchEngineButton">__MSG_addSearchEngineButton__</button>
             </div>
           </div>
         </div>
@@ -401,4 +421,5 @@
     </div>
   </div>
 </body>
+
 </html>
