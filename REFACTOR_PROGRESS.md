@@ -95,6 +95,13 @@
 
 - README 补充“必须 build 生成 dist 才能加载”的说明。
 
+### Legacy progress.js 清理（保持对等）
+
+- `src/progress.js` 已标记为 `@deprecated`：年进度渲染完全由 React 组件 `YearProgressPortal`（`src/ui/year-progress.jsx`）接管。
+- 从 `src/index.html` 和 `src/sidepanel.html` 中移除 `<script src="progress.js">` 引用，避免加载冗余代码。
+- legacy `initProgress()` 函数从未被 bootstrap 序列调用，因此此次清理无功能影响。
+- `progress.js` 保留供参考，待后续完整清理时移除。
+
 ## 当前实现方式（重要说明）
 
 当前并未把业务完全 React 组件化，而是 React 负责挂载与引导：注入遗留 DOM → 显式 bootstrap 遗留模块 → 初始化控制器。该方案用于快速保证“功能/视觉对等”，并为后续逐模块 React 化提供落脚点。
