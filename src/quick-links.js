@@ -425,10 +425,12 @@ export function initQuickLinks({ root } = {}) {
       const link = document.createElement('a');
       link.href = site.url;
       // Legacy class + Tailwind: 60x60 circle, white bg, shadow, hover scale
+      // Added ring-inset for contrast with white/light favicons (ring doesn't conflict with shadow)
       link.className = [
         'quick-link-item',
         'flex items-center justify-center w-[60px] h-[60px]',
         'bg-white rounded-full shadow-md',
+        'ring-1 ring-inset ring-black/10',
         'transition-transform duration-200',
         'hover:scale-105 hover:shadow-lg',
         '[[data-theme=dark]_&]:bg-neutral-700',
@@ -483,8 +485,8 @@ export function initQuickLinks({ root } = {}) {
       img.src = faviconSrc;
       img.alt = `${site.name} Favicon`;
       img.loading = 'lazy'; // 添加图片懒加载
-      // Tailwind: 24x24 favicon size
-      img.className = 'w-6 h-6 object-contain';
+      // Tailwind: 24x24 favicon size + drop-shadow for white icon visibility
+      img.className = 'w-6 h-6 object-contain drop-shadow-[0_0_1px_rgba(0,0,0,0.3)]';
       img.addEventListener('error', function () {
         this.src = '../images/placeholder-icon.svg';
       });
