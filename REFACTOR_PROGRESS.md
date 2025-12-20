@@ -70,6 +70,18 @@
 - span：`mt-2 text-xs text-gray-500 text-center` + 文字截断。
 - 行为不变：Quick Links 正常渲染、悬停效果、右键菜单。
 
+### YearProgress Tailwind 化（保持对等）
+
+- `src/ui/year-progress.jsx` 样式已迁移至 Tailwind CSS。
+- year-progress 容器：`flex items-center`。
+- year-progress span（年份文字）：`mr-2 text-xs text-gray-500 [[data-theme=dark]_&]:text-white/75`。
+- progress-bar 容器：`flex items-center`。
+- progress-bar div（不活跃段）：`w-3 h-3 mr-1.5 rounded bg-gray-300 [[data-theme=dark]_&]:bg-white/[0.12]`。
+- progress-bar div.active（活跃段）：`bg-gray-400 [[data-theme=dark]_&]:bg-white/[0.28]`。
+- progress-percentage：`ml-2 text-xs text-gray-500 [[data-theme=dark]_&]:text-white/75`。
+- 保留 legacy class（`.year-progress`、`.progress-bar`、`.progress-percentage`）以确保动态颜色调整 DOM 查询正常。
+- 行为不变：进度条显示、暗色模式适配、壁纸颜色动态调整。
+
 
 ### Legacy 控制器标记废弃（保持对等）
 

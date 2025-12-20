@@ -149,15 +149,28 @@ function YearProgress() {
 
   return (
     <>
-      <div className="year-progress">
-        <span>{currentYear} {yearProgressText}</span>
-        <div className="progress-bar">
+      {/* Preserve legacy class 'year-progress' for DOM query in useEffect */}
+      <div className="year-progress flex items-center">
+        <span className="mr-2 text-xs text-gray-500 [[data-theme=dark]_&]:text-white/75">
+          {currentYear} {yearProgressText}
+        </span>
+        {/* Preserve legacy class 'progress-bar' for DOM query in useEffect */}
+        <div className="progress-bar flex items-center">
           {segments.map((isActive, index) => (
-            <div key={index} className={isActive ? 'active' : ''} />
+            <div
+              key={index}
+              className={`w-3 h-3 mr-1.5 rounded ${isActive
+                  ? 'active bg-gray-400 [[data-theme=dark]_&]:bg-white/[0.28]'
+                  : 'bg-gray-300 [[data-theme=dark]_&]:bg-white/[0.12]'
+                }`}
+            />
           ))}
         </div>
       </div>
-      <div className="progress-percentage">{yearProgress.toFixed(2)}%</div>
+      {/* Preserve legacy class 'progress-percentage' for DOM query in useEffect */}
+      <div className="progress-percentage ml-2 text-xs text-gray-500 [[data-theme=dark]_&]:text-white/75">
+        {yearProgress.toFixed(2)}%
+      </div>
     </>
   );
 }
