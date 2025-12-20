@@ -102,6 +102,16 @@
 - legacy `initProgress()` 函数从未被 bootstrap 序列调用，因此此次清理无功能影响。
 - `progress.js` 保留供参考，待后续完整清理时移除。
 
+### Legacy 控制器标记废弃（保持对等）
+
+- `src/ui/theme-controller.js` 已标记为 `@deprecated`：主题切换功能完全由 React 组件 `ThemeToggle`（`src/ui/theme-toggle.jsx`）接管。
+  - React 管理：主题初始化、点击事件、localStorage 持久化、图标更新。
+  - legacy `initThemeController()` 在 React 加载后（`ntmReactTheme=true`）跳过大部分逻辑，作为降级方案保留。
+- `src/ui/special-links-controller.js` 已标记为 `@deprecated`：特殊链接点击由 React 组件接管。
+  - `LinksIcons`（`src/ui/links-icons.jsx`）：处理 history/downloads/passwords/extensions 链接。
+  - `SettingsIcon`（`src/ui/settings-icon.jsx`）：处理设置弹窗打开。
+  - legacy `initSpecialLinksController()` 在 React 加载后（`ntmReactSpecialLinks=true`）为 no-op。
+
 ## 当前实现方式（重要说明）
 
 当前并未把业务完全 React 组件化，而是 React 负责挂载与引导：注入遗留 DOM → 显式 bootstrap 遗留模块 → 初始化控制器。该方案用于快速保证“功能/视觉对等”，并为后续逐模块 React 化提供落脚点。

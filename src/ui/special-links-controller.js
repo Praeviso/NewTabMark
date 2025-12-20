@@ -1,3 +1,12 @@
+/**
+ * @deprecated This file is superseded by React components:
+ * - src/ui/links-icons.jsx (LinksIcons) - handles history/downloads/passwords/extensions links
+ * - src/ui/settings-icon.jsx (SettingsIcon) - handles settings modal opening
+ *
+ * When React is active (ntmReactSpecialLinks=true), initSpecialLinksController() is a no-op.
+ * The file is kept as fallback for cases where React fails to load.
+ */
+
 import { openSettingsModal } from './settings-modal-controller.js';
 
 let initialized = false;

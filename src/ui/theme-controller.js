@@ -1,3 +1,19 @@
+/**
+ * @deprecated This file is superseded by src/ui/theme-toggle.jsx (ThemeToggle/ThemeTogglePortal).
+ * The React component fully manages theme toggle functionality:
+ * - Theme initialization from localStorage
+ * - Click event handling for theme switching
+ * - Theme persistence to localStorage
+ * - Icon updates based on current theme
+ *
+ * The initThemeController() function below is kept as a fallback for cases where
+ * React fails to load. When React is active (ntmReactTheme=true), most functionality
+ * is skipped to avoid duplication.
+ *
+ * Exported utilities (getCurrentTheme, setTheme, syncThemeToggleIcon) may still be
+ * used by other legacy modules during transition.
+ */
+
 import { ICONS } from '../icons.js';
 
 let initialized = false;
