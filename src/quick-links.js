@@ -478,7 +478,9 @@ export function initQuickLinks({ root } = {}) {
       });
 
       const img = document.createElement('img');
-      img.src = site.favicon;
+      // Ensure favicon URL is always valid; fall back to dynamically generated URL
+      const faviconSrc = site.favicon || faviconURL(site.url);
+      img.src = faviconSrc;
       img.alt = `${site.name} Favicon`;
       img.loading = 'lazy'; // 添加图片懒加载
       // Tailwind: 24x24 favicon size
