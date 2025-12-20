@@ -6,8 +6,13 @@
 
 - 已完成：构建与入口切换（MV3 + Vite），New Tab / Side Panel / Background / Content Script 均从 `dist/` 运行。
 - 当前架构：React 外壳负责挂载；遗留 DOM 作为 UI 模板；遗留逻辑显式 bootstrap（整体仍以 legacy 逻辑驱动为主）。
-- 迁移主线：在"功能与 UI 对等"的前提下，持续"收敛副作用 + 模块拆分 + 初始化幂等化"，为逐模块 React 化铺路。
-- Tailwind 化：已完成 ToggleSidebar / ThemeToggle / LinksIcons / SettingsIcon 四个组件的 Tailwind 迁移。
+- 迁移主线：在「功能与 UI 对等」的前提下，持续「收敛副作用 + 模块拆分 + 初始化幂等化」，为逐模块 React 化铺路。
+- Tailwind 化：已完成 12 个组件/容器的 Tailwind 迁移：
+  - Sidebar Container、ToggleSidebar、ThemeToggle、LinksIcons、SettingsIcon
+  - Quick Links Portal、Quick Links Item、YearProgress
+  - Search Engine Dropdown、Search Suggestions Portal
+  - More Button Toast
+
 
 ## 已完成（Done，总结）
 
