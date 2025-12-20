@@ -115,9 +115,11 @@
 
 ### More Button Toast Tailwind 化（保持对等）
 
-- `src/ui/more-button-toast.jsx` 文本样式已迁移至 Tailwind CSS。
-- `<p>` 标签：`m-0 text-[13px] text-inherit`（去除默认边距、13px 字号、继承父容器颜色）。
-- 容器样式（`.toast`）保留 legacy CSS：`fixed top-[20%] left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/80 text-white px-4 py-2.5 rounded-lg z-[10000] text-center max-w-[80%]`。
+- `src/ui/more-button-toast.jsx` 容器和文本样式已迁移至 Tailwind CSS。
+- 容器（`#more-button-toast`）：`fixed top-[20%] left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/80 text-white text-[13px] text-center px-4 py-2.5 rounded-lg z-[10000] max-w-[80%] shadow-md`。
+- `<p>` 标签：`m-0 text-[13px] text-inherit`。
+- 保留 legacy class `toast` 以兼容 `.show` 控制显隐（legacy CSS 中的 `display: none` 和 `.show { display: block }`）。
+- Tailwind 类通过 React useEffect 动态添加到 HTML 元素。
 - 行为不变：toast 显隐动画由 `.show` class 控制。
 
 
