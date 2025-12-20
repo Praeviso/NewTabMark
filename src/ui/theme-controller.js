@@ -38,12 +38,28 @@ export function syncThemeToggleIcon() {
   updateThemeIcon(themeToggleBtn, getCurrentTheme());
 }
 
+/**
+ * Initialize the theme controller.
+ *
+ * NOTE: Click event binding for the theme toggle button is now handled by the
+ * React ThemeToggle component. This function only initializes the theme state
+ * from localStorage and sets up the mutation observer for icon sync.
+ *
+ * The React component checks for `data-ntm-react-theme` attribute to avoid
+ * duplicate event binding.
+ */
 export function initThemeController() {
   if (initialized) return;
   initialized = true;
 
+  // Check if React is managing the theme toggle button
+  const reactManaged = document.documentElement.dataset.ntmReactTheme === 'true';
+
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
-  if (themeToggleBtn && themeToggleBtn.dataset.ntmThemeBound !== 'true') {
+
+  // Only bind click event if React is NOT managing the button
+  // This provides backward compatibility for cases where React hasn't loaded yet
+  if (themeToggleBtn && !reactManaged && themeToggleBtn.dataset.ntmThemeBound !== 'true') {
     themeToggleBtn.dataset.ntmThemeBound = 'true';
 
     themeToggleBtn.addEventListener('click', () => {
@@ -52,10 +68,12 @@ export function initThemeController() {
     });
   }
 
+  // Initialize theme from localStorage
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme) setTheme(savedTheme, { persist: false, reapplyBackground: false });
   syncThemeToggleIcon();
 
+  // Observe data-theme attribute for external changes
   const observer = new MutationObserver(() => {
     syncThemeToggleIcon();
   });
@@ -65,4 +83,3 @@ export function initThemeController() {
     attributeFilter: ['data-theme']
   });
 }
-

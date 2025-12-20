@@ -18,10 +18,18 @@
 - `manifest.json` 入口统一指向 `dist/` 产物，运行时不再直连 `src/`。
 - legacy 静态资源收敛到 `dist/legacy/` 与 `dist/assets/style.css`。
 
+
 ### React 外壳与迁移点（Portal/原位替换）
 
 - 共享外壳 `LegacyAppShell`：注入 legacy DOM + 显式 bootstrap，New Tab/Side Panel 复用同一启动序列。
 - 已迁移渲染点：年进度、More toast、快捷入口、设置齿轮、主题切换、Quick Links、搜索建议容器、搜索引擎下拉。
+
+### ThemeToggle React 化（保持对等）
+
+- `src/ui/theme-toggle.jsx` 现在完全管理主题切换逻辑：React 组件内部维护主题状态、处理点击事件、同步 `data-theme` 属性。
+- 新增 `data-ntm-react-theme` 标记：React 加载时在 `document.documentElement` 设置该属性，`theme-controller.js` 检测到后跳过点击事件绑定，避免重复监听。
+- 行为不变：主题切换按钮点击后切换明暗模式、图标更新、渐变背景重新应用、状态持久化到 localStorage。
+- 向后兼容：若 React 未加载，legacy `initThemeController()` 仍会绑定点击事件作为降级方案。
 
 ### 稳定性与初始化收敛
 
