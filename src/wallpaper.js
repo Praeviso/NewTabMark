@@ -252,42 +252,23 @@ class WallpaperManager {
         ];
     }
 
-    // 修改 loadPresetWallpapers 方法，添加错误处理
+    // @deprecated - DOM rendering migrated to React WallpaperOptionsPortal
+    // This method now only handles syncing active state and notifying React
     async loadPresetWallpapers() {
-        const wallpaperContainer = document.querySelector('.wallpaper-options');
-        if (!wallpaperContainer) {
-            console.error('Wallpaper container not found');
-            return;
-        }
+        // DOM generation has been migrated to React WallpaperOptionsPortal component.
+        // This method is kept for backward compatibility and to trigger React updates.
 
-        wallpaperContainer.innerHTML = '';
+        // Dispatch event to notify React component of wallpaper list changes
+        window.dispatchEvent(new CustomEvent('ntm-wallpaper-changed'));
 
-        // 添加预设壁纸
-        if (Array.isArray(this.presetWallpapers)) {
-            this.presetWallpapers.forEach(preset => {
-                const option = this.createWallpaperOption(preset.url, preset.title);
-                wallpaperContainer.appendChild(option);
-            });
-        }
-
-        // 添加用户上传的壁纸
-        if (Array.isArray(this.userWallpapers)) {
-            this.userWallpapers.forEach(wallpaper => {
-                const option = this.createWallpaperOption(
-                    wallpaper.url,
-                    chrome.i18n.getMessage('uploadedWallpaperBadge'),
-                    true
-                );
-                wallpaperContainer.appendChild(option);
-            });
-        }
-
-        // If we rebuilt the list (e.g. after upload), re-apply active border.
+        // Sync active state for any DOM elements that may exist
         this.syncActiveWallpaperOption();
     }
 
     initialize() {
         this.preloadWallpapers();
+        // loadPresetWallpapers DOM generation migrated to React WallpaperOptionsPortal
+        // Still call it to trigger any necessary sync logic
         this.loadPresetWallpapers();
         this.initializeWallpaper().then(() => {
             document.documentElement.classList.remove('loading-wallpaper');
@@ -312,20 +293,8 @@ class WallpaperManager {
             checkCacheButton.addEventListener('click', () => this.checkWallpaperCache(), { signal });
         }
 
-        const wallpaperOptionsContainer = document.querySelector('.wallpaper-options');
-        if (wallpaperOptionsContainer) {
-            wallpaperOptionsContainer.addEventListener(
-                'click',
-                (event) => {
-                    const option = event.target instanceof Element
-                        ? event.target.closest('.wallpaper-option')
-                        : null;
-                    if (!option) return;
-                    this.handleWallpaperOptionClick(option);
-                },
-                { signal }
-            );
-        }
+        // 壁纸选项点击事件已迁移到 React WallpaperOptionsPortal 组件
+        // The wallpaper option click handling is now done by WallpaperOptionsPortal
 
         this.listenersBound = true;
     }

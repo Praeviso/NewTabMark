@@ -14,6 +14,7 @@ import { SettingsSwitchPortal } from '../ui/SettingsSwitchPortal.jsx';
 import { BackgroundOptionsPortal } from '../ui/BackgroundOptionsPortal.jsx';
 import { SettingsTabsPortal } from '../ui/SettingsTabsPortal.jsx';
 import { WallpaperActionsPortal } from '../ui/WallpaperActionsPortal.jsx';
+import { WallpaperOptionsPortal } from '../ui/WallpaperOptionsPortal.jsx';
 
 export function App() {
 
@@ -41,6 +42,7 @@ export function App() {
       <BackgroundOptionsPortal />
       <SettingsTabsPortal />
       <WallpaperActionsPortal />
+      <WallpaperOptionsPortal />
     </>
   );
 }
