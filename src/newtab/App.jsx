@@ -18,6 +18,7 @@ import { WallpaperOptionsPortal } from '../ui/WallpaperOptionsPortal.jsx';
 import { BookmarkCleanupButtonPortal } from '../ui/BookmarkCleanupButtonPortal.jsx';
 import { AboutSettingsPortal } from '../ui/AboutSettingsPortal.jsx';
 import { OnboardingPortal } from '../ui/OnboardingPortal.jsx';
+import { FeatureTipsPortal } from '../ui/FeatureTips.jsx';
 
 export function App() {
 
@@ -49,6 +50,7 @@ export function App() {
       <BookmarkCleanupButtonPortal />
       <AboutSettingsPortal />
       <OnboardingPortal />
+      <FeatureTipsPortal />
     </>
   );
 }

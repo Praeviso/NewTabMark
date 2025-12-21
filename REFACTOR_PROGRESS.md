@@ -38,6 +38,7 @@
 | BookmarkCleanupButton | `BookmarkCleanupButton.jsx` / `BookmarkCleanupButtonPortal.jsx` | React 化书签清理按钮，Portal 挂载到设置弹窗书签管理标签页 |
 | AboutSettingsContent | `AboutSettingsContent.jsx` / `AboutSettingsPortal.jsx` | React 化关于页面内容，Portal 挂载显示版本号和描述信息 |
 | Onboarding | `Onboarding.jsx` / `OnboardingPortal.jsx` | React 化引导弹窗，3 步引导流程，圆点导航，localStorage 持久化完成状态 |
+| FeatureTips | `FeatureTips.jsx` / `FeatureTipsPortal.jsx` | React 化新功能提示，通过自定义事件触发显示，支持多提示管理和淡出动画 |
 
 
 ## 已完成其他重构

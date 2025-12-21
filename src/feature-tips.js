@@ -106,45 +106,17 @@ class FeatureTips {
     }
   }
 
-  // 显示新功能提示
+  // 显示新功能提示 - 通过自定义事件触发 React 组件
   showTips(featureKey) {
     console.log('Showing tips for:', featureKey);
 
-    const tipsElement = document.createElement('div');
-    tipsElement.className = 'feature-tips';
-
-    const messageText = this.getMessage(featureKey + 'Feature', featureKey + 'Feature').replace(
-      /\n/g,
-      '<br>'
-    );
-
-    tipsElement.innerHTML = `
-      <div class="feature-tips-content">
-        <div class="tip-content">
-          ${ICONS.info}
-          <div class="tip-text">
-            <div class="feature-tips-title">${this.getMessage('newFeatureTitle', 'New Feature')}</div>
-            <div class="feature-description">${messageText}</div>
-          </div>
-          <button class="tip-close" aria-label="关闭提示">
-            ${ICONS.close}
-          </button>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(tipsElement);
-
-    this.bindCloseOnce(tipsElement, () => this.closeTips(tipsElement));
+    // Dispatch custom event for React FeatureTipsPortal to handle
+    window.dispatchEvent(new CustomEvent('ntm:show-feature-tip', {
+      detail: { featureKey }
+    }));
   }
 
-  // 关闭提示
-  closeTips(tipsElement) {
-    tipsElement.style.opacity = '0';
-    setTimeout(() => {
-      tipsElement.remove();
-    }, this.fadeOutDuration);
-  }
+  // closeTips 已迁移到 React FeatureTips 组件
 
   // 显示搜索引擎更新提示
   showSearchEngineUpdateTip() {
