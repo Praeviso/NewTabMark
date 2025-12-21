@@ -13,6 +13,7 @@ import { ToggleSidebar } from '../ui/toggle-sidebar.jsx';
 import { SettingsSwitchPortal } from '../ui/SettingsSwitchPortal.jsx';
 import { BackgroundOptionsPortal } from '../ui/BackgroundOptionsPortal.jsx';
 import { SettingsTabsPortal } from '../ui/SettingsTabsPortal.jsx';
+import { WallpaperActionsPortal } from '../ui/WallpaperActionsPortal.jsx';
 
 export function App() {
 
@@ -39,6 +40,7 @@ export function App() {
       <SettingsSwitchPortal />
       <BackgroundOptionsPortal />
       <SettingsTabsPortal />
+      <WallpaperActionsPortal />
     </>
   );
 }

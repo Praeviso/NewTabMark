@@ -33,6 +33,7 @@
 | SettingsSwitch | `SettingsSwitch.jsx` / `SettingsSwitchPortal.jsx` | React 化开关组件，Portal 挂载到设置弹窗，管理悬浮球/快捷链接/新标签页打开 |
 | BackgroundOptions | `BackgroundOption.jsx` / `BackgroundOptionsPortal.jsx` | React 化背景色选项，Portal 挂载到设置弹窗外观设置，管理 7 种渐变背景切换 |
 | SettingsTabButtons | `SettingsTabButton.jsx` / `SettingsTabsPortal.jsx` | React 化设置弹窗标签页按钮，Portal 挂载管理 6 个标签页切换 |
+| WallpaperActions | `WallpaperAction.jsx` / `WallpaperActionsPortal.jsx` | React 化壁纸操作按钮，Portal 挂载管理恢复默认背景和上传壁纸功能 |
 
 
 ## 已完成其他重构
