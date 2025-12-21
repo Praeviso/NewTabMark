@@ -4581,14 +4581,7 @@ function initScriptFolderNameObserver() {
 
 
 
-function initScriptVersionNumber() {
-  const versionElement = document.querySelector('.about-version');
-  if (!versionElement) return;
-
-  const manifest = chrome.runtime.getManifest();
-  const versionText = getLocalizedMessage('version', [manifest.version]);
-  versionElement.textContent = versionText;
-}
+// Version display is now handled by React AboutSettingsPortal component
 
 let scriptInitialized = false;
 
@@ -4603,5 +4596,5 @@ export function initScript() {
   initScriptBookmarkFolderGlobals();
   initScriptBookmarkFolderContextMenu();
   initScriptFolderNameObserver();
-  initScriptVersionNumber();
+  // initScriptVersionNumber() removed - now handled by AboutSettingsPortal
 }

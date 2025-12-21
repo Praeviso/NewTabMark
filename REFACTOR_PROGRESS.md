@@ -36,6 +36,7 @@
 | WallpaperActions | `WallpaperAction.jsx` / `WallpaperActionsPortal.jsx` | React 化壁纸操作按钮，Portal 挂载管理恢复默认背景和上传壁纸功能 |
 | WallpaperOptions | `WallpaperOption.jsx` / `WallpaperOptionsPortal.jsx` | React 化壁纸预设选项，Portal 挂载管理 10 个预设壁纸和用户上传壁纸选项 |
 | BookmarkCleanupButton | `BookmarkCleanupButton.jsx` / `BookmarkCleanupButtonPortal.jsx` | React 化书签清理按钮，Portal 挂载到设置弹窗书签管理标签页 |
+| AboutSettingsContent | `AboutSettingsContent.jsx` / `AboutSettingsPortal.jsx` | React 化关于页面内容，Portal 挂载显示版本号和描述信息 |
 
 
 ## 已完成其他重构
