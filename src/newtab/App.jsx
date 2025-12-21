@@ -10,8 +10,10 @@ import { ThemeTogglePortal } from '../ui/theme-toggle.jsx';
 import { QuickLinksPortal } from '../ui/quick-links-portal.jsx';
 import { SearchSuggestionsPortal } from '../ui/search-suggestions-portal.jsx';
 import { ToggleSidebar } from '../ui/toggle-sidebar.jsx';
+import { SettingsSwitchPortal } from '../ui/SettingsSwitchPortal.jsx';
 
 export function App() {
+
   return (
     <>
       <LegacyAppShell
@@ -32,6 +34,7 @@ export function App() {
       <SettingsIcon />
       <ThemeTogglePortal />
       <ToggleSidebar />
+      <SettingsSwitchPortal />
     </>
   );
 }

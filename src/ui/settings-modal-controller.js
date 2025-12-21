@@ -110,28 +110,11 @@ function handleBackgroundChange(optionEl, doc) {
 }
 
 function loadSavedSettings(doc) {
-  const enableFloatingBallCheckbox = doc.getElementById('enable-floating-ball');
-  const enableQuickLinksCheckbox = doc.getElementById('enable-quick-links');
-  const openInNewTabCheckbox = doc.getElementById('open-in-new-tab');
-
-  if (enableFloatingBallCheckbox) {
-    chrome.storage.sync.get(['enableFloatingBall'], (result) => {
-      enableFloatingBallCheckbox.checked = result.enableFloatingBall !== false;
-    });
-  }
-
-  if (enableQuickLinksCheckbox) {
-    chrome.storage.sync.get(['enableQuickLinks'], (result) => {
-      enableQuickLinksCheckbox.checked = result.enableQuickLinks !== false;
-      setQuickLinksVisibility(enableQuickLinksCheckbox.checked);
-    });
-  }
-
-  if (openInNewTabCheckbox) {
-    chrome.storage.sync.get(['openInNewTab'], (result) => {
-      openInNewTabCheckbox.checked = result.openInNewTab !== false;
-    });
-  }
+  // Checkbox 初始化已迁移到 React SettingsSwitchPortal 组件
+  // 但仍需初始化 Quick Links 可见性
+  chrome.storage.sync.get(['enableQuickLinks'], (result) => {
+    setQuickLinksVisibility(result.enableQuickLinks !== false);
+  });
 
   const savedBg = localStorage.getItem('selectedBackground');
   const useDefaultBackground = localStorage.getItem('useDefaultBackground');
@@ -212,45 +195,5 @@ export function initSettingsModalController(root = document) {
     },
     { signal }
   );
-
-  const enableFloatingBallCheckbox = doc.getElementById('enable-floating-ball');
-  if (enableFloatingBallCheckbox) {
-    enableFloatingBallCheckbox.addEventListener(
-      'change',
-      () => {
-        const isEnabled = enableFloatingBallCheckbox.checked;
-        chrome.runtime.sendMessage({ action: 'updateFloatingBallSetting', enabled: isEnabled }, () => {
-          if (!chrome.runtime.lastError) return;
-          chrome.storage.sync.set({ enableFloatingBall: isEnabled });
-        });
-      },
-      { signal }
-    );
-  }
-
-  const enableQuickLinksCheckbox = doc.getElementById('enable-quick-links');
-  if (enableQuickLinksCheckbox) {
-    enableQuickLinksCheckbox.addEventListener(
-      'change',
-      () => {
-        const isEnabled = enableQuickLinksCheckbox.checked;
-        chrome.storage.sync.set({ enableQuickLinks: isEnabled }, () => {
-          setQuickLinksVisibility(isEnabled);
-        });
-      },
-      { signal }
-    );
-  }
-
-  const openInNewTabCheckbox = doc.getElementById('open-in-new-tab');
-  if (openInNewTabCheckbox) {
-    openInNewTabCheckbox.addEventListener(
-      'change',
-      () => {
-        const isEnabled = openInNewTabCheckbox.checked;
-        chrome.storage.sync.set({ openInNewTab: isEnabled });
-      },
-      { signal }
-    );
-  }
+  // Checkbox 事件绑定已迁移到 React SettingsSwitchPortal 组件
 }
