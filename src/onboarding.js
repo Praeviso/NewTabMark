@@ -1,3 +1,7 @@
+/**
+ * @deprecated This file is no longer used. Onboarding has been migrated to React.
+ * See ui/Onboarding.jsx and ui/OnboardingPortal.jsx for the new implementation.
+ */
 import { getLocalizedMessageSafe, updateUILanguage } from './localization.js';
 
 class Onboarding {
