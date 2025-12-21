@@ -11,6 +11,7 @@ import { QuickLinksPortal } from '../ui/quick-links-portal.jsx';
 import { SearchSuggestionsPortal } from '../ui/search-suggestions-portal.jsx';
 import { ToggleSidebar } from '../ui/toggle-sidebar.jsx';
 import { SettingsSwitchPortal } from '../ui/SettingsSwitchPortal.jsx';
+import { BackgroundOptionsPortal } from '../ui/BackgroundOptionsPortal.jsx';
 
 export function App() {
 
@@ -35,6 +36,7 @@ export function App() {
       <ThemeTogglePortal />
       <ToggleSidebar />
       <SettingsSwitchPortal />
+      <BackgroundOptionsPortal />
     </>
   );
 }

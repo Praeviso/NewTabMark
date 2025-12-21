@@ -179,10 +179,7 @@ export function initSettingsModalController(root = document) {
         return;
       }
 
-      const bgOption = target.closest('.settings-bg-option');
-      if (bgOption) {
-        handleBackgroundChange(bgOption, doc);
-      }
+      // Background option 事件已迁移到 React BackgroundOptionsPortal 组件
     },
     { signal }
   );
