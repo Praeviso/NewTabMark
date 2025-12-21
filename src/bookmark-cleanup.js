@@ -19,22 +19,12 @@ function checkExtensionInstalled() {
   });
 }
 
-// 添加从设置中打开清理工具的处理函数
+/**
+ * @deprecated Settings button event handling has been migrated to React BookmarkCleanupButtonPortal.
+ * This function is kept for backward compatibility but will do nothing.
+ */
 function initBookmarkCleanupSettings() {
-  const openCleanupButton = document.getElementById('open-bookmark-cleanup');
-  if (openCleanupButton) {
-    openCleanupButton.addEventListener('click', async () => {
-      try {
-        await checkExtensionInstalled();
-        window.open(`chrome-extension://${CLEANUP_EXTENSION.ID}/index.html`, '_blank');
-      } catch (error) {
-        const confirmInstall = confirm(chrome.i18n.getMessage('bookmarkCleanupNotInstalled'));
-        if (confirmInstall) {
-          window.open(CLEANUP_EXTENSION.STORE_URL, '_blank');
-        }
-      }
-    });
-  }
+  // Legacy DOM event binding removed - now handled by React BookmarkCleanupButtonPortal
 }
 
 let initialized = false;
