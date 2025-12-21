@@ -213,26 +213,7 @@
       <h2 class="settings-modal-title m-0 mb-8 ml-2 text-[26px] font-semibold text-gray-900" data-i18n="settingsTitle">
         设置</h2>
       <div class="settings-layout flex mt-5">
-        <div class="settings-sidebar w-[210px] pr-5 border-r border-gray-200">
-          <button
-            class="settings-tab-button block w-full py-2.5 px-4 mb-2.5 text-left bg-transparent border-none cursor-pointer text-sm font-medium text-slate-700 active"
-            data-tab="appearance" data-i18n="appearanceTab">外观设置</button>
-          <button
-            class="settings-tab-button block w-full py-2.5 px-4 mb-2.5 text-left bg-transparent border-none cursor-pointer text-sm font-medium text-slate-700"
-            data-tab="floating-ball" data-i18n="floatingBallTab">悬浮球设置</button>
-          <button
-            class="settings-tab-button block w-full py-2.5 px-4 mb-2.5 text-left bg-transparent border-none cursor-pointer text-sm font-medium text-slate-700"
-            data-tab="quick-links" data-i18n="quickLinksTab">网站推荐</button>
-          <button
-            class="settings-tab-button block w-full py-2.5 px-4 mb-2.5 text-left bg-transparent border-none cursor-pointer text-sm font-medium text-slate-700"
-            data-tab="link-opening" data-i18n="linkOpeningTab">链接打开方式</button>
-          <button
-            class="settings-tab-button block w-full py-2.5 px-4 mb-2.5 text-left bg-transparent border-none cursor-pointer text-sm font-medium text-slate-700"
-            data-tab="bookmark-management" data-i18n="bookmarkManagementTab">书签管理</button>
-          <button
-            class="settings-tab-button block w-full py-2.5 px-4 mb-2.5 text-left bg-transparent border-none cursor-pointer text-sm font-medium text-slate-700"
-            data-tab="about" data-i18n="aboutTab">关于</button>
-        </div>
+        <div id="ntm-settings-tabs" class="settings-sidebar w-[210px] pr-5 border-r border-gray-200"></div>
         <div class="settings-content flex-1 mx-5">
           <div id="appearance-settings" class="settings-tab-content active">
             <h3 class="settings-modal-subtitle m-0 mb-2 text-base font-semibold text-gray-900"

@@ -36,19 +36,7 @@ function toElementTarget(target) {
   return null;
 }
 
-function switchTab(modalEl, tabName) {
-  const tabButtons = modalEl.querySelectorAll('.settings-tab-button');
-  const tabContents = modalEl.querySelectorAll('.settings-tab-content');
-
-  tabButtons.forEach((btn) => btn.classList.remove('active'));
-  tabContents.forEach((content) => content.classList.remove('active'));
-
-  const selectedButton = modalEl.querySelector(`[data-tab="${tabName}"]`);
-  const selectedContent = modalEl.querySelector(`#${tabName}-settings`);
-
-  if (selectedButton) selectedButton.classList.add('active');
-  if (selectedContent) selectedContent.classList.add('active');
-}
+// Tab 切换逻辑已迁移到 React SettingsTabsPortal 组件
 
 function closeModal(modalEl) {
   modalEl.style.display = 'none';
@@ -172,14 +160,7 @@ export function initSettingsModalController(root = document) {
         return;
       }
 
-      const tabButton = target.closest('.settings-tab-button');
-      if (tabButton) {
-        const tabName = tabButton.getAttribute('data-tab');
-        if (tabName) switchTab(modalEl, tabName);
-        return;
-      }
-
-      // Background option 事件已迁移到 React BackgroundOptionsPortal 组件
+      // Tab 按钮和 Background option 事件已迁移到 React 组件
     },
     { signal }
   );

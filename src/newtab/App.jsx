@@ -12,6 +12,7 @@ import { SearchSuggestionsPortal } from '../ui/search-suggestions-portal.jsx';
 import { ToggleSidebar } from '../ui/toggle-sidebar.jsx';
 import { SettingsSwitchPortal } from '../ui/SettingsSwitchPortal.jsx';
 import { BackgroundOptionsPortal } from '../ui/BackgroundOptionsPortal.jsx';
+import { SettingsTabsPortal } from '../ui/SettingsTabsPortal.jsx';
 
 export function App() {
 
@@ -37,6 +38,7 @@ export function App() {
       <ToggleSidebar />
       <SettingsSwitchPortal />
       <BackgroundOptionsPortal />
+      <SettingsTabsPortal />
     </>
   );
 }
