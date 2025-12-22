@@ -44,7 +44,7 @@ html,
   -moz-tab-size: 4;
   /* 3 */
   -o-tab-size: 4;
-     tab-size: 4;
+  tab-size: 4;
   /* 3 */
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* 4 */
@@ -89,7 +89,7 @@ Add the correct text decoration in Chrome, Edge, and Safari.
 
 abbr:where([title]) {
   -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
+  text-decoration: underline dotted;
 }
 
 /*
@@ -378,7 +378,8 @@ textarea {
 2. Set the default placeholder color to the user's configured gray 400 color.
 */
 
-input::-moz-placeholder, textarea::-moz-placeholder {
+input::-moz-placeholder,
+textarea::-moz-placeholder {
   opacity: 1;
   /* 1 */
   color: #9ca3af;
@@ -446,7 +447,9 @@ video {
   display: none;
 }
 
-*, ::before, ::after {
+*,
+::before,
+::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -456,19 +459,19 @@ video {
   --tw-skew-y: 0;
   --tw-scale-x: 1;
   --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
+  --tw-pan-x: ;
+  --tw-pan-y: ;
+  --tw-pinch-zoom: ;
   --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+  --tw-ordinal: ;
+  --tw-slashed-zero: ;
+  --tw-numeric-figure: ;
+  --tw-numeric-spacing: ;
+  --tw-numeric-fraction: ;
+  --tw-ring-inset: ;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-color: rgb(59 130 246 / 0.5);
@@ -476,28 +479,28 @@ video {
   --tw-ring-shadow: 0 0 #0000;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-colored: 0 0 #0000;
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:  ;
+  --tw-blur: ;
+  --tw-brightness: ;
+  --tw-contrast: ;
+  --tw-grayscale: ;
+  --tw-hue-rotate: ;
+  --tw-invert: ;
+  --tw-saturate: ;
+  --tw-sepia: ;
+  --tw-drop-shadow: ;
+  --tw-backdrop-blur: ;
+  --tw-backdrop-brightness: ;
+  --tw-backdrop-contrast: ;
+  --tw-backdrop-grayscale: ;
+  --tw-backdrop-hue-rotate: ;
+  --tw-backdrop-invert: ;
+  --tw-backdrop-opacity: ;
+  --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 
 ::backdrop {
@@ -510,19 +513,19 @@ video {
   --tw-skew-y: 0;
   --tw-scale-x: 1;
   --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
+  --tw-pan-x: ;
+  --tw-pan-y: ;
+  --tw-pinch-zoom: ;
   --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+  --tw-ordinal: ;
+  --tw-slashed-zero: ;
+  --tw-numeric-figure: ;
+  --tw-numeric-spacing: ;
+  --tw-numeric-fraction: ;
+  --tw-ring-inset: ;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-color: rgb(59 130 246 / 0.5);
@@ -530,28 +533,28 @@ video {
   --tw-ring-shadow: 0 0 #0000;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-colored: 0 0 #0000;
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:  ;
+  --tw-blur: ;
+  --tw-brightness: ;
+  --tw-contrast: ;
+  --tw-grayscale: ;
+  --tw-hue-rotate: ;
+  --tw-invert: ;
+  --tw-saturate: ;
+  --tw-sepia: ;
+  --tw-drop-shadow: ;
+  --tw-backdrop-blur: ;
+  --tw-backdrop-brightness: ;
+  --tw-backdrop-contrast: ;
+  --tw-backdrop-grayscale: ;
+  --tw-backdrop-hue-rotate: ;
+  --tw-backdrop-invert: ;
+  --tw-backdrop-opacity: ;
+  --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
 }
 
 .mb-4 {
@@ -614,7 +617,7 @@ video {
   align-items: center;
 }
 
-.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+.space-y-2> :not([hidden])~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
@@ -666,7 +669,7 @@ video {
 }
 
 .p-4 {
-  padding: 3rem 1.5rem 0rem 1.5rem; 
+  padding: 3rem 1.5rem 0rem 1.5rem;
 }
 
 .p-2 {
@@ -733,19 +736,23 @@ aside::-webkit-scrollbar {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 aside {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* Additional styles for sidebar toggle */
 #sidebar-container {
   position: relative;
   transition: margin-left 0.3s;
-  height: 100vh; /* Ensure the container height spans the full viewport height */
+  height: 100vh;
+  /* Ensure the container height spans the full viewport height */
 }
 
 #sidebar-container.collapsed {
-  margin-left: -16rem; /* Adjust this value to match the width of your sidebar */
+  margin-left: -16rem;
+  /* Adjust this value to match the width of your sidebar */
 }
 
 #toggle-sidebar {
@@ -766,7 +773,8 @@ aside {
 }
 
 #toggle-sidebar:hover {
-  background-color: #eeeeee; /* Add hover effect */
+  background-color: #eeeeee;
+  /* Add hover effect */
   color: #111827;
 }
 
@@ -776,13 +784,16 @@ aside {
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  margin: 0; /* 确保没有默认外边距 */
-  height: 100vh; /* Ensure body height spans the full viewport height */
+  margin: 0;
+  /* 确保没有默认外边距 */
+  height: 100vh;
+  /* Ensure body height spans the full viewport height */
   -webkit-font-smoothing: antialiased;
 }
 
 html {
-  height: 100vh; /* Ensure html height spans the full viewport height */
+  height: 100vh;
+  /* Ensure html height spans the full viewport height */
 }
 
 
@@ -832,7 +843,7 @@ html.gradient-background-7 {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   padding-top: 60px;
 }
 
@@ -949,36 +960,54 @@ html.gradient-background-7 {
 }
 
 aside {
-  height: 100%; /* Ensure the sidebar height spans the full container height */
+  height: 100%;
+  /* Ensure the sidebar height spans the full container height */
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align content to the start for tree structure */
-  width: 16%; /* Adjusted width */
-  background-color: #ffffff; /* 设置背景颜色为与主体一致 */
-  transition: width 0.3s; /* Smooth transition for width */
-  overflow: auto; /* Allow scrolling for overflow content */
+  align-items: flex-start;
+  /* Align content to the start for tree structure */
+  width: 16%;
+  /* Adjusted width */
+  background-color: #ffffff;
+  /* 设置背景颜色为与主体一致 */
+  transition: width 0.3s;
+  /* Smooth transition for width */
+  overflow: auto;
+  /* Allow scrolling for overflow content */
 }
 
 aside.collapsed {
-  width: 0; /* Collapse the sidebar */
+  width: 0;
+  /* Collapse the sidebar */
 }
 
 aside ul {
-  list-style-type: none; /* Remove bullets */
+  list-style-type: none;
+  /* Remove bullets */
   padding: 0;
-  width: 100%; /* Ensure full width for centering items */
+  width: 100%;
+  /* Ensure full width for centering items */
 }
 
 aside ul li {
-  font-size: 0.875rem; /* Use rem units for font size */
-  font-weight: 600; /* Ensure the font weight matches the right-side cards */
-  color: #334155; /* Set the default font color to match the right-side cards */
-  line-height: 1.25; /* Improve readability and reduce line height */
-  padding: 0.25rem 1rem 0.25rem 1.5rem; /* Reduce padding for less vertical spacing, add padding to the left */
-  display: flex; /* Align items in a row */
-  align-items: center; /* Vertically center items */
-  justify-content: flex-start; /* Align items to the left */
-  cursor: pointer; /* Add cursor pointer */
+  font-size: 0.875rem;
+  /* Use rem units for font size */
+  font-weight: 600;
+  /* Ensure the font weight matches the right-side cards */
+  color: #334155;
+  /* Set the default font color to match the right-side cards */
+  line-height: 1.25;
+  /* Improve readability and reduce line height */
+  padding: 0.25rem 1rem 0.25rem 1.5rem;
+  /* Reduce padding for less vertical spacing, add padding to the left */
+  display: flex;
+  /* Align items in a row */
+  align-items: center;
+  /* Vertically center items */
+  justify-content: flex-start;
+  /* Align items to the left */
+  cursor: pointer;
+  /* Add cursor pointer */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -988,29 +1017,36 @@ aside ul li {
 }
 
 aside ul li ul {
-  padding-left: 1.5rem; /* Indentation for sub-levels */
-  display: none; /* Initially hide sub-levels */
+  padding-left: 1.5rem;
+  /* Indentation for sub-levels */
+  display: none;
+  /* Initially hide sub-levels */
 }
 
-aside ul li.open > ul {
-  display: block; /* Show sub-levels when parent is open */
+aside ul li.open>ul {
+  display: block;
+  /* Show sub-levels when parent is open */
 }
 
 aside ul li:hover {
-  background-color: #f0f0f0; /* Add hover effect */
+  background-color: #f0f0f0;
+  /* Add hover effect */
 }
 
 aside ul li.bg-gray-200 {
-  background-color: #e2e8f0; /* Selected state background */
+  background-color: #e2e8f0;
+  /* Selected state background */
 }
 
 aside ul li.bg-emerald-500 {
-  background-color: rgb(16 185 129); /* Maintain the background color when selected */
+  background-color: rgb(16 185 129);
+  /* Maintain the background color when selected */
   color: #ffffff;
 }
 
 aside ul li.bg-emerald-500 span {
-  color: #ffffff; /* Match the selected color with search bar tabs */
+  color: #ffffff;
+  /* Match the selected color with search bar tabs */
   overflow: hidden;
 }
 
@@ -1027,7 +1063,8 @@ aside ul li.bg-emerald-500 span {
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
-  margin-right: 24px; /* 为右侧箭头图标留出空间 */
+  margin-right: 24px;
+  /* 为右侧箭头图标留出空间 */
 }
 
 /* 确保图标固定位置 */
@@ -1046,36 +1083,47 @@ span.material-icons.ml-auto {
   right: 0.5rem;
   font-size: 16px;
 }
+
 .material-icons {
   font-family: 'Material Icons';
-  font-size: 1.125rem; /* Match the font size of the text using rem */
-  vertical-align: middle; /* Align icons vertically in the middle */
-  margin-right: 0.5rem; /* Use rem units for margin */
+  font-size: 1.125rem;
+  /* Match the font size of the text using rem */
+  vertical-align: middle;
+  /* Align icons vertically in the middle */
+  margin-right: 0.5rem;
+  /* Use rem units for margin */
   font-weight: 400;
 }
 
 /* Custom width for aside */
 .custom-width {
-  width: 16rem; /* Adjusted width */
+  width: 16rem;
+  /* Adjusted width */
 }
 
 /* Main content area */
 main {
-  padding: 0rem 0rem 2rem 0rem; /* Adjust the padding value as needed */
-  transition: margin-left 0.3s; /* Smooth transition for margin */
-  flex-grow: 1; /* Allow main content to grow and fill available space */
+  padding: 0rem 0rem 2rem 0rem;
+  /* Adjust the padding value as needed */
+  transition: margin-left 0.3s;
+  /* Smooth transition for margin */
+  flex-grow: 1;
+  /* Allow main content to grow and fill available space */
 }
 
 /* Card styles */
 .card {
   display: flex;
-  flex-direction: row; /* Arrange items in a row */
-  align-items: center; /* Vertically center items */
+  flex-direction: row;
+  /* Arrange items in a row */
+  align-items: center;
+  /* Vertically center items */
   width: 100%;
   border-radius: 8px;
   padding: 0.75rem;
   overflow: hidden;
-  transition: background-color 0.3s; /* Smooth transition for background color */
+  transition: background-color 0.3s;
+  /* Smooth transition for background color */
   height: 48px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   backface-visibility: hidden;
@@ -1083,63 +1131,89 @@ main {
   @media (max-width: 640px) {
     /* 调整卡片内边距 */
     padding: 0.75rem;
-    
+
     /* 调整标题字体大小 */
     .card-title {
       font-size: 12px;
       line-height: 1.2;
     }
-    
+
     /* 调整链接字体大小 */
     .card-link {
       font-size: 10px;
     }
   }
 }
+
 .card:hover {
-  background-color: #E5E7EB; /* Add hover effect */
-  cursor: pointer; /* Change cursor to pointer on hover */
+  background-color: #E5E7EB;
+  /* Add hover effect */
+  cursor: pointer;
+  /* Change cursor to pointer on hover */
 }
 
 .card-content {
   display: flex;
-  flex-direction: column; /* Arrange text items in a column */
-  overflow: auto; /* Allow scrolling */
-  max-height: 100px; /* Adjust as needed to ensure content fits within card */
+  flex-direction: column;
+  /* Arrange text items in a column */
+  overflow: auto;
+  /* Allow scrolling */
+  max-height: 100px;
+  /* Adjust as needed to ensure content fits within card */
 }
 
 .card-title {
-  font-size: 13px; /* 增大标题字体 */
-  font-weight: 600; /* Ensure the font weight matches the left-side bookmarks */
+  font-size: 13px;
+  /* 增大标题字体 */
+  font-weight: 600;
+  /* Ensure the font weight matches the left-side bookmarks */
   margin-bottom: 0rem;
   overflow: hidden;
-  text-overflow: ellipsis; 
-  line-height: 1.3; /* 设置行高 */
-  max-height: 2.6em; /* Ensure title does not overflow */
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  /* 设置行高 */
+  max-height: 2.6em;
+  /* Ensure title does not overflow */
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
 }
+
 .favicon {
   flex-shrink: 0;
   /* 防止图标被缩小 */
 }
-.card-title:hover {
-  color: #111827; /* Match the color with the left-side bookmarks */
+
+.favicon img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
+
+.card-title:hover {
+  color: #111827;
+  /* Match the color with the left-side bookmarks */
+}
+
 .card-link {
-  font-size: 0.75rem; /* 增大字体 */
-  color: #a0aec0; /* Light gray color */
+  font-size: 0.75rem;
+  /* 增大字体 */
+  color: #a0aec0;
+  /* Light gray color */
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Ensure link does not overflow */
+  text-overflow: ellipsis;
+  /* Ensure link does not overflow */
 }
 
 .card-link:hover {
-  color: #3182ce; /* Change link color on hover */
-  text-decoration: none; /* Remove underline on hover */
+  color: #3182ce;
+  /* Change link color on hover */
+  text-decoration: none;
+  /* Remove underline on hover */
 }
 
 .bookmark-folder.card {
@@ -1154,6 +1228,7 @@ main {
   transform: scale(1.03);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.01);
 }
+
 /* Bookmark placeholder styles */
 .bookmark-placeholder {
   width: 100%;
@@ -1171,18 +1246,18 @@ main {
   gap: 1rem;
   margin: 0 auto;
   width: 100%;
-  
+
   /* 默认桌面布局 */
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   max-width: 1300px;
-  
+
   /* 平板布局 */
   @media (max-width: 1024px) {
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     gap: 0.875rem;
     padding: 0 16px;
   }
-  
+
   /* 手机布局 */
   @media (max-width: 640px) {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -1193,13 +1268,13 @@ main {
 
 
 #current-time {
-      font-size: 14px;
-      margin: 0.5rem auto;
-      color: #717882;
+  font-size: 14px;
+  margin: 0.5rem auto;
+  color: #717882;
 }
-    
 
-    /* Search bar styles */
+
+/* Search bar styles */
 .search-container {
   display: flex;
   flex-direction: column;
@@ -1208,7 +1283,7 @@ main {
   max-width: 640px;
   margin: 1rem 0 2.5rem 0;
   padding: 0 16px;
-  
+
   @media (max-width: 640px) {
     padding: 0 12px;
   }
@@ -1218,12 +1293,13 @@ main {
   background-color: white;
   border-radius: 12px;
   padding: 14.5px 20px 14.5px 10px;
-  position: relative; /* 确保搜索按钮定位正确 */
+  position: relative;
+  /* 确保搜索按钮定位正确 */
   width: 580px;
   transition: box-shadow 0.3s ease, border-radius 0.3s ease;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
   max-width: 100%;
-  
+
   @media (max-width: 640px) {
     padding: 14.5px 20px 14.5px 10px;
   }
@@ -1242,8 +1318,9 @@ main {
   color: #1a202c;
   font-weight: 600;
   margin-bottom: -4px;
-  
+
 }
+
 .search-suggestions-wrapper {
   position: absolute;
   top: 100%;
@@ -1258,7 +1335,7 @@ main {
   display: none;
 }
 
-.search-form.focused-with-suggestions + .search-suggestions-wrapper {
+.search-form.focused-with-suggestions+.search-suggestions-wrapper {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
@@ -1288,6 +1365,7 @@ main {
 .search-suggestions li:last-child {
   margin-bottom: 50px;
 }
+
 .search-suggestions li:hover,
 .search-suggestions li.keyboard-selected {
   background-color: #e8eaed;
@@ -1305,8 +1383,10 @@ main {
   z-index: 5;
   padding-left: 30px;
   background-color: #ffffff;
-  scrollbar-width: none; /* 对于 Firefox */
-  -ms-overflow-style: none; /* 对于 Internet Explorer 和 Edge */
+  scrollbar-width: none;
+  /* 对于 Firefox */
+  -ms-overflow-style: none;
+  /* 对于 Internet Explorer 和 Edge */
 }
 
 
@@ -1396,7 +1476,8 @@ footer {
 
   text-align: center;
   padding: 1rem;
-  margin-top: auto; /* Push footer to the bottom */
+  margin-top: auto;
+  /* Push footer to the bottom */
 }
 
 footer.bg-white.text-center.p-4.border-t.border-gray-200.mt-4 {
@@ -1404,11 +1485,14 @@ footer.bg-white.text-center.p-4.border-t.border-gray-200.mt-4 {
   color: #a0aec0;
   padding-top: 5rem;
 }
+
 p.text-sm {
-    color: #717882;
+  color: #717882;
 }
+
 .website_url:hover {
-  color: #0acf83; /* Match the color with the left-side bookmarks */
+  color: #0acf83;
+  /* Match the color with the left-side bookmarks */
 }
 
 img.w-6.h-6.mr-2 {
@@ -1420,6 +1504,7 @@ img.w-6.h-6.mr-2 {
   width: 14px;
   margin-left: 0.5rem;
 }
+
 .custom-context-menu {
   display: none;
   position: absolute;
@@ -1484,6 +1569,7 @@ img.w-6.h-6.mr-2 {
   font-size: 12px;
   color: #aaa;
 }
+
 .toast {
   display: none;
   position: fixed;
@@ -1507,13 +1593,23 @@ img.w-6.h-6.mr-2 {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 .sortable-ghost {
@@ -1543,6 +1639,7 @@ img.w-6.h-6.mr-2 {
     background-color: transparent;
   }
 }
+
 .flex.justify-between.items-center.mb-4 {
   margin: 0 auto;
 }
@@ -1566,8 +1663,10 @@ img.w-6.h-6.mr-2 {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  width: 40px;  /* 减小宽度 */
-  padding: 6px 0;  /* 减小内边距 */
+  width: 40px;
+  /* 减小宽度 */
+  padding: 6px 0;
+  /* 减小内边距 */
 }
 
 .links-icons a {
@@ -1579,10 +1678,15 @@ img.w-6.h-6.mr-2 {
   font-size: 18px;
   transition: color 0.3s, transform 0.3s ease;
   border-radius: 8px;
-  margin: 2px auto;  /* 减小边距 */
-  padding: 6px 0;    /* 减小内边距 */
-  width: 28px;       /* 减小宽度 */
-  height: 28px;      /* 减小高度 */
+  margin: 2px auto;
+  /* 减小边距 */
+  padding: 6px 0;
+  /* 减小内边距 */
+  width: 28px;
+  /* 减小宽度 */
+  height: 28px;
+
+  /* 减小高度 */
   .icon-svg {
     width: 18px;
     height: 18px;
@@ -1646,6 +1750,7 @@ img.w-6.h-6.mr-2 {
   color: #717882;
   height: 32px;
 }
+
 .folder-name:empty::before {
   content: '';
   display: inline-block;
@@ -1655,9 +1760,12 @@ img.w-6.h-6.mr-2 {
   border-radius: 6px;
   animation: pulse 1.5s infinite ease-in-out;
 }
+
 .bookmarks-container {
-  opacity: 0; /* 初始透明度设为 0 */
-  transform: translateY(20px); /* 初始位置向下偏移 */
+  opacity: 0;
+  /* 初始透明度设为 0 */
+  transform: translateY(20px);
+  /* 初始位置向下偏移 */
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
   background: #ffffff;
   padding: 1rem 2rem 2rem 2rem;
@@ -1666,13 +1774,14 @@ img.w-6.h-6.mr-2 {
   margin: 2.5rem auto 0;
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
-  will-change: opacity, transform; /* 优化性能 */
-  
+  will-change: opacity, transform;
+  /* 优化性能 */
+
   @media (max-width: 1024px) {
     width: 95%;
     padding: 1rem;
   }
-  
+
   @media (max-width: 640px) {
     width: 100%;
     padding: 0.75rem;
@@ -1683,7 +1792,7 @@ img.w-6.h-6.mr-2 {
 .bookmarks-container.loaded {
   opacity: 1;
   transform: translateY(0);
-  
+
 }
 
 
@@ -1699,17 +1808,21 @@ img.w-6.h-6.mr-2 {
   background-color: #f0f0f0;
 }
 
-.custom-context-menu-item .material-icons  {
-   color: #717882;
- }
+.custom-context-menu-item .material-icons {
+  color: #717882;
+}
 
 
 
 .suggestion-icon {
-  flex-shrink: 0; /* 防止图标被压缩 */
-  width: 16px; /* 设置固定宽度 */
-  height: 16px; /* 设置固定高度 */
-  margin-right: 10px; /* 与文本保持一定距离 */
+  flex-shrink: 0;
+  /* 防止图标被压缩 */
+  width: 16px;
+  /* 设置固定宽度 */
+  height: 16px;
+  /* 设置固定高度 */
+  margin-right: 10px;
+  /* 与文本保持一定距离 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1724,10 +1837,12 @@ img.w-6.h-6.mr-2 {
   text-overflow: ellipsis;
   font-weight: 600;
   margin-right: 4px;
-  flex-shrink: 1; /* 允许文本收缩 */
+  flex-shrink: 1;
+  /* 允许文本收缩 */
   display: flex;
   align-items: center;
 }
+
 .material-icons.suggestion-icon {
   font-size: 16px;
   line-height: 1;
@@ -1784,7 +1899,8 @@ img.w-6.h-6.mr-2 {
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 600;
-  margin-right: 4px; /* Add a small space before the dash */
+  margin-right: 4px;
+  /* Add a small space before the dash */
 }
 
 .suggestion-url {
@@ -1804,7 +1920,8 @@ img.w-6.h-6.mr-2 {
 /* Add a dash between text and URL */
 
 /* Remove any existing margins between text and URL */
-.suggestion-text, .suggestion-url {
+.suggestion-text,
+.suggestion-url {
   margin: 0;
 }
 
@@ -1813,11 +1930,13 @@ img.w-6.h-6.mr-2 {
   color: #717882;
   margin-left: 10px;
 }
+
 .suggestion-icon .favicon {
   width: 16px;
   height: 16px;
   object-fit: contain;
 }
+
 .no-more-suggestions {
   text-align: center;
   padding: 10px;
@@ -1827,15 +1946,17 @@ img.w-6.h-6.mr-2 {
 
 .search-suggestions::-webkit-scrollbar,
 #tabs-container::-webkit-scrollbar {
-  display: none; /* 对于 Chrome, Safari 和 Opera */
+  display: none;
+  /* 对于 Chrome, Safari 和 Opera */
 }
 
 #line-container {
   display: none;
   /* 默认不显示 */
 }
+
 .custom-hr {
-    /* 默认不显示
+  /* 默认不显示
   border: none;
   /* 移除默认边框 */
   border-top: 1px solid #eeeeee;
@@ -1845,6 +1966,7 @@ img.w-6.h-6.mr-2 {
   margin: 0 auto;
   /* 上下间距，并使其居中 */
 }
+
 svg.suggestion-icon {
   margin-left: 0.5rem;
 }
@@ -1868,7 +1990,7 @@ svg.suggestion-icon {
 }
 
 /* 新增：使用 flexbox 包装 quick-links-container */
-.quick-links-wrapper     {  
+.quick-links-wrapper {
   display: flex;
   justify-content: center;
   width: 100%;
@@ -1879,13 +2001,15 @@ svg.suggestion-icon {
 .quick-link-item-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* 确保子元素水平居中 */
+  align-items: center;
+  /* 确保子元素水平居中 */
   width: 80px;
 }
 
 /* Website name */
 .quick-link-item-container span {
-  margin-top: 8px; /* 增加与图标的距离 */
+  margin-top: 8px;
+  /* 增加与图标的距离 */
   font-size: 12px;
   color: #717882;
   text-align: center;
@@ -1893,8 +2017,10 @@ svg.suggestion-icon {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: block; /* 确保文本块级显示 */
-  width: 100%; /* 让文本容器占满父元素宽度 */
+  display: block;
+  /* 确保文本块级显示 */
+  width: 100%;
+  /* 让文本容器占满父元素宽度 */
 }
 
 /* Quick link item (图标容器) */
@@ -1974,11 +2100,16 @@ svg.suggestion-icon {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 40px;
-  height: 40px; /* 确保容器是正方形 */
-  padding: 0; /* 移除内边距 */
-  display: flex; /* 添加 flex 布局 */
-  align-items: center; /* 垂直居中 */
-  justify-content: center; /* 水平居中 */
+  height: 40px;
+  /* 确保容器是正方形 */
+  padding: 0;
+  /* 移除内边距 */
+  display: flex;
+  /* 添加 flex 布局 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
   top: calc(25% + 210px);
 }
 
@@ -1991,10 +2122,15 @@ svg.suggestion-icon {
   font-size: 18px;
   transition: color 0.3s, transform 0.3s ease;
   border-radius: 8px;
-  width: 28px; /* 设置固定宽度 */
-  height: 28px; /* 设置固定高度 */
-  margin: 0; /* 移除边距 */
-  padding: 0; /* 移除内边距 */
+  width: 28px;
+  /* 设置固定宽度 */
+  height: 28px;
+  /* 设置固定高度 */
+  margin: 0;
+  /* 移除边距 */
+  padding: 0;
+
+  /* 移除内边距 */
   .icon-svg {
     width: 18px;
     height: 18px;
@@ -2009,6 +2145,7 @@ svg.suggestion-icon {
 .settings-icon a:active {
   transform: scale(0.95);
 }
+
 .settings-modal {
   display: none;
   position: fixed;
@@ -2035,19 +2172,19 @@ svg.suggestion-icon {
   height: 600px;
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
-  
+
   @media (max-width: 768px) {
     width: 90%;
     max-width: 800px;
-    
+
     @media (max-width: 768px) {
       width: 95%;
       padding: 1rem;
-      
+
       .settings-layout {
         flex-direction: column;
       }
-      
+
       .settings-sidebar {
         width: 100%;
         margin-bottom: 1rem;
@@ -2074,16 +2211,17 @@ svg.suggestion-icon {
 .settings-modal-title {
   margin: 0 0 2rem 8px;
   font-size: 26px;
-  font-weight: 600; 
+  font-weight: 600;
   color: #1a202c;
 }
 
 .settings-modal-subtitle {
   margin: 0 0 8px 0px;
   font-size: 16px;
-  font-weight: 600; 
+  font-weight: 600;
   color: #1a202c;
 }
+
 .settings-layout {
   display: flex;
   margin-top: 20px;
@@ -2113,6 +2251,7 @@ svg.suggestion-icon {
   font-weight: 500;
   color: #334155;
 }
+
 .setting-option {
   font-size: 14px;
   margin: 16px 0;
@@ -2153,6 +2292,7 @@ svg.suggestion-icon {
   transform: scale(1.05);
   border: 2px solid #10b981;
 }
+
 /* 开关样式 */
 .switch {
   position: relative;
@@ -2221,6 +2361,7 @@ input:checked+.slider:before {
 .switch-label {
   margin-right: 1rem;
 }
+
 /* About tab styles */
 .about-content {
   display: flex;
@@ -2248,14 +2389,16 @@ input:checked+.slider:before {
   color: #334155;
   max-width: 500px;
   margin-bottom: 2rem;
-  text-align: center;  /* 添加这行来实现左对齐 */
+  text-align: center;
+  /* 添加这行来实现左对齐 */
 }
 
 .about-links {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  flex-wrap: wrap;  /* 添加这行以支持多行显示 */
+  flex-wrap: wrap;
+  /* 添加这行以支持多行显示 */
 }
 
 .about-link {
@@ -2267,9 +2410,11 @@ input:checked+.slider:before {
   text-decoration: none;
   color: #374151;
   transition: all 0.2s ease;
-  width: 160px;  /* 添加最小宽度确保统一性 */
+  width: 160px;
+  /* 添加最小宽度确保统一性 */
   height: 36px;
-  justify-content: center;  /* 确保内容居中 */
+  justify-content: center;
+  /* 确保内容居中 */
 }
 
 .about-link:hover {
@@ -2305,6 +2450,7 @@ input:checked+.slider:before {
   opacity: 0.7;
   pointer-events: none;
 }
+
 .gradient-background-1 {
   background: linear-gradient(0deg, rgba(226, 232, 240, 1) 0%, rgba(214, 222, 235, 1) 50%, rgba(203, 213, 225, 1) 100%);
 }
@@ -2318,7 +2464,7 @@ input:checked+.slider:before {
 }
 
 .gradient-background-4 {
-  background: linear-gradient(0deg, rgb(182,232,166,1) 0%, rgb(182,232,166,1) 100%);
+  background: linear-gradient(0deg, rgb(182, 232, 166, 1) 0%, rgb(182, 232, 166, 1) 100%);
 }
 
 .gradient-background-5 {
@@ -2332,6 +2478,7 @@ input:checked+.slider:before {
 .gradient-background-7 {
   background: linear-gradient(0deg, rgba(251, 235, 188, 1) 0%, rgba(251, 235, 188, 1) 100%);
 }
+
 /* ... existing code ... */
 
 .year-progress-container {
@@ -2373,6 +2520,7 @@ input:checked+.slider:before {
   font-size: 12px;
   color: #717882;
 }
+
 /* 修改编辑对话框样式 */
 #confirm-dialog .modal-content,
 #edit-dialog .modal-content,
@@ -2548,12 +2696,14 @@ input:checked+.slider:before {
   width: 580px;
   margin-top: 8px;
 }
+
 /* 选项容器 */
 .search-engine-options-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 12px;
 }
+
 /* 单个选项样式 */
 .search-engine-option {
   cursor: pointer;
@@ -2565,6 +2715,7 @@ input:checked+.slider:before {
 .search-engine-option:hover {
   background-color: #f5f5f5;
 }
+
 /* 选项内容布局 */
 .search-engine-option-content {
   display: flex;
@@ -2572,16 +2723,19 @@ input:checked+.slider:before {
   align-items: center;
   gap: 6px;
 }
+
 /* 选项图标样式 */
 .search-engine-option-icon {
   height: 24px;
   margin-bottom: 4px;
 }
+
 /* 标签样式 */
 .search-engine-option-label {
   font-size: 12px;
   color: #1a202c;
 }
+
 /* 移动端适配 */
 @media (max-width: 480px) {
   .search-engine-dropdown {
@@ -2615,9 +2769,12 @@ input:checked+.slider:before {
 /* 搜索引擎更新提示样式 */
 .search-engine-update-tip {
   position: absolute;
-  left: 0;  /* 修改为左对齐 */
-  top: 100%;  /* 修改为显示在容器下方 */
-  margin-top: 8px;  /* 添加一些上边距 */
+  left: 0;
+  /* 修改为左对齐 */
+  top: 100%;
+  /* 修改为显示在容器下方 */
+  margin-top: 8px;
+  /* 添加一些上边距 */
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -2629,13 +2786,16 @@ input:checked+.slider:before {
 /* 修改箭头位置 */
 .search-engine-update-tip .tip-arrow {
   position: absolute;
-  left: 30px;  /* 修改箭头位置到左侧 */
-  top: -6px;  /* 修改箭头位置到顶部 */
+  left: 30px;
+  /* 修改箭头位置到左侧 */
+  top: -6px;
+  /* 修改箭头位置到顶部 */
   width: 12px;
   height: 12px;
   background: white;
   transform: rotate(45deg);
-  box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.05);  /* 调���阴影方向 */
+  box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.05);
+  /* 调���阴影方向 */
 }
 
 /* 确保暗色模式下箭头背景色正确 */
@@ -2682,6 +2842,7 @@ input:checked+.slider:before {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -2693,6 +2854,7 @@ input:checked+.slider:before {
     opacity: 1;
     transform: translateY(0);
   }
+
   to {
     opacity: 0;
     transform: translateY(10px);
@@ -2705,12 +2867,12 @@ input:checked+.slider:before {
     top: 20%;
     min-height: 160px;
   }
-  
+
   .links-icons a {
     margin: 2px 6px;
     padding: 6px;
   }
-  
+
   .settings-icon {
     top: calc(20% + 230px);
   }
@@ -2722,12 +2884,12 @@ input:checked+.slider:before {
     top: 10%;
     min-height: 140px;
   }
-  
+
   .links-icons a {
     margin: 1px 6px;
     padding: 4px;
   }
-  
+
   .settings-icon {
     top: calc(10% + 210px);
   }
@@ -2736,7 +2898,8 @@ input:checked+.slider:before {
 /* 修改 theme-toggle 样式 */
 .theme-toggle {
   position: fixed;
-  top: 30%;  /* 调整初始位置 */
+  top: 30%;
+  /* 调整初始位置 */
   right: 2rem;
   z-index: 2;
 }
@@ -2764,7 +2927,8 @@ input:checked+.slider:before {
 /* 修改 links-icons 的位置 */
 .links-icons {
   position: fixed;
-  top: calc(30% + 56px);  /* theme-toggle 下方 */
+  top: calc(30% + 56px);
+  /* theme-toggle 下方 */
   right: 2rem;
   /* ... 其他样式保持不变 ... */
 }
@@ -2772,7 +2936,8 @@ input:checked+.slider:before {
 /* 修改 settings-icon 的位置 */
 .settings-icon {
   position: fixed;
-  top: calc(30% + 250px);  /* links-icons 下方 */
+  top: calc(30% + 250px);
+  /* links-icons 下方 */
   right: 2rem;
   /* ... 其他样式保持不变 ... */
 }
@@ -2782,11 +2947,11 @@ input:checked+.slider:before {
   .theme-toggle {
     top: 15%;
   }
-  
+
   .links-icons {
     top: calc(15% + 50px);
   }
-  
+
   .settings-icon {
     top: calc(15% + 230px);
   }
@@ -2796,11 +2961,11 @@ input:checked+.slider:before {
   .theme-toggle {
     top: 10%;
   }
-  
+
   .links-icons {
     top: calc(10% + 50px);
   }
-  
+
   .settings-icon {
     top: calc(10% + 230px);
   }
@@ -2810,15 +2975,16 @@ input:checked+.slider:before {
   .theme-toggle {
     top: 5%;
   }
-  
+
   .links-icons {
     top: calc(5% + 50px);
   }
-  
+
   .settings-icon {
     top: calc(5% + 230px);
   }
 }
+
 .settings-update-tip {
   position: absolute;
   right: 60px;
@@ -2964,14 +3130,17 @@ input:checked+.slider:before {
   /* hover 时的颜色，使用绿色 */
   background: #eeeeee;
 }
+
 .folder-item svg {
   width: 18px;
   height: 18px;
   fill: currentColor;
 }
+
 .about-links .icon-svg {
   margin-right: 8px;
 }
+
 .loading-indicator {
   display: flex;
   justify-content: center;
@@ -3046,21 +3215,24 @@ input:checked+.slider:before {
 
 /* 侧边栏响应式处理 */
 @media (max-width: 1024px) {
+
   /* 直接隐藏侧边栏，无论其初始状态如何 */
   aside.custom-width {
-    display: none !important; /* 使用 !important 确保覆盖其他状态 */
+    display: none !important;
+    /* 使用 !important 确保覆盖其他状态 */
   }
-  
+
   /* 隐藏侧边栏切换按钮 */
   #toggle-sidebar {
     display: none !important;
   }
-  
+
   /* 确保主内容区域占满宽度，无论侧边栏状态如何 */
   main.flex-1 {
     width: 100% !important;
     margin-left: 0 !important;
-    transition: none !important; /* 禁用过渡效果 */
+    transition: none !important;
+    /* 禁用过渡效果 */
   }
 
   /* 重置侧边栏容器状态 */
@@ -3072,36 +3244,39 @@ input:checked+.slider:before {
 
 }
 
-  /* 调整主内容区域的响应式布局 */
-  @media (min-width: 769px) {
-    main.flex-1 {
-      margin-left: auto;
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
+/* 调整主内容区域的响应式布局 */
+@media (min-width: 769px) {
+  main.flex-1 {
+    margin-left: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
-  /* 调整主内容区域的响应式布局 */
-  @media (min-width: 640px) {
-    main.flex-1 {
-      margin-left: auto;
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
+}
+
+/* 调整主内容区域的响应式布局 */
+@media (min-width: 640px) {
+  main.flex-1 {
+    margin-left: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
-  @media (min-width: 480px) {
-    main.flex-1 {
-      margin-left: auto;
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
+}
+
+@media (min-width: 480px) {
+  main.flex-1 {
+    margin-left: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
-  @media (min-width: 320px) {
-    main.flex-1 {
-      margin-left: auto;
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
+}
+
+@media (min-width: 320px) {
+  main.flex-1 {
+    margin-left: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
+}
 
 /* Quick links 响应式处理 */
 @media (max-width: 840px) {
@@ -3139,6 +3314,7 @@ input:checked+.slider:before {
     font-size: 11px;
   }
 }
+
 @media (max-width: 368px) {
   .quick-links-container {
     gap: 4px;
@@ -3157,34 +3333,40 @@ input:checked+.slider:before {
   }
 
 }
-    @media (max-width: 368px) {
-      #welcome-message {
-        font-size: 20px;
-      }
-    }
+
+@media (max-width: 368px) {
+  #welcome-message {
+    font-size: 20px;
+  }
+}
 
 /* Search form 响应式处理 */
 @media (max-width: 768px) {
+
   /* 隐藏主题切换按钮 */
   .theme-toggle {
     display: none !important;
   }
-  .links-icons{
+
+  .links-icons {
     display: none !important;
   }
-  .settings-icon{
+
+  .settings-icon {
     display: none !important;
   }
+
   /* 已有的其他媒体查询内容 */
   .flex.justify-between.items-center.mb-4 {
     width: 95%;
-    justify-content: center; /* 居中对齐 */
+    justify-content: center;
+    /* 居中对齐 */
   }
-  
+
   .search-container {
     width: 100%;
   }
-  
+
   .search-form {
     max-width: 100%;
     width: 100%;
@@ -3194,15 +3376,20 @@ input:checked+.slider:before {
   }
 
   .search-input {
-  
-    max-height: none; /* 允许内容增长 */
-    overflow-y: hidden; /* 初始状态隐藏滚动条 */
-    resize: none; /* 禁用手动调整大小 */
+
+    max-height: none;
+    /* 允许内容增长 */
+    overflow-y: hidden;
+    /* 初始状态隐藏滚动条 */
+    resize: none;
+    /* 禁用手动调整大小 */
   }
 
   .search-input:focus {
-    overflow-y: hidden; /* 允许滚动 */
-    height: auto; /* 允许自动增长 */
+    overflow-y: hidden;
+    /* 允许滚动 */
+    height: auto;
+    /* 允许自动增长 */
   }
 
   .search-input::placeholder {
@@ -3216,16 +3403,18 @@ input:checked+.slider:before {
   .search-form {
     padding: 14.5px 20px 14.5px 10px;
   }
-  
+
   .search-input {
-    font-size: 13px; /* 更小的字体大小 */
+    font-size: 13px;
+    /* 更小的字体大小 */
   }
 }
 
 /* 新功能提示样式 */
 .feature-tips {
   position: fixed;
-  top: 24px;  /* 改为顶部定位 */
+  top: 24px;
+  /* 改为顶部定位 */
   right: 24px;
   background: white;
   border-radius: 8px;
@@ -3254,6 +3443,7 @@ input:checked+.slider:before {
   color: #10b981;
   margin-bottom: 4px;
 }
+
 .feature-description {
   white-space: normal;
   line-height: 1.5;
@@ -3279,6 +3469,7 @@ input:checked+.slider:before {
 .feature-tips .tip-close:hover {
   color: #374151;
 }
+
 .feature-tips .tip-content svg {
   width: 20px;
   height: 20px;
@@ -3317,8 +3508,10 @@ input:checked+.slider:before {
 @keyframes tipFadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);  /* 改为向下滑入 */
+    transform: translateY(-10px);
+    /* 改为向下滑入 */
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -3330,9 +3523,11 @@ input:checked+.slider:before {
     opacity: 1;
     transform: translateY(0);
   }
+
   to {
     opacity: 0;
-    transform: translateY(-10px);  /* 改为向上滑出 */
+    transform: translateY(-10px);
+    /* 改为向上滑出 */
   }
 }
 
@@ -3341,8 +3536,10 @@ input:checked+.slider:before {
   .feature-tips {
     top: 16px;
     right: 16px;
-    left: 16px;  /* 在移动端左右留边距 */
-    max-width: none;  /* 移动端占满宽度减去边距 */
+    left: 16px;
+    /* 在移动端左右留边距 */
+    max-width: none;
+    /* 移动端占满宽度减去边距 */
   }
 }
 
@@ -3382,7 +3579,7 @@ input:checked+.slider:before {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   /* 移除 padding-top */
   padding: 0;
   /* 防止背景滚动 */
@@ -3400,7 +3597,8 @@ input:checked+.slider:before {
   transform: translate(-50%, -50%);
   width: 90%;
   max-width: 800px;
-  max-height: 90vh; /* 最大高度为视窗高度的90% */
+  max-height: 90vh;
+  /* 最大高度为视窗高度的90% */
   border-radius: 12px;
   padding: 2rem;
   /* 只保留overflow设置 */
@@ -3442,15 +3640,18 @@ input:checked+.slider:before {
   flex-direction: column;
   gap: 16px;
 }
+
 .search-engine-category {
   margin-bottom: 32px;
 }
+
 .category-title {
   font-size: 16px;
   font-weight: 600;
   color: #374151;
   margin-bottom: 16px;
 }
+
 .search-engine-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -3464,11 +3665,13 @@ input:checked+.slider:before {
   border-radius: 8px;
   transition: all 0.2s ease;
   background-color: #f8f9fa;
-  cursor: pointer; /* 添加鼠标指针样式 */
+  cursor: pointer;
+  /* 添加鼠标指针样式 */
 }
 
 .search-engine-item:hover {
-  background-color: #f0f0f0; /* 稍微调暗一点的悬停背景色 */
+  background-color: #f0f0f0;
+  /* 稍微调暗一点的悬停背景色 */
 }
 
 .search-engine-info {
@@ -3489,6 +3692,7 @@ input:checked+.slider:before {
   color: #374151;
   font-weight: 600;
 }
+
 .custom-checkbox {
   margin-right: 12px;
 }
@@ -3504,7 +3708,8 @@ input:checked+.slider:before {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
-  margin-bottom: 16px; /* 添加底部间距 */
+  margin-bottom: 16px;
+  /* 添加底部间距 */
 }
 
 .custom-engine-form {
@@ -3565,9 +3770,17 @@ input:checked+.slider:before {
 
 /* 添加图标加载动画 */
 @keyframes iconLoading {
-  0% { opacity: 0.3; }
-  50% { opacity: 0.7; }
-  100% { opacity: 0.3; }
+  0% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 0.3;
+  }
 }
 
 .search-engine-icon.loading {
@@ -3589,12 +3802,18 @@ input:checked+.slider:before {
 }
 
 .custom-input.loading {
-  padding-right: 40px; /* 为加载图标留出空间 */
+  padding-right: 40px;
+  /* 为加载图标留出空间 */
 }
 
 @keyframes spin {
-  0% { transform: translateY(-50%) rotate(0deg); }
-  100% { transform: translateY(-50%) rotate(360deg); }
+  0% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translateY(-50%) rotate(360deg);
+  }
 }
 
 /* 修改 custom-engine-form 样式以支持相对定位 */
@@ -3625,12 +3844,14 @@ input:checked+.slider:before {
 /* 隐藏原生复选框但保持其功能 */
 .custom-checkbox input[type="checkbox"] {
   position: absolute;
-  opacity: 0;  /* 改为 0 来隐藏原生复选框 */
+  opacity: 0;
+  /* 改为 0 来隐藏原生复选框 */
   width: 100%;
   height: 100%;
   margin: 0;
   cursor: pointer;
-  z-index: 2;  /* 确保复选框在最上层可以接收点击 */
+  z-index: 2;
+  /* 确保复选框在最上层可以接收点击 */
 }
 
 /* 自定义复选框样式覆盖在原生复选框上 */
@@ -3649,13 +3870,13 @@ input:checked+.slider:before {
 }
 
 /* 复选框选中状态 */
-.custom-checkbox input:checked + .checkmark {
+.custom-checkbox input:checked+.checkmark {
   background-color: #10b981;
   border-color: #10b981;
 }
 
 /* 复选框选中时的对勾 */
-.custom-checkbox input:checked + .checkmark:after {
+.custom-checkbox input:checked+.checkmark:after {
   content: '';
   position: absolute;
   left: 5px;
@@ -3670,9 +3891,8 @@ input:checked+.slider:before {
 
 
 /* 禁用状态 */
-.custom-checkbox input:disabled ~ .checkmark {
+.custom-checkbox input:disabled~.checkmark {
   background-color: #f3f4f6;
   border-color: #e5e7eb;
   cursor: not-allowed;
 }
-
