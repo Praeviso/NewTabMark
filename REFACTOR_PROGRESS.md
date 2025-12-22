@@ -43,6 +43,7 @@
 | Legacy Settings Cleanup | `settings-modal-controller.js` → deprecated shim | 移除 bootstrap 初始化调用，简化为仅保留向后兼容的重定向函数 |
 | WelcomeMessage | `WelcomeMessage.jsx` / `WelcomeMessagePortal.jsx` | React 化欢迎消息，基于时间的问候语、用户名编辑、背景亮度自适应文字颜色 |
 | Legacy Welcome Cleanup | `welcome.js` → deprecated shim | 移除 bootstrap 初始化调用，通过自定义事件触发 React 组件 |
+| Settings Update Tip | `settings-icon.jsx` / `feature-tips.js` | React 化设置更新提示，通过 `ntm:show-settings-update-tip` 事件触发显示，淡出动画关闭 |
 
 
 ## 已完成其他重构
@@ -58,7 +59,6 @@
 
 ### P0
 - 逐模块 React 化：Sidebar、书签卡片
-- Side Panel：替换 `sidepanel-manager.js`
 
 ### P1
 - 构建自洽：运行时不依赖 `src/`

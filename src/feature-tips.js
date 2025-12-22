@@ -155,30 +155,15 @@ class FeatureTips {
     }
   }
 
-  // 显示设置更新提示
+  // 显示设置更新提示 - 通过事件触发 React 组件
   showSettingsUpdateTip() {
     const settingsTipShown = localStorage.getItem('settingsUpdateTipShown') === 'true';
     if (settingsTipShown) {
       return;
     }
 
-    const tipContainer = document.querySelector('.settings-update-tip');
-    if (tipContainer) {
-      tipContainer.style.display = 'block';
-
-      if (!this.bindCloseOnce(tipContainer, () => {
-        tipContainer.classList.add('tip-fade-out');
-        setTimeout(() => {
-          tipContainer.style.display = 'none';
-          localStorage.setItem('settingsUpdateTipShown', 'true');
-        }, 300);
-      })) {
-        return;
-      }
-
-      // tip DOM 可能在 initLocalization 之后才注入；兜底刷新一次 i18n
-      updateUILanguage(tipContainer);
-    }
+    // Dispatch event for React SettingsIcon component to handle
+    window.dispatchEvent(new CustomEvent('ntm:show-settings-update-tip'));
   }
 
   // 初始化所有提示

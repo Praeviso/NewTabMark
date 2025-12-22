@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { getLocalizedMessageSafe } from '../localization.js';
 import { openSettingsModal } from './SettingsModalController.jsx';
 
@@ -9,6 +9,9 @@ if (typeof document !== 'undefined') {
 }
 
 export function SettingsIcon() {
+  const [showTip, setShowTip] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+
   const settingsLinkTitle = useMemo(
     () => getLocalizedMessageSafe('settingsLinkTitle', 'Settings'),
     []
@@ -21,6 +24,40 @@ export function SettingsIcon() {
       ),
     []
   );
+
+  // Listen for show/hide events from feature-tips.js
+  useEffect(() => {
+    const handleShowTip = () => {
+      // Don't show if already dismissed
+      if (localStorage.getItem('settingsUpdateTipShown') === 'true') return;
+      setShowTip(true);
+      setIsFadingOut(false);
+    };
+
+    window.addEventListener('ntm:show-settings-update-tip', handleShowTip);
+
+    return () => {
+      window.removeEventListener('ntm:show-settings-update-tip', handleShowTip);
+    };
+  }, []);
+
+  const handleCloseTip = useCallback(() => {
+    setIsFadingOut(true);
+    setTimeout(() => {
+      setShowTip(false);
+      setIsFadingOut(false);
+      localStorage.setItem('settingsUpdateTipShown', 'true');
+    }, 300);
+  }, []);
+
+  // Check on mount if tip should be shown immediately (for backwards compat)
+  useEffect(() => {
+    // Check if legacy code already set display on the tip container
+    const legacyTip = document.querySelector('.settings-update-tip:not([data-react-managed])');
+    if (legacyTip && getComputedStyle(legacyTip).display === 'block') {
+      setShowTip(true);
+    }
+  }, []);
 
   // Container classes: fixed position, white bg (dark: neutral-700), rounded, shadow, flex center
   // Using arbitrary selector for data-theme dark mode compatibility
@@ -61,8 +98,9 @@ export function SettingsIcon() {
       >
         <span className="material-icons">settings</span>
       </a>
-      {/* Settings Update Tip - Tailwind-ified */}
+      {/* Settings Update Tip - React managed visibility */}
       <div
+        data-react-managed="true"
         className={[
           'settings-update-tip', // preserve legacy class
           'absolute right-[60px] bottom-0 w-[280px] z-[1000]',
@@ -71,7 +109,11 @@ export function SettingsIcon() {
           // Dark mode
           '[[data-theme=dark]_&]:bg-gray-800 [[data-theme=dark]_&]:shadow-[0_2px_8px_rgba(0,0,0,0.3)]'
         ].join(' ')}
-        style={{ display: 'none' }}
+        style={{
+          display: showTip ? 'block' : 'none',
+          opacity: isFadingOut ? 0 : 1,
+          transition: 'opacity 0.3s ease-out'
+        }}
       >
         <div className="tip-content flex p-3 items-start gap-2">
           <span className="text-xl" style={{ color: '#10b981' }}>
@@ -83,12 +125,15 @@ export function SettingsIcon() {
           ].join(' ')}>
             <p data-i18n="settingsUpdateTip" className="m-0">{settingsUpdateTipText}</p>
           </div>
-          <button className={[
-            'tip-close p-1 cursor-pointer flex items-center justify-center',
-            'bg-transparent border-none',
-            'text-gray-400 hover:text-gray-700',
-            '[[data-theme=dark]_&]:text-gray-500 [[data-theme=dark]_&]:hover:text-gray-200'
-          ].join(' ')}>
+          <button
+            className={[
+              'tip-close p-1 cursor-pointer flex items-center justify-center',
+              'bg-transparent border-none',
+              'text-gray-400 hover:text-gray-700',
+              '[[data-theme=dark]_&]:text-gray-500 [[data-theme=dark]_&]:hover:text-gray-200'
+            ].join(' ')}
+            onClick={handleCloseTip}
+          >
             <span className="material-icons text-xl">close</span>
           </button>
         </div>
@@ -101,3 +146,4 @@ export function SettingsIcon() {
     </div>
   );
 }
+
