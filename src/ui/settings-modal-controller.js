@@ -9,6 +9,15 @@ import {
   setActiveBackgroundOption
 } from '../background-state.js';
 
+/**
+ * @deprecated This file is superseded by React component:
+ * - src/ui/SettingsModalController.jsx
+ *
+ * The openSettingsModal/closeSettingsModal functions are now exported from
+ * SettingsModalController.jsx and use custom events for communication.
+ * This file is kept for legacy imports but its init function is now a no-op.
+ */
+
 let settingsModalControllerInitialized = false;
 let settingsModalAbortController = null;
 
@@ -48,21 +57,20 @@ function isModalOpen(modalEl) {
   return win.getComputedStyle(modalEl).display !== 'none';
 }
 
+/**
+ * @deprecated Use openSettingsModal from SettingsModalController.jsx instead.
+ * This function is kept for backward compatibility.
+ */
 export function openSettingsModal(root = document) {
-  initSettingsModalController(root);
-
-  const modalEl = getSettingsModalEl(root);
-  if (!modalEl) return false;
-
-  // Settings modal DOM may be injected lazily; ensure wallpaper logic is ready.
-  initWallpaper();
-
-  loadSavedSettings(modalEl.ownerDocument ?? document);
-  modalEl.style.display = 'block';
-  void modalEl.offsetHeight;
+  // Redirect to React-based event system
+  window.dispatchEvent(new CustomEvent('ntm:openSettings'));
   return true;
 }
 
+/**
+ * @deprecated Use closeSettingsModal from SettingsModalController.jsx instead.
+ * This function is kept for backward compatibility.
+ */
 export function closeSettingsModal(root = document) {
   const modalEl = getSettingsModalEl(root);
   if (!modalEl) return false;

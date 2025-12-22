@@ -7,7 +7,7 @@
  * The file is kept as fallback for cases where React fails to load.
  */
 
-import { openSettingsModal } from './settings-modal-controller.js';
+import { openSettingsModal } from './SettingsModalController.jsx';
 
 let initialized = false;
 

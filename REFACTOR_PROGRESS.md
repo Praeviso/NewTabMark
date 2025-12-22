@@ -39,6 +39,7 @@
 | AboutSettingsContent | `AboutSettingsContent.jsx` / `AboutSettingsPortal.jsx` | React 化关于页面内容，Portal 挂载显示版本号和描述信息 |
 | Onboarding | `Onboarding.jsx` / `OnboardingPortal.jsx` | React 化引导弹窗，3 步引导流程，圆点导航，localStorage 持久化完成状态 |
 | FeatureTips | `FeatureTips.jsx` / `FeatureTipsPortal.jsx` | React 化新功能提示，通过自定义事件触发显示，支持多提示管理和淡出动画 |
+| SettingsModalController | `SettingsModalController.jsx` | React 化设置弹窗控制器，管理打开/关闭、Escape 键关闭、点击外部关闭等事件处理，Quick Links 初始化 |
 
 
 ## 已完成其他重构

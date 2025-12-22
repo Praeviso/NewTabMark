@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { getLocalizedMessageSafe } from '../localization.js';
-import { openSettingsModal } from './settings-modal-controller.js';
+import { openSettingsModal } from './SettingsModalController.jsx';
 
 // React portals own the click handling for special links.
 // This is used by legacy controllers to avoid binding global listeners.
@@ -56,7 +56,7 @@ export function SettingsIcon() {
         title={settingsLinkTitle}
         onClick={(e) => {
           e.preventDefault();
-          openSettingsModal(document);
+          openSettingsModal();
         }}
       >
         <span className="material-icons">settings</span>

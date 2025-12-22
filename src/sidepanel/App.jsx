@@ -19,6 +19,7 @@ import { BookmarkCleanupButtonPortal } from '../ui/BookmarkCleanupButtonPortal.j
 import { AboutSettingsPortal } from '../ui/AboutSettingsPortal.jsx';
 import { OnboardingPortal } from '../ui/OnboardingPortal.jsx';
 import { FeatureTipsPortal } from '../ui/FeatureTips.jsx';
+import { SettingsModalController } from '../ui/SettingsModalController.jsx';
 
 export function App() {
   return (
@@ -50,6 +51,7 @@ export function App() {
       <AboutSettingsPortal />
       <OnboardingPortal />
       <FeatureTipsPortal />
+      <SettingsModalController />
     </>
   );
 }
