@@ -24,14 +24,10 @@ async function importAndInit(importer, exportName, label) {
   init();
 }
 
-export function createLegacyBootstrap(options = {}) {
-  const {
-    initSpecialLinksController = true
-  } = options;
-
+export function createLegacyBootstrap() {
   return createOnce(async () => {
     await importAndInit(() => import('./localization.js'), 'initLocalization', 'localization.js');
-    await importAndInit(() => import('./ui/theme-controller.js'), 'initThemeController', 'ui/theme-controller.js');
+    // theme-controller.js removed: now handled by React ThemeToggle component
     // onboarding has been React-ified: see ui/OnboardingPortal.jsx
     // welcome.js removed: now handled by React WelcomeMessagePortal.jsx
     await importAndInit(() => import('./feature-tips.js'), 'initFeatureTipsUI', 'feature-tips.js');
@@ -40,14 +36,7 @@ export function createLegacyBootstrap(options = {}) {
     await importAndInit(() => import('./bookmark-cleanup.js'), 'initBookmarkCleanup', 'bookmark-cleanup.js');
     await importAndInit(() => import('./quick-links.js'), 'initQuickLinks', 'quick-links.js');
     await importAndInit(() => import('./script.js'), 'initScript', 'script.js');
-
-    if (initSpecialLinksController) {
-      await importAndInit(
-        () => import('./ui/special-links-controller.js'),
-        'initSpecialLinksController',
-        'ui/special-links-controller.js'
-      );
-    }
+    // special-links-controller.js removed: now handled by React LinksIcons and SettingsIcon components
   });
 }
 

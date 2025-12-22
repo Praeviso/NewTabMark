@@ -50,10 +50,17 @@
 
 - **构建与入口**：Vite 多入口输出到 `dist/`，`manifest.json` 指向产物
 - **React 外壳**：`LegacyAppShell` 注入 legacy DOM + bootstrap
-- **Legacy 控制器废弃**：`progress.js` / `theme-controller.js` / `special-links-controller.js` / `settings-modal-controller.js` 标记 `@deprecated`
+- **Legacy 控制器废弃**：以下文件已删除，React 组件已完全替代：
+  - `onboarding.js` → `OnboardingPortal.jsx`
+  - `progress.js` → `YearProgressPortal.jsx`
+  - `ui/theme-controller.js` → `theme-toggle.jsx`
+  - `ui/special-links-controller.js` → `links-icons.jsx` + `settings-icon.jsx`
+  - `settings-modal-controller.js` 已简化为仅保留兼容 shim
+- **Bootstrap 清理**：`bootstrap-legacy-shared.js` 移除了未使用的初始化调用
 - **初始化收敛**：`createLegacyBootstrap()` 幂等化，i18n 统一入口，AbortController 避免泄漏
 - **搜索重构**：数据/UI 拆分，下拉 React 化，建议 UI dispose 能力
 - **Quick Links 收敛**：controller 模式 + dispose 能力
+- **CSS 修复**：`.favicon img` 添加 `object-fit: contain` 修复图标形变
 
 ## 未完成
 
