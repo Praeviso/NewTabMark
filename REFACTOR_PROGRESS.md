@@ -41,6 +41,8 @@
 | FeatureTips | `FeatureTips.jsx` / `FeatureTipsPortal.jsx` | React 化新功能提示，通过自定义事件触发显示，支持多提示管理和淡出动画 |
 | SettingsModalController | `SettingsModalController.jsx` | React 化设置弹窗控制器，管理打开/关闭、Escape 键关闭、点击外部关闭等事件处理，Quick Links 初始化 |
 | Legacy Settings Cleanup | `settings-modal-controller.js` → deprecated shim | 移除 bootstrap 初始化调用，简化为仅保留向后兼容的重定向函数 |
+| WelcomeMessage | `WelcomeMessage.jsx` / `WelcomeMessagePortal.jsx` | React 化欢迎消息，基于时间的问候语、用户名编辑、背景亮度自适应文字颜色 |
+| Legacy Welcome Cleanup | `welcome.js` → deprecated shim | 移除 bootstrap 初始化调用，通过自定义事件触发 React 组件 |
 
 
 ## 已完成其他重构

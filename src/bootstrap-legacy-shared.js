@@ -33,7 +33,7 @@ export function createLegacyBootstrap(options = {}) {
     await importAndInit(() => import('./localization.js'), 'initLocalization', 'localization.js');
     await importAndInit(() => import('./ui/theme-controller.js'), 'initThemeController', 'ui/theme-controller.js');
     // onboarding has been React-ified: see ui/OnboardingPortal.jsx
-    await importAndInit(() => import('./welcome.js'), 'initWelcome', 'welcome.js');
+    // welcome.js removed: now handled by React WelcomeMessagePortal.jsx
     await importAndInit(() => import('./feature-tips.js'), 'initFeatureTipsUI', 'feature-tips.js');
     await importAndInit(() => import('./wallpaper.js'), 'initWallpaper', 'wallpaper.js');
     // settings-modal-controller.js removed: now handled by React SettingsModalController.jsx

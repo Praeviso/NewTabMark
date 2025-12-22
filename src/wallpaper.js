@@ -1,4 +1,4 @@
-import { getWelcomeManager } from './welcome.js';
+// welcome.js import removed: now using custom events for color updates
 import {
     applyBackgroundClass,
     computeBackgroundClassToApply,
@@ -319,16 +319,12 @@ class WallpaperManager {
             document.documentElement.className = bgClass;
         }
 
-        // 清除壁纸
+        // Clear wallpaper
         this.clearWallpaper();
         localStorage.setItem('useDefaultBackground', 'true');
 
-        // 更新欢迎消息颜色
-        const welcomeElement = document.getElementById('welcome-message');
-        const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
-        if (welcomeElement && welcomeManager) {
-            welcomeManager.adjustTextColor(welcomeElement);
-        }
+        // Notify React WelcomeMessage component to recalculate color
+        window.dispatchEvent(new CustomEvent('ntm:background-changed'));
     }
 
     handleWallpaperOptionClick(option) {
@@ -392,11 +388,8 @@ class WallpaperManager {
 
             applyBackgroundClass(document, bgClassToApply);
 
-            const welcomeElement = document.getElementById('welcome-message');
-            const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
-            if (welcomeElement && welcomeManager) {
-                welcomeManager.adjustTextColor(welcomeElement);
-            }
+            // Notify React WelcomeMessage component to recalculate color
+            window.dispatchEvent(new CustomEvent('ntm:background-changed'));
             return;
         }
 
@@ -486,12 +479,8 @@ class WallpaperManager {
             Object.assign(this.mainElement.style, backgroundStyle);
             Object.assign(document.body.style, backgroundStyle);
 
-            // 更新欢迎消息颜色
-            const welcomeElement = document.getElementById('welcome-message');
-            const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
-            if (welcomeElement && welcomeManager) {
-                welcomeManager.adjustTextColor(welcomeElement);
-            }
+            // Notify React WelcomeMessage component to recalculate color
+            window.dispatchEvent(new CustomEvent('ntm:background-changed'));
         });
     }
 

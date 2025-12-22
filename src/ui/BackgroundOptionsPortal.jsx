@@ -8,7 +8,6 @@ import {
     setActiveBackgroundOption
 } from '../background-state.js';
 import { clearWallpaperState } from '../wallpaper.js';
-import { getWelcomeManager } from '../welcome.js';
 
 const BACKGROUND_OPTIONS = [
     'gradient-background-1',
@@ -21,7 +20,7 @@ const BACKGROUND_OPTIONS = [
 ];
 
 /**
- * Clears wallpaper state and resets welcome text color.
+ * Clears wallpaper state and triggers event for welcome text color update.
  */
 function clearWallpaper(doc) {
     doc.querySelectorAll('.wallpaper-option').forEach((opt) => {
@@ -31,11 +30,8 @@ function clearWallpaper(doc) {
     clearWallpaperState();
     localStorage.removeItem('originalWallpaper');
 
-    const welcomeElement = doc.getElementById('welcome-message');
-    const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
-    if (welcomeElement && welcomeManager) {
-        welcomeManager.adjustTextColor(welcomeElement);
-    }
+    // Notify React WelcomeMessage component to recalculate color
+    window.dispatchEvent(new CustomEvent('ntm:background-changed'));
 }
 
 /**
