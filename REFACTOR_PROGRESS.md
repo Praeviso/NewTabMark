@@ -44,6 +44,7 @@
 | WelcomeMessage | `WelcomeMessage.jsx` / `WelcomeMessagePortal.jsx` | React 化欢迎消息，基于时间的问候语、用户名编辑、背景亮度自适应文字颜色 |
 | Legacy Welcome Cleanup | `welcome.js` → deprecated shim | 移除 bootstrap 初始化调用，通过自定义事件触发 React 组件 |
 | Settings Update Tip | `settings-icon.jsx` / `feature-tips.js` | React 化设置更新提示，通过 `ntm:show-settings-update-tip` 事件触发显示，淡出动画关闭 |
+| GestureNavigation | `GestureNavigation.jsx` | React 化手势导航组件，支持触摸板双指滑动、滚轮水平滚动、Windows 触摸板导航返回父文件夹 |
 
 
 ## 已完成其他重构
@@ -56,6 +57,7 @@
   - `ui/theme-controller.js` → `theme-toggle.jsx`
   - `ui/special-links-controller.js` → `links-icons.jsx` + `settings-icon.jsx`
   - `settings-modal-controller.js` 已简化为仅保留兼容 shim
+  - `gesture-navigation.js` → `GestureNavigation.jsx`（script.js 不再调用 initGestureNavigation）
 - **Bootstrap 清理**：`bootstrap-legacy-shared.js` 移除了未使用的初始化调用
 - **初始化收敛**：`createLegacyBootstrap()` 幂等化，i18n 统一入口，AbortController 避免泄漏
 - **搜索重构**：数据/UI 拆分，下拉 React 化，建议 UI dispose 能力

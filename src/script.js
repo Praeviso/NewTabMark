@@ -1,4 +1,4 @@
-import { initGestureNavigation } from './gesture-navigation.js';
+// gesture-navigation.js deprecated: React component handles this now
 import {
   updateSearchEngineIcon,
   createSearchEngineDropdown,
@@ -35,10 +35,15 @@ import { ICONS } from './icons.js';
 import { replaceIconsWithSvg, getIconHtml } from './icons.js';
 
 function initScriptIconsAndGestures() {
+  // Dispatch event for React GestureNavigation component
   const updateBookmarks =
     window.updateBookmarksDisplay ||
     (typeof updateBookmarksDisplay === 'function' ? updateBookmarksDisplay : null);
-  if (updateBookmarks) initGestureNavigation(updateBookmarks);
+  if (updateBookmarks) {
+    document.dispatchEvent(new CustomEvent('ntm:gesture-init', {
+      detail: { updateDisplay: updateBookmarks }
+    }));
+  }
 
   replaceIconsWithSvg();
 }

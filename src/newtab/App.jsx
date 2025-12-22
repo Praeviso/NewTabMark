@@ -21,6 +21,7 @@ import { OnboardingPortal } from '../ui/OnboardingPortal.jsx';
 import { FeatureTipsPortal } from '../ui/FeatureTips.jsx';
 import { SettingsModalController } from '../ui/SettingsModalController.jsx';
 import { WelcomeMessagePortal } from '../ui/WelcomeMessagePortal.jsx';
+import { GestureNavigation } from '../ui/GestureNavigation.jsx';
 
 export function App() {
 
@@ -55,6 +56,7 @@ export function App() {
       <FeatureTipsPortal />
       <SettingsModalController />
       <WelcomeMessagePortal />
+      <GestureNavigation />
     </>
   );
 }
