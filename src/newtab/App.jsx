@@ -22,6 +22,7 @@ import { FeatureTipsPortal } from '../ui/FeatureTips.jsx';
 import { SettingsModalController } from '../ui/SettingsModalController.jsx';
 import { WelcomeMessagePortal } from '../ui/WelcomeMessagePortal.jsx';
 import { GestureNavigation } from '../ui/GestureNavigation.jsx';
+import { EditBookmarkDialogPortal } from '../ui/EditBookmarkDialogPortal.jsx';
 
 export function App() {
 
@@ -57,6 +58,7 @@ export function App() {
       <SettingsModalController />
       <WelcomeMessagePortal />
       <GestureNavigation />
+      <EditBookmarkDialogPortal />
     </>
   );
 }

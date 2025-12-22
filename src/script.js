@@ -3568,30 +3568,29 @@ function initScriptFolderNameObserver() {
 
   bindDialogCloseHandlersOnce(editDialog, closeButton, cancelButton);
 
+  // @deprecated - Legacy openEditDialog. Now dispatches event for React component.
   function openEditDialog(bookmark) {
-    const bookmarkId = bookmark.id;
-    const bookmarkTitle = bookmark.title;
-    const bookmarkUrl = bookmark.url;
+    console.log('[script.js] openEditDialog called, dispatching to React:', bookmark);
 
-    document.getElementById('edit-name').value = bookmarkTitle;
-    document.getElementById('edit-url').value = bookmarkUrl;
-
-    const editDialog = document.getElementById('edit-dialog');
-    editDialog.style.display = 'block';
-
-    // 设置提交事件
-    document.getElementById('edit-form').onsubmit = function (event) {
-      event.preventDefault();
-      const newTitle = document.getElementById('edit-name').value;
-      const newUrl = document.getElementById('edit-url').value;
-      chrome.bookmarks.update(bookmarkId, { title: newTitle, url: newUrl }, function () {
-        editDialog.style.display = 'none';
-
-        // 更新特定的书签卡片
-        updateSpecificBookmarkCard(bookmarkId, newTitle, newUrl);
-      });
-    };
+    // Dispatch event for React EditBookmarkDialogPortal to handle
+    window.dispatchEvent(new CustomEvent('ntm:open-edit-bookmark-dialog', {
+      detail: {
+        id: bookmark.id,
+        title: bookmark.title,
+        url: bookmark.url
+      }
+    }));
   }
+
+  // Listen for bookmark updates from React component
+  window.addEventListener('ntm:bookmark-updated', (event) => {
+    const { id, title, url } = event.detail || {};
+    console.log('[script.js] Received bookmark update event:', { id, title, url });
+
+    if (id && title !== undefined && url !== undefined) {
+      updateSpecificBookmarkCard(id, title, url);
+    }
+  });
 
   function updateSpecificBookmarkCard(bookmarkId, newTitle, newUrl) {
     const bookmarkCard = document.querySelector(`.bookmark-card[data-id="${bookmarkId}"]`);
