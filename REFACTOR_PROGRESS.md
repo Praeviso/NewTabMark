@@ -38,7 +38,7 @@
 | BookmarkCleanupButton | `BookmarkCleanupButton.jsx` / `BookmarkCleanupButtonPortal.jsx` | React 化书签清理按钮，Portal 挂载到设置弹窗书签管理标签页 |
 | AboutSettingsContent | `AboutSettingsContent.jsx` / `AboutSettingsPortal.jsx` | React 化关于页面内容，Portal 挂载显示版本号和描述信息 |
 | Onboarding | `Onboarding.jsx` / `OnboardingPortal.jsx` | React 化引导弹窗，3 步引导流程，圆点导航，localStorage 持久化完成状态 |
-| FeatureTips | `FeatureTips.jsx` / `FeatureTipsPortal.jsx` | React 化新功能提示，通过自定义事件触发显示，支持多提示管理和淡出动画 |
+| FeatureTips | `FeatureTips.jsx` / `FeatureTipsPortal.jsx` | React 化新功能提示，版本检查、新功能检测、提示显示全部迁移到 React，自初始化 |
 | SettingsModalController | `SettingsModalController.jsx` | React 化设置弹窗控制器，管理打开/关闭、Escape 键关闭、点击外部关闭等事件处理，Quick Links 初始化 |
 | Legacy Settings Cleanup | `settings-modal-controller.js` → deprecated shim | 移除 bootstrap 初始化调用，简化为仅保留向后兼容的重定向函数 |
 | WelcomeMessage | `WelcomeMessage.jsx` / `WelcomeMessagePortal.jsx` | React 化欢迎消息，基于时间的问候语、用户名编辑、背景亮度自适应文字颜色 |
@@ -58,6 +58,7 @@
   - `ui/special-links-controller.js` → `links-icons.jsx` + `settings-icon.jsx`
   - `settings-modal-controller.js` 已简化为仅保留兼容 shim
   - `gesture-navigation.js` → `GestureNavigation.jsx`（script.js 不再调用 initGestureNavigation）
+  - `feature-tips.js` → `FeatureTipsPortal.jsx`（版本检查、新功能检测全部迁移到 React）
 - **Bootstrap 清理**：`bootstrap-legacy-shared.js` 移除了未使用的初始化调用
 - **初始化收敛**：`createLegacyBootstrap()` 幂等化，i18n 统一入口，AbortController 避免泄漏
 - **搜索重构**：数据/UI 拆分，下拉 React 化，建议 UI dispose 能力

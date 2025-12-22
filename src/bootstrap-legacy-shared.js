@@ -30,7 +30,7 @@ export function createLegacyBootstrap() {
     // theme-controller.js removed: now handled by React ThemeToggle component
     // onboarding has been React-ified: see ui/OnboardingPortal.jsx
     // welcome.js removed: now handled by React WelcomeMessagePortal.jsx
-    await importAndInit(() => import('./feature-tips.js'), 'initFeatureTipsUI', 'feature-tips.js');
+    // feature-tips.js removed: now handled by React FeatureTipsPortal.jsx
     await importAndInit(() => import('./wallpaper.js'), 'initWallpaper', 'wallpaper.js');
     // settings-modal-controller.js removed: now handled by React SettingsModalController.jsx
     await importAndInit(() => import('./bookmark-cleanup.js'), 'initBookmarkCleanup', 'bookmark-cleanup.js');
