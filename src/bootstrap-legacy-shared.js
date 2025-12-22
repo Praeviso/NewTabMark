@@ -36,11 +36,7 @@ export function createLegacyBootstrap(options = {}) {
     await importAndInit(() => import('./welcome.js'), 'initWelcome', 'welcome.js');
     await importAndInit(() => import('./feature-tips.js'), 'initFeatureTipsUI', 'feature-tips.js');
     await importAndInit(() => import('./wallpaper.js'), 'initWallpaper', 'wallpaper.js');
-    await importAndInit(
-      () => import('./ui/settings-modal-controller.js'),
-      'initSettingsModalController',
-      'ui/settings-modal-controller.js'
-    );
+    // settings-modal-controller.js removed: now handled by React SettingsModalController.jsx
     await importAndInit(() => import('./bookmark-cleanup.js'), 'initBookmarkCleanup', 'bookmark-cleanup.js');
     await importAndInit(() => import('./quick-links.js'), 'initQuickLinks', 'quick-links.js');
     await importAndInit(() => import('./script.js'), 'initScript', 'script.js');

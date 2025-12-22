@@ -40,13 +40,14 @@
 | Onboarding | `Onboarding.jsx` / `OnboardingPortal.jsx` | React 化引导弹窗，3 步引导流程，圆点导航，localStorage 持久化完成状态 |
 | FeatureTips | `FeatureTips.jsx` / `FeatureTipsPortal.jsx` | React 化新功能提示，通过自定义事件触发显示，支持多提示管理和淡出动画 |
 | SettingsModalController | `SettingsModalController.jsx` | React 化设置弹窗控制器，管理打开/关闭、Escape 键关闭、点击外部关闭等事件处理，Quick Links 初始化 |
+| Legacy Settings Cleanup | `settings-modal-controller.js` → deprecated shim | 移除 bootstrap 初始化调用，简化为仅保留向后兼容的重定向函数 |
 
 
 ## 已完成其他重构
 
 - **构建与入口**：Vite 多入口输出到 `dist/`，`manifest.json` 指向产物
 - **React 外壳**：`LegacyAppShell` 注入 legacy DOM + bootstrap
-- **Legacy 控制器废弃**：`progress.js` / `theme-controller.js` / `special-links-controller.js` 标记 `@deprecated`
+- **Legacy 控制器废弃**：`progress.js` / `theme-controller.js` / `special-links-controller.js` / `settings-modal-controller.js` 标记 `@deprecated`
 - **初始化收敛**：`createLegacyBootstrap()` 幂等化，i18n 统一入口，AbortController 避免泄漏
 - **搜索重构**：数据/UI 拆分，下拉 React 化，建议 UI dispose 能力
 - **Quick Links 收敛**：controller 模式 + dispose 能力
@@ -54,7 +55,7 @@
 ## 未完成
 
 ### P0
-- 逐模块 React 化：设置弹窗、Sidebar、书签卡片
+- 逐模块 React 化：Sidebar、书签卡片
 - Side Panel：替换 `sidepanel-manager.js`
 
 ### P1
