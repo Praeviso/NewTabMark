@@ -59,6 +59,7 @@
   - `settings-modal-controller.js` 已简化为仅保留兼容 shim
   - `gesture-navigation.js` → `GestureNavigation.jsx`（script.js 不再调用 initGestureNavigation）
   - `feature-tips.js` → `FeatureTipsPortal.jsx`（版本检查、新功能检测全部迁移到 React）
+  - `bookmark-cleanup.js` → `BookmarkCleanupButtonPortal.jsx`（扩展检查、按钮渲染全部迁移到 React）
 - **Bootstrap 清理**：`bootstrap-legacy-shared.js` 移除了未使用的初始化调用
 - **初始化收敛**：`createLegacyBootstrap()` 幂等化，i18n 统一入口，AbortController 避免泄漏
 - **搜索重构**：数据/UI 拆分，下拉 React 化，建议 UI dispose 能力

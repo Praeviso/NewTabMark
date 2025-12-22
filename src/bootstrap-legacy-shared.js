@@ -33,7 +33,7 @@ export function createLegacyBootstrap() {
     // feature-tips.js removed: now handled by React FeatureTipsPortal.jsx
     await importAndInit(() => import('./wallpaper.js'), 'initWallpaper', 'wallpaper.js');
     // settings-modal-controller.js removed: now handled by React SettingsModalController.jsx
-    await importAndInit(() => import('./bookmark-cleanup.js'), 'initBookmarkCleanup', 'bookmark-cleanup.js');
+    // bookmark-cleanup.js removed: now handled by React BookmarkCleanupButtonPortal.jsx
     await importAndInit(() => import('./quick-links.js'), 'initQuickLinks', 'quick-links.js');
     await importAndInit(() => import('./script.js'), 'initScript', 'script.js');
     // special-links-controller.js removed: now handled by React LinksIcons and SettingsIcon components
