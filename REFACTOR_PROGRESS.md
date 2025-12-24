@@ -46,7 +46,8 @@
 | Settings Update Tip | `settings-icon.jsx` / `feature-tips.js` | React 化设置更新提示，通过 `ntm:show-settings-update-tip` 事件触发显示，淡出动画关闭 |
 | GestureNavigation | `GestureNavigation.jsx` | React 化手势导航组件，支持触摸板双指滑动、滚轮水平滚动、Windows 触摸板导航返回父文件夹 |
 | EditBookmarkDialog | `EditBookmarkDialog.jsx` / `EditBookmarkDialogPortal.jsx` | React 化书签编辑弹窗，通过 `ntm:open-edit-bookmark-dialog` 事件触发，`ntm:bookmark-updated` 事件通知更新 |
-
+| Bookmarks Container | `index.html` / `sidepanel.html` | 布局 Tailwind 化 `bg-white rounded-xl shadow-md mx-auto`，动画保留在 CSS |
+| Folder Name Breadcrumb | `index.html` / `sidepanel.html` | `flex items-center flex-wrap text-[13px]`，面包屑容器基础布局 |
 
 ## 已完成其他重构
 

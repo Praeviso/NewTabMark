@@ -25,7 +25,7 @@ html.loading-wallpaper main {
 body,
 main {
   opacity: 1;
-  transition: opacity 0.3s ease-out;
+  transition: opacity 0.15s ease-out;
   will-change: background-image;
   background-color: transparent !important;
 }
@@ -44,28 +44,31 @@ main.flex-1 {
 
 /* 侧边栏 logo 和标题样式 */
 #sidebar-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-items: center;
-    margin: 1rem auto 3rem 0.5rem;
-    gap: 0.5rem; /* 调整 logo 和文字之间的间距 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem auto 3rem 0.5rem;
+  gap: 0.5rem;
+  /* 调整 logo 和文字之间的间距 */
 }
 
 #logo-image {
-    width: 40px;
-    height: 40px;
+  width: 40px;
+  height: 40px;
 }
+
 #logo-title {
-    font-size: 26px;
-    /* 调整字体大小 */
-    font-weight: bold;
-    color: #333;
-    /* 调整文字颜色 */
+  font-size: 26px;
+  /* 调整字体大小 */
+  font-weight: bold;
+  color: #333;
+  /* 调整文字颜色 */
 }
+
 /* 确保原有的侧边栏内容样式不受影响 */
 #categories-list {
-    /* 保留原有的类别列表样式 */
+  /* 保留原有的类别列表样式 */
 }
 
 /* 其他原有的样式 */
@@ -128,7 +131,8 @@ main.flex-1 {
 [data-theme="dark"] {
   color-scheme: dark;
 }
-[data-theme="dark"] #theme-toggle-btn{
+
+[data-theme="dark"] #theme-toggle-btn {
   background: #404040;
   border-color: #404040;
 }
@@ -165,6 +169,7 @@ html[data-theme="dark"][class*="gradient-background"] {
 [data-theme="dark"] body {
   background-color: #1c1c1c;
 }
+
 footer.bg-gray-50 {
   background-color: transparent !important;
   border-top-color: transparent !important;
@@ -228,15 +233,19 @@ html[data-theme="dark"] .progress-bar div.active {
   border-color: #ffffff;
   color: #ffffff;
 }
+
 [data-theme="dark"] aside ul li {
   color: #ffffff;
 }
+
 [data-theme="dark"] aside ul li:hover {
   color: #242424;
 }
+
 [data-theme="dark"] #theme-toggle-btn .material-icons {
   color: #e0e0e0;
 }
+
 [data-theme="dark"] .bookmark-folder.card-title:hover {
   color: #ffffff;
 }
@@ -245,6 +254,7 @@ html[data-theme="dark"] .progress-bar div.active {
   background-color: #ffffff;
   color: #242424;
 }
+
 [data-theme="dark"] .bookmark-card,
 [data-theme="dark"] .bookmark-folder {
   background-color: #404040;
@@ -255,110 +265,139 @@ html[data-theme="dark"] .progress-bar div.active {
 [data-theme="dark"] .bookmark-card:hover {
   color: #242424;
 }
+
 [data-theme="dark"] .card-title:hover {
   color: #242424;
 }
 
 
-[data-theme="dark"] .search-input ,
+[data-theme="dark"] .search-input,
 [data-theme="dark"] .search-form,
-[data-theme="dark"] .search-suggestions{
+[data-theme="dark"] .search-suggestions {
   background-color: #404040;
   color: #ffffff;
 }
+
 [data-theme="dark"] .bookmarks-container {
   background-color: #242424;
   color: #e0e0e0;
 }
-[data-theme="dark"]  .breadcrumb-item {
+
+[data-theme="dark"] .breadcrumb-item {
   background-color: #404040;
   color: #ffffff;
 }
+
 [data-theme="dark"] .breadcrumb-item:last-child {
   color: #ffffff;
   background-color: #242424;
 }
+
 [data-theme="dark"] #welcome-message {
   color: #ffffff;
 }
+
 [data-theme="dark"] .custom-hr {
   border-top: 1px solid #373737;
 }
+
 [data-theme="dark"] .search-suggestions-wrapper {
   background-color: #404040;
 }
+
 [data-theme="dark"] .search-suggestions li {
   color: #ffffff;
 }
+
 [data-theme="dark"] .tab {
   color: #ffffff;
   background-color: #7a7a7a;
 }
+
 [data-theme="dark"] #tabs-container {
   background-color: #404040;
 }
+
 [data-theme="dark"] .search-suggestions li {
   color: #ffffff;
 }
+
 [data-theme="dark"] .search-suggestions li:hover {
   color: #242424;
 }
+
 [data-theme="dark"] .suggestion-icon path {
   fill: #e0e0e0;
 }
+
 [data-theme="dark"] li:hover .suggestion-icon path {
   fill: #242424;
 }
+
 [data-theme="dark"] .links-icons {
   background-color: #404040;
 }
+
 [data-theme="dark"] .links-icons a {
   color: #ffffff;
 }
+
 [data-theme="dark"] .links-icons a:hover {
   color: #242424;
 }
+
 [data-theme="dark"] .settings-icon {
   background-color: #404040;
 }
+
 [data-theme="dark"] .settings-icon a {
   color: #ffffff;
 }
+
 [data-theme="dark"] .settings-icon a:hover {
   color: #242424;
 }
+
 [data-theme="dark"] .quick-link-item {
   background-color: #404040;
 }
+
 [data-theme="dark"] #toggle-sidebar {
   background-color: #404040;
   border-color: #404040;
 }
+
 [data-theme="dark"] #toggle-sidebar:hover {
   background-color: #404040;
   border-color: #404040;
   color: #ffffff;
 }
+
 [data-theme="dark"] .custom-context-menu {
   background-color: #404040;
   border-color: #404040;
   color: #ffffff;
 }
+
 [data-theme="dark"] .custom-context-menu-divider {
   background-color: #373737;
 }
+
 [data-theme="dark"] .custom-context-menu-item {
   color: #ffffff;
 }
+
 [data-theme="dark"] .custom-context-menu-item:hover {
   background-color: #ffffff;
   color: #242424;
 }
+
 [data-theme="dark"] #confirm-dialog p,
 [data-theme="dark"] #edit-dialog p,
-[data-theme="dark"] #edit-category-dialog p{
+[data-theme="dark"] #edit-category-dialog p {
   color: #ffffff;
 }
+
 [data-theme="dark"] #confirm-dialog .modal-content,
 [data-theme="dark"] #edit-dialog .modal-content,
 [data-theme="dark"] #edit-category-dialog .modal-content {
@@ -366,6 +405,7 @@ html[data-theme="dark"] .progress-bar div.active {
   color: #ffffff;
   border-color: #242424;
 }
+
 [data-theme="dark"] #edit-dialog input[type="text"],
 [data-theme="dark"] #edit-dialog input[type="url"],
 [data-theme="dark"] #edit-category-dialog input[type="text"] {
@@ -373,24 +413,30 @@ html[data-theme="dark"] .progress-bar div.active {
   color: #ffffff;
   border-color: #404040;
 }
+
 [data-theme="dark"] .close-button,
 [data-theme="dark"] .close-category-button:hover {
   color: #ffffff;
 }
+
 [data-theme="dark"] .settings-modal-content {
   background-color: #242424;
   border-color: #242424;
   color: #ffffff;
 }
+
 [data-theme="dark"] .settings-modal-title {
   color: #ffffff;
 }
+
 [data-theme="dark"] .settings-tab-button {
   color: #ffffff;
 }
+
 [data-theme="dark"] .settings-tab-button {
   color: #ffffff;
 }
+
 [data-theme="dark"] .settings-modal-subtitle {
   color: #ffffff;
 }
@@ -630,6 +676,7 @@ html[data-theme="dark"] .progress-bar div.active {
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -644,68 +691,69 @@ html[data-theme="dark"] .progress-bar div.active {
 .wallpaper-options {
   display: flex;
   flex-wrap: wrap;
-    gap: 10px;
-    max-width: 380px;
-    max-height: 230px;
-    overflow-y: auto;
-    padding: 10px 0;
-    margin-bottom: 16px;
+  gap: 10px;
+  max-width: 380px;
+  max-height: 230px;
+  overflow-y: auto;
+  padding: 10px 0;
+  margin-bottom: 16px;
 }
 
 .wallpaper-option {
-    width: 100px;
-    height: 100px;
-    background-size: cover;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: border-color 0.3s;
-    flex: 0 0 auto;
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+  flex: 0 0 auto;
 }
 
 .wallpaper-option:hover {
-    border-color: #10b981;
+  border-color: #10b981;
 }
 
 .wallpaper-loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 4px;
-    z-index: 1000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  z-index: 1000;
 }
 
-body, main {
-    transition: none;
+body,
+main {
+  transition: none;
 }
 
 main {
-    min-height: 100vh;
-    position: relative;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    will-change: background-image;
+  min-height: 100vh;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  will-change: background-image;
 }
 
 .page-loading {
-    opacity: 0;
-    transition: opacity 0.3s ease-in;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
 }
 
 .page-loaded {
-    opacity: 1;
+  opacity: 1;
 }
 
 .wallpaper-actions {
-    margin-top: 16px;
-    display: flex;
-    gap: 12px;
-    align-items: center;
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .wallpaper-actions button,
@@ -773,10 +821,10 @@ main {
 }
 
 .wallpaper-actions {
-    margin-top: 24px;
-    display: flex;
-    gap: 12px;
-    align-items: center;
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .upload-wallpaper-label {
@@ -804,16 +852,16 @@ main {
 .wallpaper-option {
   width: 80px;
   height: 80px;
-    background-size: cover;
-    cursor: pointer;
+  background-size: cover;
+  cursor: pointer;
   border: 2px solid #242424;
-    transition: border-color 0.3s;
-    flex: 0 0 auto;
+  transition: border-color 0.3s;
+  flex: 0 0 auto;
   border-radius: 8px;
 }
 
 .wallpaper-option.active {
-    border-color: #10b981;
+  border-color: #10b981;
 }
 
 /* 暗色模式适配 */
@@ -838,7 +886,8 @@ main {
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 18px;  /* 统一图标大小 */
+  font-size: 18px;
+  /* 统一图标大小 */
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
@@ -853,7 +902,8 @@ main {
 
 /* 暗黑模式下的背景渐变类 */
 html[data-theme="dark"][class*="gradient-background"] {
-  background: transparent !important;  /* 移除 html 的背景，让 body 的背景显示 */
+  background: transparent !important;
+  /* 移除 html 的背景，让 body 的背景显示 */
 }
 
 /* 暗黑模式下确保 body 背景色优先级 */
@@ -878,12 +928,13 @@ html[data-theme="dark"][class*="gradient-background"] {
 
 /* 暗黑模式下的背景颜色选项样式 */
 [data-theme="dark"] .settings-bg-option {
-  opacity: 0.8;  /* 降低亮色背景的不透明度 */
+  opacity: 0.8;
+  /* 降低亮色背景的不透明度 */
 }
 
 [data-theme="dark"] .settings-bg-option.active {
   border-color: #10b981;
-    opacity: 1;
+  opacity: 1;
 }
 
 [data-theme="dark"] .bookmark-folder:hover,
@@ -893,79 +944,80 @@ html[data-theme="dark"][class*="gradient-background"] {
 }
 
 .wallpaper-options::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 .wallpaper-options::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+  background: #f1f1f1;
+  border-radius: 4px;
 }
 
 .wallpaper-options::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
+  background: #888;
+  border-radius: 4px;
 }
 
 .wallpaper-options::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  background: #555;
 }
 
 [data-theme="dark"] .wallpaper-options::-webkit-scrollbar-track {
-    background: #2d2d2d;
+  background: #2d2d2d;
 }
 
 [data-theme="dark"] .wallpaper-options::-webkit-scrollbar-thumb {
-    background: #666;
+  background: #666;
 }
 
 [data-theme="dark"] .wallpaper-options::-webkit-scrollbar-thumb:hover {
-    background: #888;
+  background: #888;
 }
 
 /* 设置区域小标题样式 */
 .settings-section-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 12px;
-    margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 12px;
+  margin-top: 12px;
 }
 
 /* 暗色模式适配 */
 [data-theme="dark"] .settings-section-title {
-    color: #e5e7eb;
+  color: #e5e7eb;
 }
 
 /* 修改标识样式 */
 .uploaded-wallpaper-badge {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    background-color: rgba(55, 65, 81, 0.85);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    pointer-events: none;
-    backdrop-filter: blur(2px);
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background-color: rgba(55, 65, 81, 0.85);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
 }
 
 /* 暗色模式适配 */
 [data-theme="dark"] .uploaded-wallpaper-badge {
-    background-color: rgba(229, 231, 235, 0.85);
-    color: #1f2937;
+  background-color: rgba(229, 231, 235, 0.85);
+  color: #1f2937;
 }
 
 /* 确保壁纸选项可以正确显示标识 */
 .wallpaper-option {
-    position: relative;
-    overflow: visible;
+  position: relative;
+  overflow: visible;
 }
 
 [data-theme="dark"] .about-description {
   color: #e5e7eb;
   /* 使用较亮的颜色以提高在暗色背景下的可读性 */
 }
+
 /* 暗色模式适配 */
 [data-theme="dark"] .about-link {
   background-color: #2d2d2d;
@@ -977,9 +1029,11 @@ html[data-theme="dark"][class*="gradient-background"] {
   background-color: #404040;
   color: #10b981;
 }
+
 [data-theme="dark"] .settings-sidebar {
   border-right: 1px solid #2d2d2d;
 }
+
 /* 暗色模式适配 */
 [data-theme="dark"] .official-website a {
   color: #e5e7eb;
@@ -992,6 +1046,7 @@ html[data-theme="dark"][class*="gradient-background"] {
 [data-theme="dark"] .official-website a:hover {
   color: #60a5fa;
 }
+
 /* 添加到您的 styles.css 文件中 */
 [data-theme="dark"] #theme-toggle-btn {
   background: #404040;
@@ -1014,6 +1069,7 @@ html[data-theme="dark"][class*="gradient-background"] {
   fill: #242424;
   /* hover 时图标颜色变深 */
 }
+
 /* 暗色模式下的样式 */
 [data-theme="dark"] #theme-toggle-btn svg {
   fill: #ffffff;
@@ -1024,6 +1080,7 @@ html[data-theme="dark"][class*="gradient-background"] {
   fill: #1c1c1c;
   /* 暗色模式下 hover 时的颜色 */
 }
+
 .bookmark-cleanup-actions {
   margin-top: 20px;
 }
@@ -1171,7 +1228,7 @@ html[data-theme="dark"][class*="gradient-background"] {
 }
 
 /* 暗色模式下的复选框样式 */
-[data-theme="dark"] .custom-checkbox input:checked + .checkmark {
+[data-theme="dark"] .custom-checkbox input:checked+.checkmark {
   background-color: #10b981;
   border-color: #10b981;
 }
@@ -1181,7 +1238,7 @@ html[data-theme="dark"][class*="gradient-background"] {
   background-color: #242424;
 }
 
-[data-theme="dark"] .custom-checkbox:hover input ~ .checkmark {
+[data-theme="dark"] .custom-checkbox:hover input~.checkmark {
   background-color: #333333;
 }
 
@@ -1197,12 +1254,15 @@ html[data-theme="dark"][class*="gradient-background"] {
 
 /* 关闭按钮暗色模式样式 */
 [data-theme="dark"] .close-button.settings-modal-close {
-  color: #9ca3af;  /* 默认颜色 */
-  background-color: #242424;  /* 与模态框背景色相同 */
+  color: #9ca3af;
+  /* 默认颜色 */
+  background-color: #242424;
+  /* 与模态框背景色相同 */
 }
 
 [data-theme="dark"] .close-button.settings-modal-close:hover {
-  color: #e5e7eb;  /* 悬停时颜色变亮 */
+  color: #e5e7eb;
+  /* 悬停时颜色变亮 */
 }
 
 [data-theme="dark"] .close-button.settings-modal-close:focus {
@@ -1285,8 +1345,10 @@ html[data-theme="dark"][class*="gradient-background"] {
   border-radius: 12px;
   border: none;
   transition: background-color 0.2s;
-  min-height: 60px;  /* 设置滚动条滑块的最小高度 */
-  max-height: 120px; /* 设置滚动条滑块的最大高度 */
+  min-height: 60px;
+  /* 设置滚动条滑块的最小高度 */
+  max-height: 120px;
+  /* 设置滚动条滑块的最大高度 */
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -1303,7 +1365,8 @@ html[data-theme="dark"][class*="gradient-background"] {
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
   background-color: rgba(229, 231, 235, 0.2);
   min-height: 60px;
-  max-height: 120px; /* 确保暗色模式下也有相同的最大高度 */
+  max-height: 120px;
+  /* 确保暗色模式下也有相同的最大高度 */
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
