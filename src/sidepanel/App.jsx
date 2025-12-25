@@ -23,6 +23,7 @@ import { SettingsModalController } from '../ui/SettingsModalController.jsx';
 import { WelcomeMessagePortal } from '../ui/WelcomeMessagePortal.jsx';
 import { GestureNavigation } from '../ui/GestureNavigation.jsx';
 import { EditBookmarkDialogPortal } from '../ui/EditBookmarkDialogPortal.jsx';
+import { ConfirmDialogPortal } from '../ui/ConfirmDialogPortal.jsx';
 
 export function App() {
   return (
@@ -58,6 +59,7 @@ export function App() {
       <WelcomeMessagePortal />
       <GestureNavigation />
       <EditBookmarkDialogPortal />
+      <ConfirmDialogPortal />
     </>
   );
 }

@@ -699,83 +699,67 @@ export function initQuickLinks({ root } = {}) {
     }
   }
 
-  // 确认添加到黑名单
+  // 确认添加到黑名单 - 现在使用 React 组件
   function addToBlacklistConfirm(site) {
-    console.log('=== Quick Link Delete Confirmation ===');
+    console.log('=== Quick Link Delete Confirmation (React) ===');
     console.log('Quick link to delete:', site);
-
-    const confirmDialog = document.getElementById('confirm-dialog');
-    const confirmMessage = document.getElementById('confirm-dialog-message');
-    const confirmDeleteQuickLinkMessage = document.getElementById('confirm-delete-quick-link-message');
 
     // 保存要删除的快捷链接
     quickLinkToDelete = site;
     console.log('Set quickLinkToDelete:', quickLinkToDelete);
 
-    // 确保两个消息元素都正确显示
-    if (confirmMessage) {
-      confirmMessage.style.display = 'none'; // 隐藏默认的确认消息
-    }
+    const message = chrome.i18n.getMessage(
+      "confirmDeleteQuickLinkMessage",
+      `<strong>${site.name}</strong>`
+    );
 
-    if (confirmDeleteQuickLinkMessage) {
-      confirmDeleteQuickLinkMessage.style.display = 'block'; // 显示快捷链接的确认消息
-      confirmDeleteQuickLinkMessage.innerHTML = chrome.i18n.getMessage(
-        "confirmDeleteQuickLinkMessage",
-        `<strong>${site.name}</strong>`
-      );
-      console.log('Setting quick link delete message:', confirmDeleteQuickLinkMessage.innerHTML);
-    } else {
-      console.error('Quick link delete message element not found');
-    }
+    // Dispatch event to React ConfirmDialogPortal
+    window.dispatchEvent(new CustomEvent('ntm:show-confirm-dialog', {
+      detail: {
+        message: message,
+        onConfirm: () => {
+          console.log('=== Quick Link Delete Confirmed ===');
+          console.log('Current quickLinkToDelete:', quickLinkToDelete);
 
-    confirmDialog.style.display = 'block';
+          if (quickLinkToDelete) {
+            const domain = new URL(quickLinkToDelete.url).hostname;
+            console.log('Deleting domain:', domain);
 
-    // 修改确认按钮处理程序
-    document.getElementById('confirm-delete-button').onclick = function () {
-      console.log('=== Quick Link Delete Confirmed ===');
-      console.log('Current quickLinkToDelete:', quickLinkToDelete);
-
-      if (quickLinkToDelete) {
-        const domain = new URL(quickLinkToDelete.url).hostname;
-        console.log('Deleting domain:', domain);
-
-        addToBlacklist(domain).then((added) => {
-          console.log('Domain added to blacklist:', added);
-          if (added) {
-            if (quickLinkToDelete.fixed) {
-              console.log('Removing fixed shortcut:', quickLinkToDelete);
-              chrome.storage.sync.get('fixedShortcuts', (result) => {
-                const fixedShortcuts = result.fixedShortcuts || [];
-                const updatedShortcuts = fixedShortcuts.filter(s => s.url !== quickLinkToDelete.url);
-                chrome.storage.sync.set({ fixedShortcuts: updatedShortcuts });
-              });
-            }
-            generateQuickLinks();
-            // 使用 chrome.i18n.getMessage 显示删除成功提示
-            showToast(chrome.i18n.getMessage('deleteSuccess'));
+            addToBlacklist(domain).then((added) => {
+              console.log('Domain added to blacklist:', added);
+              if (added) {
+                if (quickLinkToDelete.fixed) {
+                  console.log('Removing fixed shortcut:', quickLinkToDelete);
+                  chrome.storage.sync.get('fixedShortcuts', (result) => {
+                    const fixedShortcuts = result.fixedShortcuts || [];
+                    const updatedShortcuts = fixedShortcuts.filter(s => s.url !== quickLinkToDelete.url);
+                    chrome.storage.sync.set({ fixedShortcuts: updatedShortcuts });
+                  });
+                }
+                generateQuickLinks();
+                showToast(chrome.i18n.getMessage('deleteSuccess'));
+              }
+              console.log('Clearing quickLinkToDelete state');
+              quickLinkToDelete = null;
+            });
+          } else {
+            console.error('No quick link selected for deletion');
           }
-          confirmDialog.style.display = 'none';
-          // 重置消息显示状态
-          if (confirmMessage) confirmMessage.style.display = 'block';
-          if (confirmDeleteQuickLinkMessage) confirmDeleteQuickLinkMessage.style.display = 'none';
-          console.log('Clearing quickLinkToDelete state');
-          quickLinkToDelete = null;
-        });
-      } else {
-        console.error('No quick link selected for deletion');
+        }
       }
+    }));
+
+    // Listen for dialog close event to cleanup on cancel
+    const handleDialogClosed = (event) => {
+      if (!event.detail?.confirmed) {
+        console.log('=== Quick Link Delete Cancelled ===');
+        console.log('Clearing quickLinkToDelete:', quickLinkToDelete);
+        quickLinkToDelete = null;
+      }
+      window.removeEventListener('ntm:confirm-dialog-closed', handleDialogClosed);
     };
 
-    // 修改取消按钮处理程序
-    document.getElementById('cancel-delete-button').onclick = function () {
-      console.log('=== Quick Link Delete Cancelled ===');
-      console.log('Clearing quickLinkToDelete:', quickLinkToDelete);
-      confirmDialog.style.display = 'none';
-      // 重置消息显示状态
-      if (confirmMessage) confirmMessage.style.display = 'block';
-      if (confirmDeleteQuickLinkMessage) confirmDeleteQuickLinkMessage.style.display = 'none';
-      quickLinkToDelete = null;
-    };
+    window.addEventListener('ntm:confirm-dialog-closed', handleDialogClosed);
   }
 
   // 在无痕窗口中打开链接

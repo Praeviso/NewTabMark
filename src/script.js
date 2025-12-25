@@ -1809,92 +1809,42 @@ function clearDeleteStates() {
   });
 }
 
-// 修改 showConfirmDialog 函数
+// 修改 showConfirmDialog 函数 - 现在使用 React 组件
 function showConfirmDialog(message, callback) {
-  console.log('=== Showing Confirm Dialog ===');
+  console.log('=== Showing Confirm Dialog (React) ===');
   // 先保存当前状态的副本
   const currentState = {
     itemToDelete: itemToDelete ? { ...itemToDelete } : null,
     currentBookmark: currentBookmark ? { ...currentBookmark } : null,
-    type: itemToDelete ? itemToDelete.type : 'unknown'  // 从 itemToDelete 获取类型
+    type: itemToDelete ? itemToDelete.type : 'unknown'
   };
 
   console.log('Current state:', currentState);
 
-  const confirmDialog = document.getElementById('confirm-dialog');
-  const confirmMessage = document.getElementById('confirm-dialog-message');
-  const confirmQuickLinkMessage = document.getElementById('confirm-delete-quick-link-message');
-  const confirmButton = document.getElementById('confirm-delete-button');
-  const cancelButton = document.getElementById('cancel-delete-button');
-
-  if (!confirmDialog || !confirmMessage || !confirmButton || !cancelButton) {
-    console.error('Required dialog elements not found');
-    return;
-  }
-
-  // 清空所有确认消息
-  confirmMessage.innerHTML = '';
-  if (confirmQuickLinkMessage) {
-    confirmQuickLinkMessage.innerHTML = '';
-    confirmQuickLinkMessage.style.display = 'none';
-  }
-
-  // 根据 itemToDelete 的类型显示相应的消息
-  if (itemToDelete && itemToDelete.type === 'quickLink') {
-    if (confirmQuickLinkMessage) {
-      confirmQuickLinkMessage.innerHTML = message;
-      confirmQuickLinkMessage.style.display = 'block';
-      confirmMessage.style.display = 'none';
+  // Dispatch event to React ConfirmDialogPortal
+  window.dispatchEvent(new CustomEvent('ntm:show-confirm-dialog', {
+    detail: {
+      message: message,
+      onConfirm: () => {
+        console.log('Confirm clicked. Current state:', currentState);
+        if (typeof callback === 'function') {
+          callback();
+        }
+      }
     }
-  } else {
-    confirmMessage.innerHTML = message;
-    confirmMessage.style.display = 'block';
-    if (confirmQuickLinkMessage) {
-      confirmQuickLinkMessage.style.display = 'none';
-    }
-  }
+  }));
 
-  confirmDialog.style.display = 'block';
-
-  const handleConfirm = () => {
-    console.log('Confirm clicked. Current state:', currentState);
-    if (typeof callback === 'function') {
-      callback();
+  // Listen for dialog close event to cleanup states on cancel
+  const handleDialogClosed = (event) => {
+    if (!event.detail?.confirmed) {
+      console.log('Cancel clicked. Clearing state...');
+      console.log('State before cancel:', currentState);
+      clearAllStates();
     }
-    confirmDialog.style.display = 'none';
-    cleanup();
+    window.removeEventListener('ntm:confirm-dialog-closed', handleDialogClosed);
   };
 
-  const handleCancel = () => {
-    console.log('Cancel clicked. Clearing state...');
-    confirmDialog.style.display = 'none';
-
-    // 清空所有确认消息
-    confirmMessage.innerHTML = '';
-    confirmMessage.style.display = 'block';
-    if (confirmQuickLinkMessage) {
-      confirmQuickLinkMessage.innerHTML = '';
-      confirmQuickLinkMessage.style.display = 'none';
-    }
-
-    // 使用之前保存的状态副本记录日志
-    console.log('State before cancel:', currentState);
-
-    clearAllStates();
-    cleanup();
-  };
-
-  const cleanup = () => {
-    console.log('Cleaning up event listeners');
-    confirmButton.removeEventListener('click', handleConfirm);
-    cancelButton.removeEventListener('click', handleCancel);
-  };
-
-  // 移除旧的事件监听器并添加新的
-  confirmButton.removeEventListener('click', handleConfirm);
-  cancelButton.removeEventListener('click', handleCancel);
-  confirmButton.addEventListener('click', handleConfirm);
-  cancelButton.addEventListener('click', handleCancel);
+  window.addEventListener('ntm:confirm-dialog-closed', handleDialogClosed);
 }
 
 // 新增一个函数来清理所有状态
