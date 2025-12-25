@@ -1135,7 +1135,7 @@ function updateBookmarkColors(bookmark, img, card) {
 function createBookmarkCard(bookmark, index) {
   const card = document.createElement('a');
   card.href = bookmark.url;
-  card.className = 'bookmark-card card';
+  card.className = 'bookmark-card card flex flex-row items-center w-full rounded-lg p-3 h-12 overflow-hidden';
   card.dataset.id = bookmark.id;
   card.dataset.parentId = bookmark.parentId;
   card.dataset.index = index.toString();
@@ -1171,15 +1171,15 @@ function createBookmarkCard(bookmark, index) {
   };
 
   const favicon = document.createElement('div');
-  favicon.className = 'favicon';
+  favicon.className = 'favicon shrink-0';
   favicon.appendChild(img);
   card.appendChild(favicon);
 
   const content = document.createElement('div');
-  content.className = 'card-content';
+  content.className = 'card-content flex flex-col overflow-auto max-h-[100px]';
 
   const title = document.createElement('div');
-  title.className = 'card-title';
+  title.className = 'card-title text-[13px] font-semibold line-clamp-2 overflow-hidden';
   title.textContent = bookmark.title;
 
   content.appendChild(title);
@@ -1946,7 +1946,7 @@ function showToast(message, duration = 3000) {
 
 function createFolderCard(folder, index) {
   const card = document.createElement('div');
-  card.className = 'bookmark-folder card';
+  card.className = 'bookmark-folder card flex flex-row items-center w-full rounded-lg p-3 h-12 overflow-hidden cursor-pointer';
   card.dataset.id = folder.id;
   card.dataset.parentId = folder.parentId;
   card.dataset.index = index.toString();
@@ -1956,10 +1956,10 @@ function createFolderCard(folder, index) {
   icon.innerHTML = ICONS.folder;
 
   const content = document.createElement('div');
-  content.className = 'card-content';
+  content.className = 'card-content flex flex-col overflow-auto max-h-[100px]';
 
   const title = document.createElement('div');
-  title.className = 'card-title';
+  title.className = 'card-title text-[13px] font-semibold line-clamp-2 overflow-hidden';
   title.textContent = folder.title;
 
   content.appendChild(title);

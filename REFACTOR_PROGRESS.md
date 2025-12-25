@@ -52,6 +52,8 @@
 | Folder Name Breadcrumb | `src/index.html` / `src/sidepanel.html` | `flex items-center flex-wrap text-[13px]`，面包屑容器基础布局 |
 | Sidebar Logo/Title | `src/index.html` / `src/sidepanel.html` | `flex items-center gap-2`，Logo `w-10 h-10`，Title `text-[26px] font-bold`，深色模式颜色保留在 CSS |
 | Sidebar Category Items | `src/script.js` | `displayBookmarkCategories()` li 元素 Tailwind 化并修复 hover/高度，颜色保留在 CSS |
+| Bookmark Card | `src/script.js` | `createBookmarkCard()` 卡片布局 Tailwind 化 `flex flex-row items-center rounded-lg p-3 h-12`，保留颜色 CSS |
+| Folder Card | `src/script.js` | `createFolderCard()` 文件夹卡片布局 Tailwind 化，与书签卡片保持一致 |
 
 ## 已完成其他重构
 
