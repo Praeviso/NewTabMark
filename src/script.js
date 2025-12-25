@@ -2211,7 +2211,7 @@ function displayBookmarkCategories(bookmarkNodes, level, parentUl, parentId) {
   bookmarkNodes.forEach(function (bookmark) {
     if (bookmark.children && bookmark.children.length > 0) {
       let li = document.createElement('li');
-      li.className = 'cursor-pointer p-2 hover:bg-emerald-500 rounded-lg flex items-center folder-item';
+      li.className = 'cursor-pointer p-2 rounded-lg flex items-center justify-start text-sm font-semibold leading-tight truncate max-w-full relative folder-item';
       li.style.paddingLeft = `${(level * 20) + 8}px`;
       li.dataset.title = bookmark.title;
       li.dataset.id = bookmark.id;
