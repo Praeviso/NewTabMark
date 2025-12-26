@@ -43,7 +43,7 @@
 | SettingsModalController | `src/ui/SettingsModalController.jsx` | React 化设置弹窗控制器，管理打开/关闭、Escape 键关闭、点击外部关闭等事件处理，Quick Links 初始化 |
 | Legacy Settings Cleanup | `src/ui/settings-modal-controller.js` → deprecated shim | 移除 bootstrap 初始化调用，简化为仅保留向后兼容的重定向函数 |
 | WelcomeMessage | `src/ui/WelcomeMessage.jsx` / `src/ui/WelcomeMessagePortal.jsx` | React 化欢迎消息，基于时间的问候语、用户名编辑、背景亮度自适应文字颜色 |
-| Legacy Welcome Cleanup | `src/welcome.js` → deprecated shim | 移除 bootstrap 初始化调用，通过自定义事件触发 React 组件 |
+| Legacy Welcome Cleanup | `src/welcome.js` → deleted | 移除 bootstrap 初始化调用，通过自定义事件触发 React 组件。文件已完全删除，调用方直接派发 `ntm:background-changed` 事件 |
 | Settings Update Tip | `src/ui/settings-icon.jsx` / `src/ui/FeatureTips.jsx` | React 化设置更新提示，通过 `ntm:show-settings-update-tip` 事件触发显示，淡出动画关闭 |
 | GestureNavigation | `src/ui/GestureNavigation.jsx` | React 化手势导航组件，支持触摸板双指滑动、滚轮水平滚动、Windows 触摸板导航返回父文件夹 |
 | EditBookmarkDialog | `src/ui/EditBookmarkDialog.jsx` / `src/ui/EditBookmarkDialogPortal.jsx` | React 化书签编辑弹窗，通过 `ntm:open-edit-bookmark-dialog` 事件触发，`ntm:bookmark-updated` 事件通知更新 |
@@ -61,8 +61,8 @@
 - **React 外壳**：`src/legacy/LegacyAppShell.jsx` 注入 legacy DOM + bootstrap
 - **Legacy 控制器迁移/兼容**：
   - 已从 `createLegacyBootstrap()` 移除初始化：onboarding / progress / theme-controller / special-links / welcome / feature-tips / settings modal / bookmark cleanup / gesture navigation（由 React Portal/组件负责）
-  - 已删除：`src/onboarding.js`、`src/progress.js`、`src/ui/theme-controller.js`、`src/ui/special-links-controller.js`
-  - 保留 deprecated shim（仍被 legacy 模块引用）：`src/welcome.js`、`src/feature-tips.js`、`src/bookmark-cleanup.js`、`src/ui/settings-modal-controller.js`
+  - 已删除：`src/onboarding.js`、`src/progress.js`、`src/ui/theme-controller.js`、`src/ui/special-links-controller.js`、`src/welcome.js`
+  - 保留 deprecated shim（仍被 legacy 模块引用）：`src/feature-tips.js`、`src/bookmark-cleanup.js`、`src/ui/settings-modal-controller.js`
   - `src/gesture-navigation.js` → deprecated shim（由 `src/ui/GestureNavigation.jsx` 完全替代）
 - **Bootstrap 清理**：`bootstrap-legacy-shared.js` 移除了未使用的初始化调用
 - **初始化收敛**：`createLegacyBootstrap()` 幂等化，i18n 统一入口，AbortController 避免泄漏

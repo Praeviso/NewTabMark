@@ -9,7 +9,7 @@ import { SearchEngineManager, getSearchUrl } from './search-engines.js';
 import { encodeSharePayload, decodeSharePayload } from './bookmark-share.js';
 import { generateNetscapeBookmarkHtml } from './bookmark-html-export.js';
 import { getStoredGistToken, setStoredGistToken, createGist } from './gist-share.js';
-import { getWelcomeManager } from './welcome.js';
+
 import { debounce } from './utils/debounce.js';
 import {
   getRecentHistory as getRecentHistoryService,
@@ -398,12 +398,9 @@ function initScriptCore() {
     mutations.forEach((mutation) => {
       if (mutation.attributeName === 'class') {
         // 当背景类发生变化时，调整文字颜色
+        // Notify React WelcomeMessage to recalculate text color
         requestAnimationFrame(() => {
-          const welcomeElement = document.getElementById('welcome-message');
-          const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
-          if (welcomeElement && welcomeManager) {
-            welcomeManager.adjustTextColor(welcomeElement);
-          }
+          window.dispatchEvent(new CustomEvent('ntm:background-changed'));
         });
       }
     });

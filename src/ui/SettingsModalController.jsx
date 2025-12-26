@@ -7,7 +7,6 @@ import {
     readBackgroundState,
     setActiveBackgroundOption
 } from '../background-state.js';
-import { getWelcomeManager } from '../welcome.js';
 
 /**
  * SettingsModalController - React component that handles settings modal
@@ -44,12 +43,9 @@ export function SettingsModalController() {
         }
     }, []);
 
+    // Notify React WelcomeMessage component to recalculate text color
     const adjustWelcomeTextColor = useCallback(() => {
-        const welcomeElement = document.getElementById('welcome-message');
-        const welcomeManager = getWelcomeManager?.() || window.WelcomeManager;
-        if (welcomeElement && welcomeManager) {
-            welcomeManager.adjustTextColor(welcomeElement);
-        }
+        window.dispatchEvent(new CustomEvent('ntm:background-changed'));
     }, []);
 
     // Close modal function
