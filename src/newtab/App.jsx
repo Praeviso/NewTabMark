@@ -24,6 +24,7 @@ import { WelcomeMessagePortal } from '../ui/WelcomeMessagePortal.jsx';
 import { GestureNavigation } from '../ui/GestureNavigation.jsx';
 import { EditBookmarkDialogPortal } from '../ui/EditBookmarkDialogPortal.jsx';
 import { ConfirmDialogPortal } from '../ui/ConfirmDialogPortal.jsx';
+import { EditCategoryDialogPortal } from '../ui/EditCategoryDialogPortal.jsx';
 
 export function App() {
 
@@ -61,6 +62,7 @@ export function App() {
       <GestureNavigation />
       <EditBookmarkDialogPortal />
       <ConfirmDialogPortal />
+      <EditCategoryDialogPortal />
     </>
   );
 }

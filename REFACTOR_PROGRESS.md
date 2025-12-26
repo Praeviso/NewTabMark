@@ -4,7 +4,7 @@
 
 - **构建**：MV3 + Vite 多入口，New Tab / Side Panel / Background / Content Script 均从 `dist/` 运行
 - **架构**：React `App` + `LegacyAppShell` 注入遗留 DOM 模板 + 显式 bootstrap（legacy 逻辑驱动为主，UI 逐步用 Portal 替换）
-- **UI 迁移**：已完成 38 项组件/容器迁移（React + Tailwind，见下表）
+- **UI 迁移**：已完成 39 项组件/容器迁移（React + Tailwind，见下表）
 - **通信**：React ↔ legacy 以 `CustomEvent` 事件桥接为主（`ntm:*`）
 
 > [!CAUTION]
@@ -48,6 +48,7 @@
 | GestureNavigation | `src/ui/GestureNavigation.jsx` | React 化手势导航组件，支持触摸板双指滑动、滚轮水平滚动、Windows 触摸板导航返回父文件夹 |
 | EditBookmarkDialog | `src/ui/EditBookmarkDialog.jsx` / `src/ui/EditBookmarkDialogPortal.jsx` | React 化书签编辑弹窗，通过 `ntm:open-edit-bookmark-dialog` 事件触发，`ntm:bookmark-updated` 事件通知更新 |
 | ConfirmDialog | `src/ui/ConfirmDialog.jsx` / `src/ui/ConfirmDialogPortal.jsx` | React 化确认对话框，通过 `ntm:show-confirm-dialog` 事件触发，`ntm:confirm-dialog-closed` 事件通知关闭，用于所有删除确认 |
+| EditCategoryDialog | `src/ui/EditCategoryDialog.jsx` / `src/ui/EditCategoryDialogPortal.jsx` | React 化文件夹重命名弹窗，通过 `ntm:open-edit-category-dialog` 事件触发，`ntm:category-updated` 事件通知更新 |
 | Bookmarks Container | `src/index.html` / `src/sidepanel.html` | 布局 Tailwind 化 `bg-white rounded-xl shadow-md mx-auto`，动画保留在 CSS |
 | Folder Name Breadcrumb | `src/index.html` / `src/sidepanel.html` | `flex items-center flex-wrap text-[13px]`，面包屑容器基础布局 |
 | Sidebar Logo/Title | `src/index.html` / `src/sidepanel.html` | `flex items-center gap-2`，Logo `w-10 h-10`，Title `text-[26px] font-bold`，深色模式颜色保留在 CSS |

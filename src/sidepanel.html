@@ -143,21 +143,7 @@
           </form>
         </div>
       </div>
-      <!-- Edit Category Dialog -->
-      <div id="edit-category-dialog" class="modal">
-        <div class="modal-content">
-          <span class="close-category-button">&times;</span>
-          <h2 data-i18n="renameFolderTitle"></h2>
-          <form id="edit-category-form">
-            <label for="edit-category-name" data-i18n="nameLabel">名称</label>
-            <input type="text" id="edit-category-name" name="name" required>
-            <div class="form-buttons">
-              <button type="button" class="cancel-category-button" data-i18n="cancelButton">取消</button>
-              <button type="submit" data-i18n="saveButton">保存</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!-- edit-category-dialog removed: now handled by React EditCategoryDialogPortal.jsx -->
       <footer class="bg-gray-50 text-center p-4 border-t border-gray-200 mt-auto">
         <!-- 新增的进度条容器 -->
         <div id="year-progress" class="year-progress-container"></div>

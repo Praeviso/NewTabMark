@@ -2897,23 +2897,11 @@ function openEditBookmarkFolderDialog(folderElement) {
   const folderId = folderElement.dataset.id;
   const folderTitle = folderElement.querySelector('.card-title').textContent;
 
-  const editCategoryNameInput = document.getElementById('edit-category-name');
-  const editCategoryDialog = document.getElementById('edit-category-dialog');
-  const editCategoryForm = document.getElementById('edit-category-form');
-
-  editCategoryNameInput.value = folderTitle;
-  editCategoryDialog.style.display = 'block';
-
-  editCategoryForm.onsubmit = function (event) {
-    event.preventDefault();
-    const newTitle = editCategoryNameInput.value;
-    chrome.bookmarks.update(folderId, { title: newTitle }, function () {
-      console.log('Bookmark updated:', folderId, newTitle);
-      updateCategoryUI(folderId, newTitle);
-      updateFolderName(folderId);
-      editCategoryDialog.style.display = 'none';
-    });
-  };
+  // Dispatch event to open React EditCategoryDialog
+  console.log('[script.js] Dispatching ntm:open-edit-category-dialog for folder card:', folderId, folderTitle);
+  window.dispatchEvent(new CustomEvent('ntm:open-edit-category-dialog', {
+    detail: { id: folderId, title: folderTitle }
+  }));
 }
 
 function updateCategoryUI(folderId, newTitle) {
@@ -3539,6 +3527,16 @@ function initScriptFolderNameObserver() {
     }
   });
 
+  // Listen for category (folder) updates from React EditCategoryDialog
+  window.addEventListener('ntm:category-updated', (event) => {
+    const { id, title } = event.detail || {};
+    console.log('[script.js] Received category update event:', { id, title });
+
+    if (id && title !== undefined) {
+      updateCategoryUI(id, title);
+    }
+  });
+
   function updateSpecificBookmarkCard(bookmarkId, newTitle, newUrl) {
     const bookmarkCard = document.querySelector(`.bookmark-card[data-id="${bookmarkId}"]`);
     if (bookmarkCard) {
@@ -3882,67 +3880,20 @@ function initScriptFolderNameObserver() {
     categoryContextMenu.menu.style.display = 'none';
   });
 
-  const editCategoryDialog = document.getElementById('edit-category-dialog');
-  const editCategoryForm = document.getElementById('edit-category-form');
-  const editCategoryNameInput = document.getElementById('edit-category-name');
-  const closeCategoryButton = document.querySelector('.close-category-button');
-  const cancelCategoryButton = document.querySelector('.cancel-category-button');
-
-  bindDialogCloseHandlersOnce(editCategoryDialog, closeCategoryButton, cancelCategoryButton);
+  // edit-category-dialog DOM bindings removed: now handled by React EditCategoryDialogPortal
 
   function openEditCategoryDialog(categoryElement) {
     const categoryId = categoryElement.dataset.id;
     const categoryTitle = categoryElement.dataset.title;
 
-    editCategoryNameInput.value = categoryTitle;
-
-    editCategoryDialog.style.display = 'block';
-
-    editCategoryForm.onsubmit = function (event) {
-      event.preventDefault();
-      const updatedTitle = editCategoryNameInput.value;
-
-      chrome.bookmarks.update(categoryId, {
-        title: updatedTitle
-      }, function (result) {
-        updateCategoryUI(categoryElement, updatedTitle);
-        editCategoryDialog.style.display = 'none';
-      });
-    };
+    // Dispatch event to open React EditCategoryDialog
+    console.log('[script.js] Dispatching ntm:open-edit-category-dialog for sidebar item:', categoryId, categoryTitle);
+    window.dispatchEvent(new CustomEvent('ntm:open-edit-category-dialog', {
+      detail: { id: categoryId, title: categoryTitle }
+    }));
   }
 
-  function updateCategoryUI(categoryElement, newTitle) {
-    // 更新侧边栏中的文件夹名称
-    const sidebarItem = document.querySelector(`#categories-list li[data-id="${categoryElement.dataset.id}"]`);
-    if (sidebarItem) {
-      // 更新文本内容
-      const textSpan = sidebarItem.querySelector('span:not(.material-icons)');
-      if (textSpan) {
-        textSpan.textContent = newTitle;
-      }
-
-      // 更新 data-title 属性
-      sidebarItem.setAttribute('data-title', newTitle);
-
-      // 更新样式
-      sidebarItem.classList.add('updated-folder');
-      setTimeout(() => {
-        sidebarItem.classList.remove('updated-folder');
-      }, 2000); // 2秒后移除高亮效果
-    }
-
-    // 更新面包屑导航
-    updateFolderName(categoryElement.dataset.id);
-
-    // 更新文件夹卡片（如果在当前视图中）
-    const folderCard = document.querySelector(`.bookmark-folder[data-id="${categoryElement.dataset.id}"]`);
-    if (folderCard) {
-      const titleElement = folderCard.querySelector('.card-title');
-      if (titleElement) {
-        titleElement.textContent = newTitle;
-      }
-    }
-  }
+  // Local updateCategoryUI removed: using global function at top of file
   // Note: close/cancel/outside-click handlers are bound once via bindDialogCloseHandlersOnce().
 
   function setDefaultBookmark(bookmarkId) {
