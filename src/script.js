@@ -703,26 +703,24 @@ function initScriptBookmarksAndTheme() {
       event.__ntmContextMenuHandled = true;
       hideAllCustomContextMenus();
 
-      if (!contextMenu) {
-        contextMenu = createContextMenu();
-      }
-      if (!contextMenu) return;
+      // 获取书签信息
+      const bookmarkId = targetCard.dataset.id;
+      const bookmarkUrl = targetCard.href;
+      const bookmarkTitle = targetCard.querySelector('.card-title')?.textContent || '';
 
-      // 确保在显示菜单前重置当前书签信息
-      currentBookmark = {
-        id: targetCard.dataset.id,
-        url: targetCard.href,
-        title: targetCard.querySelector('.card-title').textContent
-      };
-
-      // 隐藏文件夹的上下文菜单（React 组件也会隐藏）
+      // 隐藏其他上下文菜单（React 组件也会隐藏）
       window.dispatchEvent(new CustomEvent('ntm:hide-context-menus'));
 
-      // 显示书签卡片的上下文菜单
-      contextMenu.style.top = `${event.clientY}px`;
-      contextMenu.style.left = `${event.clientX}px`;
-      contextMenu.style.display = 'block';
-      hideAllCustomContextMenus(contextMenu);
+      // 派发事件给 React 组件处理
+      window.dispatchEvent(new CustomEvent('ntm:show-bookmark-card-menu', {
+        detail: {
+          id: bookmarkId,
+          url: bookmarkUrl,
+          title: bookmarkTitle,
+          x: event.clientX,
+          y: event.clientY
+        }
+      }));
     } else {
       // 在其他地方右键：隐藏所有上下文菜单（包含其他模块创建的菜单）
       hideAllCustomContextMenus();
@@ -3422,34 +3420,11 @@ function initScriptFolderNameObserver() {
     });
   }
 
-  const contextMenu = createContextMenu();
-
-  document.addEventListener('contextmenu', function (event) {
-    if (event.__ntmContextMenuHandled) return;
-    const targetCard = event.target.closest('.bookmark-card');
-    if (targetCard) {
-      event.preventDefault();
-      event.__ntmContextMenuHandled = true;
-      hideAllCustomContextMenus();
-      // 确保在显示菜单前重置当前书签信息
-      currentBookmark = {
-        id: targetCard.dataset.id,
-        url: targetCard.href,
-        title: targetCard.querySelector('.card-title').textContent
-      };
-      contextMenu.style.top = `${event.clientY}px`;
-      contextMenu.style.left = `${event.clientX}px`;
-      contextMenu.style.display = 'block';
-      hideAllCustomContextMenus(contextMenu);
-    } else {
-      contextMenu.style.display = 'none';
-    }
-  });
-
-  document.addEventListener('click', function () {
-    if (contextMenu) {
-      contextMenu.style.display = 'none';
-      currentBookmark = null;  // Reset currentBookmark
+  // Event listener for internal QR code creation (called by React component via bridge event)
+  window.addEventListener('ntm:internal-create-qr-code', (event) => {
+    const { url, title } = event.detail || {};
+    if (url) {
+      createQRCode(url, title || '');
     }
   });
 
@@ -4535,6 +4510,45 @@ function initScriptFolderNameObserver() {
 
 let scriptInitialized = false;
 
+// Event listeners for bookmark card context menu actions dispatched by React component
+function initBookmarkCardContextMenuListeners() {
+  // Open in new window
+  window.addEventListener('ntm:open-in-new-window', (event) => {
+    const { url } = event.detail || {};
+    if (url) {
+      openInNewWindow(url);
+    }
+  });
+
+  // Open in incognito
+  window.addEventListener('ntm:open-in-incognito', (event) => {
+    const { url } = event.detail || {};
+    if (url) {
+      openInIncognito(url);
+    }
+  });
+
+  // Copy bookmark link
+  window.addEventListener('ntm:copy-bookmark-link', (event) => {
+    const { id, url, title } = event.detail || {};
+    if (url) {
+      Utilities.copyBookmarkLink({ id, url, title });
+    }
+  });
+
+  // Create QR code - delegated to the function inside initScriptFolderNameObserver
+  // The createQRCode function is scope-limited, so we dispatch another event
+  window.addEventListener('ntm:create-qr-code', (event) => {
+    const { url, title } = event.detail || {};
+    if (url) {
+      // Dispatch to internal handler that has access to createQRCode
+      window.dispatchEvent(new CustomEvent('ntm:internal-create-qr-code', {
+        detail: { url, title }
+      }));
+    }
+  });
+}
+
 export function initScript() {
   if (scriptInitialized) return;
   scriptInitialized = true;
@@ -4546,5 +4560,6 @@ export function initScript() {
   initScriptBookmarkFolderGlobals();
   initScriptBookmarkFolderContextMenu();
   initScriptFolderNameObserver();
+  initBookmarkCardContextMenuListeners();
   // initScriptVersionNumber() removed - now handled by AboutSettingsPortal
 }
