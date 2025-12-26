@@ -61,9 +61,8 @@
 - **React 外壳**：`src/legacy/LegacyAppShell.jsx` 注入 legacy DOM + bootstrap
 - **Legacy 控制器迁移/兼容**：
   - 已从 `createLegacyBootstrap()` 移除初始化：onboarding / progress / theme-controller / special-links / welcome / feature-tips / settings modal / bookmark cleanup / gesture navigation（由 React Portal/组件负责）
-  - 已删除：`src/onboarding.js`、`src/progress.js`、`src/ui/theme-controller.js`、`src/ui/special-links-controller.js`、`src/welcome.js`
-  - 保留 deprecated shim（仍被 legacy 模块引用）：`src/feature-tips.js`、`src/bookmark-cleanup.js`、`src/ui/settings-modal-controller.js`
-  - `src/gesture-navigation.js` → deprecated shim（由 `src/ui/GestureNavigation.jsx` 完全替代）
+  - 已删除：`src/onboarding.js`、`src/progress.js`、`src/ui/theme-controller.js`、`src/ui/special-links-controller.js`、`src/welcome.js`、`src/feature-tips.js`、`src/bookmark-cleanup.js`、`src/ui/settings-modal-controller.js`、`src/gesture-navigation.js`、`src/settings.js`
+  - 所有 deprecated shim 已完全清理，HTML script 标签已移除
 - **Bootstrap 清理**：`bootstrap-legacy-shared.js` 移除了未使用的初始化调用
 - **初始化收敛**：`createLegacyBootstrap()` 幂等化，i18n 统一入口，AbortController 避免泄漏
 - **搜索重构**：数据/UI 拆分，下拉 React 化，建议 UI dispose 能力
