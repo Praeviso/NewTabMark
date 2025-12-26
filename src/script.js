@@ -679,36 +679,20 @@ function initScriptBookmarksAndTheme() {
       event.__ntmContextMenuHandled = true;
       hideAllCustomContextMenus();
 
-      // 确保文件夹上下文菜单存在
-      if (!bookmarkFolderContextMenu) {
-        bookmarkFolderContextMenu = createBookmarkFolderContextMenu();
-      }
+      // 获取文件夹信息
+      const folderId = targetFolder.dataset.id;
+      const folderTitle = targetFolder.querySelector('.card-title')?.textContent || '';
 
-      if (!bookmarkFolderContextMenu) {
-        console.error('Failed to create bookmark folder context menu');
-        return;
-      }
-
-      currentBookmarkFolder = targetFolder;
-
-      // 设置菜单位置
-      bookmarkFolderContextMenu.style.display = 'block';
-      bookmarkFolderContextMenu.style.top = `${event.clientY}px`;
-      bookmarkFolderContextMenu.style.left = `${event.clientX}px`;
-      hideAllCustomContextMenus(bookmarkFolderContextMenu);
-
-      // 确保菜单不会超出视窗
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const menuRect = bookmarkFolderContextMenu.getBoundingClientRect();
-
-      if (event.clientX + menuRect.width > viewportWidth) {
-        bookmarkFolderContextMenu.style.left = `${viewportWidth - menuRect.width - 5}px`;
-      }
-
-      if (event.clientY + menuRect.height > viewportHeight) {
-        bookmarkFolderContextMenu.style.top = `${viewportHeight - menuRect.height - 5}px`;
-      }
+      // 派发事件给 React 组件处理
+      window.dispatchEvent(new CustomEvent('ntm:show-sidebar-category-menu', {
+        detail: {
+          id: folderId,
+          title: folderTitle,
+          x: event.clientX,
+          y: event.clientY,
+          element: targetFolder
+        }
+      }));
 
       // 隐藏书签卡片的上下文菜单
       if (contextMenu) {
@@ -731,10 +715,8 @@ function initScriptBookmarksAndTheme() {
         title: targetCard.querySelector('.card-title').textContent
       };
 
-      // 隐藏文件夹的上下文菜单
-      if (bookmarkFolderContextMenu) {
-        bookmarkFolderContextMenu.style.display = 'none';
-      }
+      // 隐藏文件夹的上下文菜单（React 组件也会隐藏）
+      window.dispatchEvent(new CustomEvent('ntm:hide-context-menus'));
 
       // 显示书签卡片的上下文菜单
       contextMenu.style.top = `${event.clientY}px`;
@@ -744,6 +726,7 @@ function initScriptBookmarksAndTheme() {
     } else {
       // 在其他地方右键：隐藏所有上下文菜单（包含其他模块创建的菜单）
       hideAllCustomContextMenus();
+      window.dispatchEvent(new CustomEvent('ntm:hide-context-menus'));
       currentBookmark = null;
       currentBookmarkFolder = null;
     }
@@ -3534,6 +3517,71 @@ function initScriptFolderNameObserver() {
 
     if (id && title !== undefined) {
       updateCategoryUI(id, title);
+    }
+  });
+
+  // Listen for share folder via Gist from React component
+  window.addEventListener('ntm:share-folder-gist', async (event) => {
+    const { folderId, folderTitle } = event.detail || {};
+    console.log('[script.js] Received share folder gist event:', { folderId, folderTitle });
+
+    if (folderId) {
+      try {
+        await shareBookmarkFolderAsGist(folderId, folderTitle);
+      } catch (error) {
+        console.error('Failed to share bookmark folder as Gist:', error);
+        Utilities?.showToast?.(getLocalizedMessage('gistShareFailed'));
+      }
+    }
+  });
+
+  // Listen for share folder link from React component
+  window.addEventListener('ntm:share-folder-link', async (event) => {
+    const { folderId, folderTitle } = event.detail || {};
+    console.log('[script.js] Received share folder link event:', { folderId, folderTitle });
+
+    if (folderId) {
+      try {
+        await shareBookmarkFolder(folderId, folderTitle);
+      } catch (error) {
+        console.error('Failed to share bookmark folder link:', error);
+        Utilities?.showToast?.(getLocalizedMessage('shareLinkGenerateFailed'));
+      }
+    }
+  });
+
+  // Listen for set default bookmark from React component
+  window.addEventListener('ntm:set-default-bookmark', (event) => {
+    const { folderId } = event.detail || {};
+    console.log('[script.js] Received set default bookmark event:', { folderId });
+
+    if (folderId) {
+      setDefaultBookmark(folderId);
+    }
+  });
+
+  // Listen for folder deleted from React component
+  window.addEventListener('ntm:folder-deleted', (event) => {
+    const { folderId } = event.detail || {};
+    console.log('[script.js] Received folder deleted event:', { folderId });
+
+    if (folderId) {
+      // Remove folder card from UI if visible
+      const folderCard = document.querySelector(`.bookmark-folder[data-id="${folderId}"]`);
+      if (folderCard) {
+        folderCard.remove();
+      }
+
+      // Remove from sidebar if visible
+      const sidebarItem = document.querySelector(`#categories-list li[data-id="${folderId}"]`);
+      if (sidebarItem) {
+        // Also remove the associated sublist
+        const nextSibling = sidebarItem.nextElementSibling;
+        if (nextSibling && nextSibling.tagName === 'UL') {
+          nextSibling.remove();
+        }
+        sidebarItem.remove();
+      }
     }
   });
 

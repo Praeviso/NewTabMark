@@ -4,7 +4,7 @@
 
 - **构建**：MV3 + Vite 多入口，New Tab / Side Panel / Background / Content Script 均从 `dist/` 运行
 - **架构**：React `App` + `LegacyAppShell` 注入遗留 DOM 模板 + 显式 bootstrap（legacy 逻辑驱动为主，UI 逐步用 Portal 替换）
-- **UI 迁移**：已完成 39 项组件/容器迁移（React + Tailwind，见下表）
+- **UI 迁移**：已完成 40 项组件/容器迁移（React + Tailwind，见下表）
 - **通信**：React ↔ legacy 以 `CustomEvent` 事件桥接为主（`ntm:*`）
 
 > [!CAUTION]
@@ -55,6 +55,7 @@
 | Sidebar Category Items | `src/script.js` | `displayBookmarkCategories()` li 元素 Tailwind 化并修复 hover/高度，颜色保留在 CSS |
 | Bookmark Card | `src/script.js` | `createBookmarkCard()` 卡片布局 Tailwind 化 `flex flex-row items-center rounded-lg p-3 h-12`，保留颜色 CSS |
 | Folder Card | `src/script.js` | `createFolderCard()` 文件夹卡片布局 Tailwind 化，与书签卡片保持一致 |
+| SidebarCategoryContextMenu | `src/ui/SidebarCategoryContextMenu.jsx` / `src/ui/SidebarCategoryContextMenuPortal.jsx` | React 化侧边栏文件夹卡片右键菜单，通过 `ntm:show-sidebar-category-menu` 事件触发，支持打开所有书签、分享、重命名、删除、设为首页 |
 
 ## 已完成其他重构
 

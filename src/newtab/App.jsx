@@ -25,6 +25,7 @@ import { GestureNavigation } from '../ui/GestureNavigation.jsx';
 import { EditBookmarkDialogPortal } from '../ui/EditBookmarkDialogPortal.jsx';
 import { ConfirmDialogPortal } from '../ui/ConfirmDialogPortal.jsx';
 import { EditCategoryDialogPortal } from '../ui/EditCategoryDialogPortal.jsx';
+import { SidebarCategoryContextMenuPortal } from '../ui/SidebarCategoryContextMenuPortal.jsx';
 
 export function App() {
 
@@ -63,6 +64,7 @@ export function App() {
       <EditBookmarkDialogPortal />
       <ConfirmDialogPortal />
       <EditCategoryDialogPortal />
+      <SidebarCategoryContextMenuPortal />
     </>
   );
 }
