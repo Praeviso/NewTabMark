@@ -27,6 +27,7 @@ import { ConfirmDialogPortal } from '../ui/ConfirmDialogPortal.jsx';
 import { EditCategoryDialogPortal } from '../ui/EditCategoryDialogPortal.jsx';
 import { SidebarCategoryContextMenuPortal } from '../ui/SidebarCategoryContextMenuPortal.jsx';
 import { BookmarkCardContextMenuPortal } from '../ui/BookmarkCardContextMenuPortal.jsx';
+import { QRCodeDialogPortal } from '../ui/QRCodeDialogPortal.jsx';
 
 
 export function App() {
@@ -67,6 +68,7 @@ export function App() {
       <EditCategoryDialogPortal />
       <SidebarCategoryContextMenuPortal />
       <BookmarkCardContextMenuPortal />
+      <QRCodeDialogPortal />
     </>
   );
 }

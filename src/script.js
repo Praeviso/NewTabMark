@@ -132,7 +132,15 @@ function createContextMenu() {
       }
     },
     { text: getLocalizedMessage('copyLink'), icon: 'content_copy', action: () => currentBookmark && Utilities.copyBookmarkLink(currentBookmark) },
-    { text: getLocalizedMessage('createQRCode'), icon: 'qr_code', action: () => currentBookmark && createQRCode(currentBookmark.url, currentBookmark.title) }
+    {
+      text: getLocalizedMessage('createQRCode'), icon: 'qr_code', action: () => {
+        if (currentBookmark) {
+          window.dispatchEvent(new CustomEvent('ntm:create-qr-code', {
+            detail: { url: currentBookmark.url, title: currentBookmark.title }
+          }));
+        }
+      }
+    }
   ];
 
   menuItems.forEach(item => {
@@ -1482,7 +1490,15 @@ function createContextMenuItems(contextMenu, type) {
       }
     },
     { text: getLocalizedMessage('copyLink'), icon: 'content_copy', action: () => currentBookmark && Utilities.copyBookmarkLink(currentBookmark) },
-    { text: getLocalizedMessage('createQRCode'), icon: 'qr_code', action: () => currentBookmark && createQRCode(currentBookmark.url, currentBookmark.title) }
+    {
+      text: getLocalizedMessage('createQRCode'), icon: 'qr_code', action: () => {
+        if (currentBookmark) {
+          window.dispatchEvent(new CustomEvent('ntm:create-qr-code', {
+            detail: { url: currentBookmark.url, title: currentBookmark.title }
+          }));
+        }
+      }
+    }
   ];
 
   menuItems.forEach(item => {
@@ -3246,7 +3262,15 @@ function initScriptFolderNameObserver() {
         }
       },
       { text: getLocalizedMessage('copyLink'), icon: 'content_copy', action: () => currentBookmark && Utilities.copyBookmarkLink(currentBookmark) },
-      { text: getLocalizedMessage('createQRCode'), icon: 'qr_code', action: () => currentBookmark && createQRCode(currentBookmark.url, currentBookmark.title) }
+      {
+        text: getLocalizedMessage('createQRCode'), icon: 'qr_code', action: () => {
+          if (currentBookmark) {
+            window.dispatchEvent(new CustomEvent('ntm:create-qr-code', {
+              detail: { url: currentBookmark.url, title: currentBookmark.title }
+            }));
+          }
+        }
+      }
     ];
 
     menuItems.forEach((item, index) => {
@@ -3283,150 +3307,7 @@ function initScriptFolderNameObserver() {
     return menu;
   }
 
-  // 创建二维码的函数
-  function createQRCode(url, bookmarkName) {
-    // 创建一个模态来显维码
-    const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.left = '0';
-    modal.style.top = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
-    modal.style.display = 'flex';
-    modal.style.justifyContent = 'center';
-    modal.style.alignItems = 'center';
-    modal.style.zIndex = '1000';
-
-    const qrContainer = document.createElement('div');
-    qrContainer.style.backgroundColor = 'white';
-    qrContainer.style.padding = '1.5rem 3rem';
-    qrContainer.style.width = '320px';
-    qrContainer.style.borderRadius = '10px';
-    qrContainer.style.display = 'flex';
-    qrContainer.style.flexDirection = 'column';
-    qrContainer.style.alignItems = 'center';
-    qrContainer.style.position = 'relative';
-
-    // 添加关闭钮
-    const closeButton = document.createElement('span');
-    closeButton.textContent = '×';
-    closeButton.style.position = 'absolute';
-    closeButton.style.right = '10px';
-    closeButton.style.top = '10px';
-    closeButton.style.fontSize = '20px';
-    closeButton.style.cursor = 'pointer';
-    closeButton.onclick = () => document.body.removeChild(modal);
-    qrContainer.appendChild(closeButton);
-
-    // 加标
-    const title = document.createElement('h2');
-    title.textContent = getLocalizedMessage('scanQRCode');
-    title.style.marginBottom = '20px';
-    title.style.fontWeight = '600';
-    title.style.fontSize = '0.875rem';
-    qrContainer.appendChild(title);
-
-    // 创建 QR 码容
-    const qrCodeElement = document.createElement('div');
-    qrContainer.appendChild(qrCodeElement);
-
-    // 添 URL 显示
-    const urlDisplay = document.createElement('div');
-    urlDisplay.textContent = url;
-    urlDisplay.style.marginTop = '20px';
-    urlDisplay.style.wordBreak = 'break-all';
-    urlDisplay.style.maxWidth = '300px';
-    urlDisplay.style.textAlign = 'center';
-    qrContainer.appendChild(urlDisplay);
-
-    // 添按容器
-    const buttonContainer = document.createElement('div');
-    buttonContainer.style.display = 'flex';
-    buttonContainer.style.justifyContent = 'space-between';
-    buttonContainer.style.width = '100%';
-    buttonContainer.style.marginTop = '20px';
-
-    // 添加复制按钮
-    const copyButton = document.createElement('button');
-    copyButton.textContent = getLocalizedMessage('copyLink');
-    copyButton.onclick = () => {
-      navigator.clipboard.writeText(url).then(() => {
-        copyButton.textContent = getLocalizedMessage('copied');
-        setTimeout(() => copyButton.textContent = getLocalizedMessage('copyLink'), 2000);
-      });
-    };
-
-    // 添加下载按钮
-    const downloadButton = document.createElement('button');
-    downloadButton.textContent = getLocalizedMessage('download');
-    downloadButton.onclick = () => {
-      // 给 QRCode 生成一些时间
-      setTimeout(() => {
-        const canvas = qrCodeElement.querySelector('canvas');
-        if (canvas) {
-          const link = document.createElement('a');
-          // 使用书签名称作为文件名，并添加 .png 扩展名
-          const fileName = `${bookmarkName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_qrcode.png`;
-          link.download = fileName;
-          link.href = canvas.toDataURL('image/png');
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-      }, 100); // 给予 100ms 的延迟，确保 QR 码已经生成
-    };
-
-    // 设置按钮样式和hover效果
-    [copyButton, downloadButton].forEach(button => {
-      button.style.padding = '5px 10px';
-      button.style.border = 'none';
-      button.style.borderRadius = '5px';
-      button.style.cursor = 'pointer';
-      button.style.backgroundColor = '#f0f0f0';
-      button.style.color = '#333';
-      button.style.transition = 'all 0.3s ease';
-
-      // 添加hover效果
-      button.addEventListener('mouseenter', () => {
-        button.style.backgroundColor = '#e0e0e0';
-        button.style.color = '#111827';
-      });
-      button.addEventListener('mouseleave', () => {
-        button.style.backgroundColor = '#f0f0f0';
-        button.style.color = '#717882';
-      });
-    });
-
-    buttonContainer.appendChild(copyButton);
-    buttonContainer.appendChild(downloadButton);
-    qrContainer.appendChild(buttonContainer);
-
-    modal.appendChild(qrContainer);
-    document.body.appendChild(modal);
-
-    // 使用 qrcode.js 库生成二维码
-    new QRCode(qrCodeElement, {
-      text: url,
-      width: 200,
-      height: 200
-    });
-
-    // 点击模态框外部关闭
-    modal.addEventListener('click', function (event) {
-      if (event.target === modal) {
-        document.body.removeChild(modal);
-      }
-    });
-  }
-
-  // Event listener for internal QR code creation (called by React component via bridge event)
-  window.addEventListener('ntm:internal-create-qr-code', (event) => {
-    const { url, title } = event.detail || {};
-    if (url) {
-      createQRCode(url, title || '');
-    }
-  });
+  // createQRCode removed: now handled by React QRCodeDialogPortal.jsx
 
   const editDialog = document.getElementById('edit-dialog');
   const editForm = document.getElementById('edit-form');
@@ -4536,17 +4417,7 @@ function initBookmarkCardContextMenuListeners() {
     }
   });
 
-  // Create QR code - delegated to the function inside initScriptFolderNameObserver
-  // The createQRCode function is scope-limited, so we dispatch another event
-  window.addEventListener('ntm:create-qr-code', (event) => {
-    const { url, title } = event.detail || {};
-    if (url) {
-      // Dispatch to internal handler that has access to createQRCode
-      window.dispatchEvent(new CustomEvent('ntm:internal-create-qr-code', {
-        detail: { url, title }
-      }));
-    }
-  });
+  // ntm:create-qr-code event bridge removed: now handled directly by React QRCodeDialogPortal.jsx
 }
 
 export function initScript() {

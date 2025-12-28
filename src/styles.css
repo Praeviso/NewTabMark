@@ -1354,3 +1354,94 @@ html[data-theme="dark"][class*="gradient-background"] {
 [data-theme="dark"] * {
   scrollbar-color: rgba(229, 231, 235, 0.2) transparent;
 }
+
+/* QR Code Dialog - uses .qr-code-dialog-content class */
+.qr-code-dialog-content {
+  max-width: 320px !important;
+  padding: 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-code-title {
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.qr-code-url {
+  margin-top: 20px;
+  word-break: break-all;
+  max-width: 300px;
+  text-align: center;
+}
+
+.qr-code-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.qr-code-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.qr-code-btn:hover {
+  background-color: #e0e0e0;
+  color: #111827;
+}
+
+/* QR Code Dialog - Dark Mode */
+[data-theme="dark"] .qr-code-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .qr-code-url {
+  color: #e5e7eb;
+}
+
+[data-theme="dark"] .qr-code-btn {
+  background-color: #404040;
+  color: #ffffff;
+  border-color: #4b5563;
+}
+
+[data-theme="dark"] .qr-code-btn:hover {
+  background-color: #4b5563;
+  color: #ffffff;
+}
+
+/* QR code dialog close button - fix white background in dark mode */
+.qr-code-dialog-content .close-button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  float: none;
+  margin: 0;
+  padding: 4px 8px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  line-height: 1;
+}
+
+[data-theme="dark"] .qr-code-dialog-content .close-button {
+  color: #ffffff;
+  background-color: transparent;
+}
+
+/* QR code element should always have white background for scannability */
+.qr-code-element {
+  background-color: #ffffff;
+  padding: 8px;
+  border-radius: 4px;
+}
