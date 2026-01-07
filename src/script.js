@@ -1366,6 +1366,9 @@ const Utilities = (function () {
   };
 })();
 
+// Expose Utilities to window for React components
+window.Utilities = Utilities;
+
 // 修改 showContextMenu 函数
 function showContextMenu(event, item, type = 'bookmark') {
   console.log('=== Showing Context Menu ===');
@@ -2481,7 +2484,7 @@ async function importSharedTreeNode(parentId, node) {
 }
 
 function buildShareUrl(encodedPayload) {
-  const url = new URL(chrome.runtime.getURL('src/index.html'));
+  const url = new URL(chrome.runtime.getURL('dist/newtab.html'));
   url.searchParams.set('share', encodedPayload);
   return url.toString();
 }
@@ -2681,15 +2684,11 @@ async function shareBookmarkFolder(folderId, folderTitle) {
 }
 
 function openShareFolderDialog({ folderTitle, shareUrl }) {
-  const dialog = document.getElementById('share-folder-dialog');
-  const titleEl = document.getElementById('share-folder-title');
-  const linkEl = document.getElementById('share-folder-link');
-  const qrEl = document.getElementById('share-folder-qrcode');
-
-  if (titleEl) titleEl.textContent = folderTitle || '';
-  if (linkEl) linkEl.value = shareUrl || '';
-  renderShareQrCode(qrEl, shareUrl);
-  showModal(dialog);
+  // Dispatch event to React ShareFolderDialogPortal
+  console.log('[script.js] Dispatching ntm:open-share-folder-dialog:', folderTitle);
+  window.dispatchEvent(new CustomEvent('ntm:open-share-folder-dialog', {
+    detail: { folderTitle, shareUrl }
+  }));
 }
 
 function openImportSharedFolderDialog(sharedRoot) {
@@ -2733,40 +2732,7 @@ async function handleIncomingShareLink() {
 }
 
 function initShareDialogs() {
-  const shareDialog = document.getElementById('share-folder-dialog');
-  const shareClose = document.getElementById('share-folder-close');
-  const copyBtn = document.getElementById('copy-share-folder-link');
-  const openBtn = document.getElementById('open-share-folder-link');
-  const linkEl = document.getElementById('share-folder-link');
-
-  if (shareClose && shareDialog) {
-    shareClose.addEventListener('click', () => hideModal(shareDialog));
-  }
-
-  if (copyBtn && linkEl) {
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(linkEl.value);
-        Utilities.showToast(getLocalizedMessage('shareLinkCopied'));
-      } catch (error) {
-        console.error('Failed to copy share link:', error);
-        Utilities.showToast(getLocalizedMessage('shareLinkCopyFailed'));
-      }
-    });
-  }
-
-  if (openBtn && linkEl) {
-    openBtn.addEventListener('click', () => {
-      if (!linkEl.value) return;
-      window.open(linkEl.value, '_blank');
-    });
-  }
-
-  if (shareDialog) {
-    shareDialog.addEventListener('click', (event) => {
-      if (event.target === shareDialog) hideModal(shareDialog);
-    });
-  }
+  // share-folder-dialog removed: now handled by React ShareFolderDialogPortal
 
   const importDialog = document.getElementById('import-shared-folder-dialog');
   const importClose = document.getElementById('import-shared-folder-close');

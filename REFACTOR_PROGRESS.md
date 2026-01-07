@@ -58,6 +58,7 @@
 | SidebarCategoryContextMenu | `src/ui/SidebarCategoryContextMenu.jsx` / `src/ui/SidebarCategoryContextMenuPortal.jsx` | React 化侧边栏文件夹卡片右键菜单，通过 `ntm:show-sidebar-category-menu` 事件触发，支持打开所有书签、分享、重命名、删除、设为首页 |
 | BookmarkCardContextMenu | `src/ui/BookmarkCardContextMenu.jsx` / `src/ui/BookmarkCardContextMenuPortal.jsx` | React 化书签卡片右键菜单，通过 `ntm:show-bookmark-card-menu` 事件触发，支持新标签页/新窗口/隐身窗口打开、编辑、删除、复制链接、生成二维码 |
 | QRCodeDialog | `src/ui/QRCodeDialog.jsx` / `src/ui/QRCodeDialogPortal.jsx` | React 化二维码对话框，通过 `ntm:create-qr-code` 事件触发，支持扫描二维码显示、复制链接、下载 PNG |
+| ShareFolderDialog | `src/ui/ShareFolderDialog.jsx` / `src/ui/ShareFolderDialogPortal.jsx` | React 化分享文件夹对话框，通过 `ntm:open-share-folder-dialog` 事件触发，显示分享链接和二维码 |
 
 ## 已完成其他重构
 

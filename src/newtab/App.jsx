@@ -28,6 +28,7 @@ import { EditCategoryDialogPortal } from '../ui/EditCategoryDialogPortal.jsx';
 import { SidebarCategoryContextMenuPortal } from '../ui/SidebarCategoryContextMenuPortal.jsx';
 import { BookmarkCardContextMenuPortal } from '../ui/BookmarkCardContextMenuPortal.jsx';
 import { QRCodeDialogPortal } from '../ui/QRCodeDialogPortal.jsx';
+import { ShareFolderDialogPortal } from '../ui/ShareFolderDialogPortal.jsx';
 
 export function App() {
 
@@ -69,6 +70,7 @@ export function App() {
       <SidebarCategoryContextMenuPortal />
       <BookmarkCardContextMenuPortal />
       <QRCodeDialogPortal />
+      <ShareFolderDialogPortal />
     </>
   );
 }
