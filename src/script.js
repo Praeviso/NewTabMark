@@ -21,15 +21,6 @@ import { getLocalizedMessageSafe } from './localization.js';
 
 let bookmarkTreeNodes = [];
 let defaultSearchEngine = 'google';
-let contextMenu = null;
-let currentBookmark = null;
-
-// 使用单一的状态变量
-let itemToDelete = null;
-
-// Define and initialize the variables
-let bookmarkFolderContextMenu = null;
-let currentBookmarkFolder = null;
 // 在文件顶部添加导入语句
 import { ICONS } from './icons.js';
 import { replaceIconsWithSvg, getIconHtml } from './icons.js';
@@ -67,109 +58,6 @@ function hideAllCustomContextMenus(exceptMenu = null) {
       menu.style.display = 'none';
     }
   });
-}
-
-// Define the context menu creation function
-function createContextMenu() {
-  console.log('Creating context menu');
-
-  // 移除任何已存在的上下文菜单
-  const existingMenu =
-    document.querySelector('.bookmark-context-menu') ||
-    document.querySelector('.custom-context-menu:not(.bookmark-folder-context-menu)');
-  if (existingMenu) {
-    existingMenu.remove();
-  }
-
-  const menu = document.createElement('div');
-  menu.className = 'bookmark-context-menu custom-context-menu';
-  // Prevent click-away handlers from closing the menu while interacting inside it.
-  menu.addEventListener('click', (event) => {
-    event.stopPropagation();
-  });
-  document.body.appendChild(menu);
-
-  const menuItems = [
-    { text: getLocalizedMessage('openInNewTab'), icon: 'open_in_new', action: () => currentBookmark && window.open(currentBookmark.url, '_blank') },
-    { text: getLocalizedMessage('openInNewWindow'), icon: 'launch', action: () => currentBookmark && openInNewWindow(currentBookmark.url) },
-    { text: getLocalizedMessage('openInIncognito'), icon: 'visibility_off', action: () => currentBookmark && openInIncognito(currentBookmark.url) },
-    { text: getLocalizedMessage('editQuickLink'), icon: 'edit', action: () => currentBookmark && openEditDialog(currentBookmark) },
-    {
-      text: getLocalizedMessage('deleteQuickLink'),
-      icon: 'delete',
-      action: () => {
-        console.log('Delete action triggered. Current item:', currentBookmark);
-
-        if (!currentBookmark) {
-          console.error('No item selected for deletion');
-          return;
-        }
-
-        itemToDelete = {
-          type: currentBookmark.type,
-          data: {
-            id: currentBookmark.id,
-            title: currentBookmark.title,
-            url: currentBookmark.url
-          }
-        };
-
-        console.log('Set itemToDelete:', itemToDelete);
-
-        const message = itemToDelete.type === 'quickLink'
-          ? getLocalizedMessage('confirmDeleteQuickLink', [`<strong>${itemToDelete.data.title}</strong>`])
-          : getLocalizedMessage('confirmDeleteBookmark', [`<strong>${itemToDelete.data.title}</strong>`]);
-
-        showConfirmDialog(message, () => {
-          if (itemToDelete && itemToDelete.data) {
-            if (itemToDelete.type === 'quickLink') {
-              deleteQuickLink(itemToDelete.data);
-            } else {
-              deleteBookmark(itemToDelete.data.id, itemToDelete.data.title);
-            }
-          }
-        });
-      }
-    },
-    { text: getLocalizedMessage('copyLink'), icon: 'content_copy', action: () => currentBookmark && Utilities.copyBookmarkLink(currentBookmark) },
-    {
-      text: getLocalizedMessage('createQRCode'), icon: 'qr_code', action: () => {
-        if (currentBookmark) {
-          window.dispatchEvent(new CustomEvent('ntm:create-qr-code', {
-            detail: { url: currentBookmark.url, title: currentBookmark.title }
-          }));
-        }
-      }
-    }
-  ];
-
-  menuItems.forEach(item => {
-    const menuItem = document.createElement('div');
-    menuItem.className = 'custom-context-menu-item';
-
-    const icon = document.createElement('span');
-    icon.className = 'material-icons';
-    icon.innerHTML = ICONS[item.icon];
-    icon.style.marginRight = '8px';
-    icon.style.fontSize = '18px';
-
-    const text = document.createElement('span');
-    text.textContent = item.text;
-
-    menuItem.appendChild(icon);
-    menuItem.appendChild(text);
-
-    menuItem.addEventListener('click', () => {
-      if (typeof item.action === 'function') {
-        item.action();
-      }
-      menu.style.display = 'none';
-    });
-
-    menu.appendChild(menuItem);
-  });
-
-  return menu;
 }
 
 // 添加颜色缓存管理器
@@ -553,9 +441,6 @@ function updateBookmarkCards() {
 }
 
 function initScriptBookmarksAndTheme() {
-  // Create context menu immediately when the document loads
-  contextMenu = createContextMenu();
-
   const searchEngineIcon = document.getElementById('search-engine-icon');
   const defaultSearchEngine = localStorage.getItem('selectedSearchEngine') || 'google';
   console.log('[Init] Default search engine:', localStorage.getItem('selectedSearchEngine'));
@@ -733,22 +618,13 @@ function initScriptBookmarksAndTheme() {
       // 在其他地方右键：隐藏所有上下文菜单（包含其他模块创建的菜单）
       hideAllCustomContextMenus();
       window.dispatchEvent(new CustomEvent('ntm:hide-context-menus'));
-      currentBookmark = null;
-      currentBookmarkFolder = null;
     }
   });
 
-  // 在点击其他地方时重置状态
+  // 在点击其他地方时重置状态并隐藏所有上下文菜单
   document.addEventListener('click', function () {
-    if (contextMenu) {
-      contextMenu.style.display = 'none';
-      currentBookmark = null;  // 重置 currentBookmark
-    }
-
-    if (bookmarkFolderContextMenu) {
-      bookmarkFolderContextMenu.style.display = 'none';
-      currentBookmarkFolder = null;
-    }
+    hideAllCustomContextMenus();
+    window.dispatchEvent(new CustomEvent('ntm:hide-context-menus'));
   });
 }
 
@@ -1369,503 +1245,22 @@ const Utilities = (function () {
 // Expose Utilities to window for React components
 window.Utilities = Utilities;
 
-// 修改 showContextMenu 函数
-function showContextMenu(event, item, type = 'bookmark') {
-  console.log('=== Showing Context Menu ===');
-  console.log('Event:', event.type);
-  console.log('Item:', item);
-  console.log('Type:', type);
-  console.log('Previous itemToDelete:', itemToDelete);
-  console.log('Previous currentBookmark:', currentBookmark);
-
-  event.preventDefault();
-  event.stopPropagation();
-  event.__ntmContextMenuHandled = true;
-
-  // 避免多个模块/多处逻辑同时显示多个菜单
-  hideAllCustomContextMenus();
-
-  // 先创建上下文菜单
-  if (!contextMenu) {
-    console.log('Creating new context menu');
-    contextMenu = createContextMenu();
-  }
-
-  if (!contextMenu) {
-    console.error('Failed to create context menu');
-    return;
-  }
-
-  // 清除之前的状态
-  itemToDelete = null;
-  currentBookmark = null;
-
-  // 设置当前项目，确保包含类型信息
-  currentBookmark = {
-    id: item.id || item.dataset?.id,
-    title: item.title || item.querySelector?.('.card-title')?.textContent || item.querySelector?.('span')?.textContent,
-    url: item.url || item.dataset?.url,
-    type: item.type || type  // 优先使用项目自带的类型，否则使用传入的类型
-  };
-
-  console.log('Set currentBookmark:', currentBookmark);
-
-  // 显示上下文菜单
-  contextMenu.style.display = 'block';
-  contextMenu.style.left = `${event.clientX}px`;
-  contextMenu.style.top = `${event.clientY}px`;
-
-  // 再次隐藏其它菜单，仅保留当前菜单
-  hideAllCustomContextMenus(contextMenu);
-
-  // 确保菜单不会超出视窗
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  const menuRect = contextMenu.getBoundingClientRect();
-
-  if (event.clientX + menuRect.width > viewportWidth) {
-    contextMenu.style.left = `${viewportWidth - menuRect.width - 5}px`;
-  }
-
-  if (event.clientY + menuRect.height > viewportHeight) {
-    contextMenu.style.top = `${viewportHeight - menuRect.height - 5}px`;
-  }
-}
-
-
-
-// 新增函数：根据类型创建菜单项
-function createContextMenuItems(contextMenu, type) {
-  const menuItems = [
-    { text: getLocalizedMessage('openInNewTab'), icon: 'open_in_new', action: () => currentBookmark && window.open(currentBookmark.url, '_blank') },
-    { text: getLocalizedMessage('openInNewWindow'), icon: 'launch', action: () => currentBookmark && openInNewWindow(currentBookmark.url) },
-    { text: getLocalizedMessage('openInIncognito'), icon: 'visibility_off', action: () => currentBookmark && openInIncognito(currentBookmark.url) },
-    { text: getLocalizedMessage('editQuickLink'), icon: 'edit', action: () => currentBookmark && openEditDialog(currentBookmark) },
-    {
-      text: type === 'quickLink' ? getLocalizedMessage('deleteQuickLink') : getLocalizedMessage('deleteBookmark'),
-      icon: 'delete',
-      action: () => {
-        console.log('=== Delete Action Triggered ===');
-        console.log('Current bookmark:', currentBookmark);
-        console.log('Menu type:', type);
-
-        if (!currentBookmark) {
-          console.error('No item selected for deletion');
-          return;
-        }
-
-        // 使用全局的 itemToDelete 变量
-        itemToDelete = {
-          type: currentBookmark.type,  // 使用当前项目的类型
-          data: {
-            id: currentBookmark.id,
-            title: currentBookmark.title,
-            url: currentBookmark.url,
-            type: currentBookmark.type  // 确保在 data 中也保存类型信息
-          }
-        };
-
-        console.log('Set itemToDelete:', itemToDelete);
-
-        // 根据类型显示不同的确认消息
-        const message = itemToDelete.type === 'quickLink'
-          ? getLocalizedMessage('confirmDeleteQuickLink', [`<strong>${itemToDelete.data.title}</strong>`])
-          : getLocalizedMessage('confirmDeleteBookmark', [`<strong>${itemToDelete.data.title}</strong>`]);
-
-        console.log('Showing confirmation dialog with message:', message);
-
-        showConfirmDialog(message, () => {
-          console.log('=== Delete Confirmation Callback ===');
-          console.log('itemToDelete:', itemToDelete);
-
-          if (itemToDelete && itemToDelete.data) {
-            if (itemToDelete.type === 'quickLink') {
-              console.log('Deleting quick link:', itemToDelete.data);
-              deleteQuickLink(itemToDelete.data);
-            } else {
-              console.log('Deleting bookmark:', itemToDelete.data);
-              deleteBookmark(itemToDelete.data.id, itemToDelete.data.title);
-            }
-          } else {
-            console.error('Invalid itemToDelete state:', itemToDelete);
-          }
-        });
-      }
-    },
-    { text: getLocalizedMessage('copyLink'), icon: 'content_copy', action: () => currentBookmark && Utilities.copyBookmarkLink(currentBookmark) },
-    {
-      text: getLocalizedMessage('createQRCode'), icon: 'qr_code', action: () => {
-        if (currentBookmark) {
-          window.dispatchEvent(new CustomEvent('ntm:create-qr-code', {
-            detail: { url: currentBookmark.url, title: currentBookmark.title }
-          }));
-        }
-      }
-    }
-  ];
-
-  menuItems.forEach(item => {
-    const menuItem = document.createElement('div');
-    menuItem.className = 'custom-context-menu-item';
-
-    const icon = document.createElement('span');
-    icon.className = 'material-icons';
-    icon.innerHTML = ICONS[item.icon];
-    icon.style.marginRight = '8px';
-    icon.style.fontSize = '18px';
-
-    const text = document.createElement('span');
-    text.textContent = item.text;
-
-    menuItem.appendChild(icon);
-    menuItem.appendChild(text);
-
-    menuItem.addEventListener('click', () => {
-      if (typeof item.action === 'function') {
-        item.action();
-      }
-      contextMenu.style.display = 'none';
-    });
-
-    menu.appendChild(menuItem);
-  });
-}
-
-function showDeleteConfirmDialog() {
-  if (!itemToDelete || !itemToDelete.data) {
-    console.error('Invalid delete item:', itemToDelete);
-    return;
-  }
-
-  console.log('=== Showing Delete Confirm Dialog ===');
-  console.log('Item to delete:', itemToDelete);
-
-  const confirmDialog = document.getElementById('confirm-dialog');
-  const confirmMessage = document.getElementById('confirm-dialog-message');
-  const confirmButton = document.getElementById('confirm-delete-button');
-  const cancelButton = document.getElementById('cancel-delete-button');
-
-  if (!confirmDialog || !confirmMessage || !confirmButton || !cancelButton) {
-    console.error('Required dialog elements not found');
-    return;
-  }
-
-  // 清空之前的消息
-  confirmMessage.innerHTML = '';
-
-  // 根据类型显示不同的确认消息
-  const message = itemToDelete.type === 'quickLink'
-    ? getLocalizedMessage('confirmDeleteQuickLink', [`<strong>${itemToDelete.data.title}</strong>`])
-    : getLocalizedMessage('confirmDeleteBookmark', [`<strong>${itemToDelete.data.title}</strong>`]);
-  confirmMessage.innerHTML = message;
-
-  console.log('Showing confirmation dialog for:', {
-    type: itemToDelete.type,
-    title: itemToDelete.data.title
-  });
-
-  confirmDialog.style.display = 'block';
-
-  const handleConfirm = () => {
-    console.log('=== Delete Confirmed ===');
-    console.log('Deleting item:', itemToDelete);
-
-    if (itemToDelete.type === 'quickLink') {
-      deleteQuickLink(itemToDelete.data);
-    } else {
-      deleteBookmark(itemToDelete.data.id, itemToDelete.data.title);
-    }
-
-    confirmDialog.style.display = 'none';
-    cleanup();
-    itemToDelete = null;
-  };
-
-  const handleCancel = () => {
-    console.log('=== Delete Cancelled ===');
-    console.log('Cancelled item:', itemToDelete);
-    confirmDialog.style.display = 'none';
-    cleanup();
-    itemToDelete = null;
-  };
-
-  const cleanup = () => {
-    console.log('Cleaning up event listeners and state');
-    confirmButton.removeEventListener('click', handleConfirm);
-    cancelButton.removeEventListener('click', handleCancel);
-    itemToDelete = null;
-  };
-
-  // 设置事件监听器
-  confirmButton.removeEventListener('click', handleConfirm);
-  cancelButton.removeEventListener('click', handleCancel);
-  confirmButton.addEventListener('click', handleConfirm);
-  cancelButton.addEventListener('click', handleCancel);
-}
-
-// 在创建快捷链接卡片时
-function createQuickLinkCard(quickLink) {
-  const card = document.createElement('div');
-  card.className = 'quick-link-item-container';
-  card.dataset.url = quickLink.url;
-  card.dataset.id = quickLink.id;
-  card.dataset.type = 'quickLink';  // 明确设置类型
-
-  // ... 其他代码保持不变 ...
-
-  card.addEventListener('contextmenu', function (event) {
-    event.preventDefault();
-    console.log('=== Quick Link Context Menu Triggered ===');
-    console.log('Quick link data:', quickLink);
-    console.log('Card dataset:', this.dataset);
-
-    // 构造完整的快捷链接对象
-    const quickLinkData = {
-      id: quickLink.id || this.dataset.id,
-      title: quickLink.title || this.querySelector('span').textContent,
-      url: quickLink.url || this.dataset.url,
-      type: 'quickLink'  // 明确指定类型
-    };
-
-    console.log('Constructed quickLinkData:', quickLinkData);
-    showContextMenu(event, quickLinkData, 'quickLink');
-  });
-
-  // ... 其他代码保持不变 ...
-}
-
-// 在确认对话框关闭时清理数据
-function closeConfirmDialog() {
-  const confirmDialog = document.getElementById('confirm-dialog');
-  if (confirmDialog) {
-    confirmDialog.style.display = 'none';
-    // 清理所有相关数据
-    currentBookmark = null;
-    itemToDelete = null;
-  }
-}
-
-// 分别定义两个函数处理不同类型的删除
-function confirmBookmarkDeletion(bookmark) {
-  console.log('=== Starting Bookmark Deletion Process ===');
-  console.log('Input bookmark:', bookmark);
-  console.log('Current states before setting:', {
-    itemToDelete,
-    currentBookmark
-  });
-
-  if (!bookmark || !bookmark.id) {
-    console.error('Invalid bookmark data:', bookmark);
-    return;
-  }
-
-  // 设置当前要删除的书签
-  itemToDelete = { ...bookmark };
-
-  console.log('States after setting bookmark:', {
-    itemToDelete,
-    currentBookmark
-  });
-
-  const confirmDialog = document.getElementById('confirm-dialog');
-  const confirmMessage = document.getElementById('confirm-dialog-message');
-  const confirmButton = document.getElementById('confirm-delete-button');
-  const cancelButton = document.getElementById('cancel-delete-button');
-
-  if (!confirmDialog || !confirmMessage || !confirmButton || !cancelButton) {
-    console.error('Required dialog elements not found');
-    return;
-  }
-
-  // 清空之前的消息
-  confirmMessage.innerHTML = '';
-
-  // 只显示书签删除的确认消息
-  confirmMessage.innerHTML = getLocalizedMessage('confirmDeleteBookmark', [`<strong>${bookmark.title}</strong>`]);
-
-  confirmDialog.style.display = 'block';
-
-  const handleConfirm = () => {
-    console.log('=== Bookmark Deletion Confirmed ===');
-    console.log('Deleting bookmark:', itemToDelete);
-    deleteBookmark(itemToDelete);
-    confirmDialog.style.display = 'none';
-    cleanup();
-    clearDeleteStates();
-  };
-
-  const handleCancel = () => {
-    console.log('=== Bookmark Deletion Cancelled ===');
-    console.log('States before cleanup:', {
-      itemToDelete,
-      currentBookmark
-    });
-    confirmDialog.style.display = 'none';
-    cleanup();
-    clearDeleteStates();
-  };
-
-  const cleanup = () => {
-    confirmButton.removeEventListener('click', handleConfirm);
-    cancelButton.removeEventListener('click', handleCancel);
-  };
-
-  // 设置事件监听器
-  confirmButton.removeEventListener('click', handleConfirm);
-  cancelButton.removeEventListener('click', handleCancel);
-  confirmButton.addEventListener('click', handleConfirm);
-  cancelButton.addEventListener('click', handleCancel);
-}
-
-function confirmQuickLinkDeletion(quickLink) {
-  console.log('=== Starting QuickLink Deletion Process ===');
-  console.log('Input quickLink:', quickLink);
-  console.log('Current states before setting:', {
-    itemToDelete,
-    currentBookmark
-  });
-
-  if (!quickLink || !quickLink.id) {
-    console.error('Invalid quick link data:', quickLink);
-    return;
-  }
-
-  // 设置当前要删除的快捷链接
-  itemToDelete = { ...quickLink };
-
-  console.log('States after setting quickLink:', {
-    itemToDelete,
-    currentBookmark
-  });
-
-  const confirmDialog = document.getElementById('confirm-dialog');
-  const confirmMessage = document.getElementById('confirm-dialog-message');
-  const confirmButton = document.getElementById('confirm-delete-button');
-  const cancelButton = document.getElementById('cancel-delete-button');
-
-  if (!confirmDialog || !confirmMessage || !confirmButton || !cancelButton) {
-    console.error('Required dialog elements not found');
-    return;
-  }
-
-  // 清空之前的消息
-  confirmMessage.innerHTML = '';
-
-  // 只显示快捷链接删除的确认消息
-  confirmMessage.innerHTML = getLocalizedMessage('confirmDeleteQuickLink', [`<strong>${quickLink.title}</strong>`]);
-
-  confirmDialog.style.display = 'block';
-
-  const handleConfirm = () => {
-    console.log('=== QuickLink Deletion Confirmed ===');
-    console.log('Deleting quickLink:', itemToDelete);
-    deleteQuickLink(itemToDelete);
-    confirmDialog.style.display = 'none';
-    cleanup();
-    clearDeleteStates();
-  };
-
-  const handleCancel = () => {
-    console.log('=== QuickLink Deletion Cancelled ===');
-    console.log('States before cleanup:', {
-      itemToDelete,
-      currentBookmark
-    });
-    confirmDialog.style.display = 'none';
-    cleanup();
-    clearDeleteStates();
-  };
-
-  const cleanup = () => {
-    console.log('Cleaning up QuickLink deletion event listeners');
-    confirmButton.removeEventListener('click', handleConfirm);
-    cancelButton.removeEventListener('click', handleCancel);
-  };
-
-  // 设置事件监听器
-  confirmButton.removeEventListener('click', handleConfirm);
-  cancelButton.removeEventListener('click', handleCancel);
-  confirmButton.addEventListener('click', handleConfirm);
-  cancelButton.addEventListener('click', handleCancel);
-}
-
-// 新增：清理所有删除相关的状态
-function clearDeleteStates() {
-  console.log('=== Clearing All Delete States ===');
-  console.log('States before clearing:', {
-    itemToDelete,
-    currentBookmark
-  });
-
-  itemToDelete = null;
-  currentBookmark = null;
-
-  console.log('States after clearing:', {
-    itemToDelete,
-    currentBookmark
-  });
-}
-
-// 修改 showConfirmDialog 函数 - 现在使用 React 组件
+// showConfirmDialog - 使用 React 组件
 function showConfirmDialog(message, callback) {
   console.log('=== Showing Confirm Dialog (React) ===');
-  // 先保存当前状态的副本
-  const currentState = {
-    itemToDelete: itemToDelete ? { ...itemToDelete } : null,
-    currentBookmark: currentBookmark ? { ...currentBookmark } : null,
-    type: itemToDelete ? itemToDelete.type : 'unknown'
-  };
-
-  console.log('Current state:', currentState);
 
   // Dispatch event to React ConfirmDialogPortal
   window.dispatchEvent(new CustomEvent('ntm:show-confirm-dialog', {
     detail: {
       message: message,
       onConfirm: () => {
-        console.log('Confirm clicked. Current state:', currentState);
+        console.log('Confirm clicked.');
         if (typeof callback === 'function') {
           callback();
         }
       }
     }
   }));
-
-  // Listen for dialog close event to cleanup states on cancel
-  const handleDialogClosed = (event) => {
-    if (!event.detail?.confirmed) {
-      console.log('Cancel clicked. Clearing state...');
-      console.log('State before cancel:', currentState);
-      clearAllStates();
-    }
-    window.removeEventListener('ntm:confirm-dialog-closed', handleDialogClosed);
-  };
-
-  window.addEventListener('ntm:confirm-dialog-closed', handleDialogClosed);
-}
-
-// 新增一个函数来清理所有状态
-function clearAllStates() {
-  console.log('=== Clearing All States ===');
-  console.log('States before clearing:', {
-    itemToDelete,
-    currentBookmark,
-    contextMenu
-  });
-
-  itemToDelete = null;
-  currentBookmark = null;
-
-  // 隐藏上下文菜单
-  if (contextMenu) {
-    contextMenu.style.display = 'none';
-  }
-
-  console.log('States after clearing:', {
-    itemToDelete,
-    currentBookmark,
-    contextMenu
-  });
 }
 
 function handleBookmarkDeletion() {
@@ -1983,7 +1378,7 @@ function createFolderCard(folder, index) {
     ColorCache.set(folder.id, 'folder', defaultColors);
   }
 
-  // 修改右键点击事件，使用文件夹的上下文菜单
+  // 修改右键点击事件 - 派发事件给 React SidebarCategoryContextMenuPortal
   card.addEventListener('contextmenu', function (event) {
     event.preventDefault();
     event.stopPropagation();
@@ -1991,41 +1386,16 @@ function createFolderCard(folder, index) {
 
     hideAllCustomContextMenus();
 
-    // 确保文件夹上下文菜单存在
-    if (!bookmarkFolderContextMenu) {
-      bookmarkFolderContextMenu = createBookmarkFolderContextMenu();
-    }
-
-    if (!bookmarkFolderContextMenu) {
-      console.error('Failed to create bookmark folder context menu');
-      return;
-    }
-
-    currentBookmarkFolder = card;
-
-    // 设置菜单位置
-    bookmarkFolderContextMenu.style.display = 'block';
-    bookmarkFolderContextMenu.style.top = `${event.clientY}px`;
-    bookmarkFolderContextMenu.style.left = `${event.clientX}px`;
-    hideAllCustomContextMenus(bookmarkFolderContextMenu);
-
-    // 确保菜单不会超出视窗
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const menuRect = bookmarkFolderContextMenu.getBoundingClientRect();
-
-    if (event.clientX + menuRect.width > viewportWidth) {
-      bookmarkFolderContextMenu.style.left = `${viewportWidth - menuRect.width - 5}px`;
-    }
-
-    if (event.clientY + menuRect.height > viewportHeight) {
-      bookmarkFolderContextMenu.style.top = `${viewportHeight - menuRect.height - 5}px`;
-    }
-
-    // 隐藏书签卡片的上下文菜单
-    if (contextMenu) {
-      contextMenu.style.display = 'none';
-    }
+    // 派发事件给 React 组件处理（不需要先派发 hide 事件，React 组件会直接更新状态）
+    window.dispatchEvent(new CustomEvent('ntm:show-sidebar-category-menu', {
+      detail: {
+        id: folder.id,
+        title: folder.title,
+        x: event.clientX,
+        y: event.clientY,
+        element: card
+      }
+    }));
   });
 
   return card;
@@ -2287,136 +1657,6 @@ function getFolderBookmarkCount(folderId) {
       countBookmarks(children);
       resolve(count);
     });
-  });
-}
-// 创建文件夹上下文菜单
-function createBookmarkFolderContextMenu() {
-  console.log('Creating folder context menu');
-
-  // 移除任何已存在的上下文菜单
-  const existingMenu = document.querySelector('.bookmark-folder-context-menu');
-  if (existingMenu) {
-    existingMenu.remove();
-  }
-
-  const menu = document.createElement('div');
-  menu.className = 'bookmark-folder-context-menu custom-context-menu';
-  // Prevent click-away handlers from closing the menu while interacting inside it.
-  menu.addEventListener('click', (event) => {
-    event.stopPropagation();
-  });
-  document.body.appendChild(menu);
-
-  // 直接创建菜单项，不需要获取书签数量
-  createMenuItems(menu);
-
-  return menu;
-}
-
-function createMenuItems(menu) {
-  const menuItems = [
-    {
-      text: getLocalizedMessage('openAllBookmarks'),
-      icon: 'open_in_new',
-      action: () => {
-        if (currentBookmarkFolder) {
-          const folderId = currentBookmarkFolder.dataset.id;
-          const folderTitle = currentBookmarkFolder.querySelector('.card-title').textContent;
-
-          chrome.bookmarks.getChildren(folderId, (bookmarks) => {
-            // 过滤出有效的书签URL
-            const validUrls = bookmarks
-              .filter(bookmark => bookmark.url)
-              .map(bookmark => bookmark.url);
-
-            if (validUrls.length > 0) {
-              // 使用 chrome.runtime.sendMessage 发送消息给后台脚本
-              chrome.runtime.sendMessage({
-                action: 'openMultipleTabsAndGroup',
-                urls: validUrls,
-                groupName: folderTitle // 使用文件夹名称作为标签组名称
-              }, (response) => {
-                if (response.success) {
-                  console.log('Bookmarks opened in new tab group');
-                } else {
-                  console.error('Error opening bookmarks:', response.error);
-                }
-              });
-            }
-          });
-        }
-      }
-    },
-    {
-      text: getLocalizedMessage('shareFolder'),
-      icon: 'share',
-      action: () => {
-        if (!currentBookmarkFolder) return;
-        const folderId = currentBookmarkFolder.dataset.id;
-        const folderTitle = currentBookmarkFolder.querySelector('.card-title')?.textContent || '';
-        shareBookmarkFolderAsGist(folderId, folderTitle).catch((error) => {
-          console.error('Failed to share bookmark folder:', error);
-          Utilities?.showToast?.(getLocalizedMessage('gistShareFailed'));
-        });
-      }
-    },
-    {
-      text: getLocalizedMessage('shareFolderLink'),
-      icon: 'share',
-      action: () => {
-        if (!currentBookmarkFolder) return;
-        const folderId = currentBookmarkFolder.dataset.id;
-        const folderTitle = currentBookmarkFolder.querySelector('.card-title')?.textContent || '';
-        shareBookmarkFolder(folderId, folderTitle).catch((error) => {
-          console.error('Failed to share bookmark folder (link):', error);
-          Utilities?.showToast?.(getLocalizedMessage('shareLinkGenerateFailed'));
-        });
-      }
-    },
-    // 原有的菜单项
-    { text: getLocalizedMessage('rename'), icon: 'edit', action: () => currentBookmarkFolder && openEditBookmarkFolderDialog(currentBookmarkFolder) },
-    {
-      text: getLocalizedMessage('delete'), icon: 'delete', action: () => {
-        if (currentBookmarkFolder) {
-          const folderId = currentBookmarkFolder.dataset.id;
-          const folderTitle = currentBookmarkFolder.querySelector('.card-title').textContent;
-          showConfirmDialog(getLocalizedMessage('confirmDeleteFolder', [`<strong>${folderTitle}</strong>`]), () => {
-            chrome.bookmarks.removeTree(folderId, () => {
-              currentBookmarkFolder.remove();
-              Utilities.showToast(getLocalizedMessage('categoryDeleted'));
-            });
-          });
-        }
-      }
-    },
-    { text: getLocalizedMessage('setAsHomepage'), icon: 'home', action: () => currentBookmarkFolder && setDefaultBookmark(currentBookmarkFolder.dataset.id) }
-  ];
-
-  // 创建菜单项的其余代码保持不变
-  menuItems.forEach(item => {
-    const menuItem = document.createElement('div');
-    menuItem.className = 'custom-context-menu-item';
-
-    const icon = document.createElement('span');
-    icon.className = 'material-icons';
-    icon.innerHTML = ICONS[item.icon];
-    icon.style.marginRight = '8px';
-    icon.style.fontSize = '18px';
-
-    const text = document.createElement('span');
-    text.textContent = item.text;
-
-    menuItem.appendChild(icon);
-    menuItem.appendChild(text);
-
-    menuItem.addEventListener('click', () => {
-      if (typeof item.action === 'function') {
-        item.action();
-      }
-      menu.style.display = 'none';
-    });
-
-    menu.appendChild(menuItem);
   });
 }
 
@@ -2842,19 +2082,6 @@ function initScriptShare() {
 }
 
 
-// 添加文件夹相关的全局变量
-// Add event listeners or logic that uses these variables
-function initScriptBookmarkFolderGlobals() {
-  // Example initialization logic
-  bookmarkFolderContextMenu = document.querySelector('#bookmark-folder-context-menu');
-  currentBookmarkFolder = document.querySelector('.bookmark-folder.active');
-
-  // Ensure these elements exist before using them
-  if (bookmarkFolderContextMenu && currentBookmarkFolder) {
-    // Add your event listeners or logic here
-  }
-}
-
 
 function openEditBookmarkFolderDialog(folderElement) {
   const folderId = folderElement.dataset.id;
@@ -3053,14 +2280,6 @@ function selectSidebarFolder(folderId) {
     }
   });
 }
-// 确在 DOMContentLoaded 事件初始化上文菜单
-function initScriptBookmarkFolderContextMenu() {
-  // ... 其他初始化代码 ...
-  createBookmarkFolderContextMenu();
-}
-
-
-
 
 // 保留原有的DOMContentLoaded事件监听器，但移除其中的背景应用逻辑
 function initScriptFolderNameObserver() {
@@ -4394,8 +3613,6 @@ export function initScript() {
   initScriptCore();
   initScriptBookmarksAndTheme();
   initScriptShare();
-  initScriptBookmarkFolderGlobals();
-  initScriptBookmarkFolderContextMenu();
   initScriptFolderNameObserver();
   initBookmarkCardContextMenuListeners();
   // initScriptVersionNumber() removed - now handled by AboutSettingsPortal

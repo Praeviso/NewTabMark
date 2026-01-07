@@ -73,6 +73,7 @@
 - **搜索重构**：数据/UI 拆分，下拉 React 化，建议 UI dispose 能力
 - **Quick Links 收敛**：controller 模式 + dispose 能力
 - **CSS 修复**：`.favicon img` 添加 `object-fit: contain` 修复图标形变
+- **Legacy Context Menu Cleanup**：移除 `script.js` 中 ~780 行废弃的 DOM 右键菜单代码（`createContextMenu`, `showContextMenu`, `createContextMenuItems`, `showDeleteConfirmDialog`, `createQuickLinkCard`, `closeConfirmDialog`, `confirmBookmarkDeletion`, `confirmQuickLinkDeletion`, `clearDeleteStates`, `clearAllStates`, `createBookmarkFolderContextMenu`, `createMenuItems` 及相关全局变量），React 组件已完全接管
 
 ## 未完成
 

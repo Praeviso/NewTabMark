@@ -160,6 +160,7 @@ export function SidebarCategoryContextMenuPortal() {
 
     return createPortal(
         <SidebarCategoryContextMenu
+            key={folder ? `${folder.id}-${position.x}-${position.y}` : 'closed'}
             isOpen={isOpen}
             position={position}
             folder={folder}
